@@ -1,0 +1,42 @@
+---
+layout:     post
+title:      "为已安装的nginx 添加模块"
+subtitle:   ""
+date:       2019-06-02
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - nginx
+---
+
+
+#为已安装的nginx 添加模块
+
+***
+
+## 假设nginx 安装目录 /usr/local/nginx
+
+
+## 重新配置nginx
+	
+	#上篇介绍，解压编译nginx的目录不要删除，从新进入那个目录
+	#配置，再原来的基础上，又添加了新的配置，这里是ssl模块
+	以前的配置 ./configure --prefix=/usr/local/nginx
+	新配置 ./configure --prefix=/usr/local/nginx --with-http_ssl_module
+	
+	#编译（注意只是编译，并没有install）
+	make
+	
+	#查看编译好的文件
+	在objs目录下，找到编译好的nginx。
+	
+	#备份原nginx
+	cp /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx.bak
+	
+	#复制新的nginx
+	cp /usr/local/nginx-1.17.0/objs/nginx /usr/local/nginx/sbin/nginx
+	
+## 启动nginx
+	/usr/local/nginx/sbin/nginx
+	
+# 新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了

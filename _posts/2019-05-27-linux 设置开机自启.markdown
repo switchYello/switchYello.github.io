@@ -1,0 +1,13 @@
+---
+layout:     post
+title:      "linux 设置开机自启"
+subtitle:   ""
+date:       2019-05-27
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - linux
+---
+
+
+自己写一个sh脚本放到 `/etc/init.d` 目录下，开机会执行这里面的命令
