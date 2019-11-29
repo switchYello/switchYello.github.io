@@ -1,0 +1,44 @@
+---
+layout:     post
+title:      "openssl生成证书"
+subtitle:   ""
+date:       2019-06-03
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - nginx
+---
+
+
+# openssl生成证书，配置nginx
+
+***
+
+## 所有文件和解释
+
+	.key  私钥
+	.crt  证书文件
+	.csr  证书申请时会用到的记录信息的文件
+	
+## 生成key 和 csr
+
+	#openssl 在系统当前目录生成 key 和 csr文件
+	openssl req -new -newkey rsa:2048 -sha256 -nodes -out example_com.csr -keyout example_com.key -subj "/C=CN/ST=ShenZhen/L=ShenZhen/O=Example Inc./OU=Web Security/CN=example.com"
+
+	C：Country ，单位所在国家，为两位数的国家缩写，如： CN 就是中国
+	ST 字段： State/Province ，单位所在州或省
+	L 字段： Locality ，单位所在城市 / 或县区
+	O 字段： Organization ，此网站的单位名称;
+	OU 字段： Organization Unit，下属部门名称;也常常用于显示其他证书相关信息，如证书类型，证书产品名称或身份验证类型或验证内容等;
+	CN 字段： Common Name ，网站的域名;
+
+	
+## 签署csr文件得到crt证书，就可以拿着crt证书和key 配置nginx了
+
+	生成 csr 文件后，提供给 CA 机构，签署成功后，就会得到一個 example.crt 证书文件
+	
+## 如果只是测试使用可以自签名
+	
+	# 使用下面命令，可以自签名证书
+
+	openssl x509 -req -in example_com.csr -out example_com.crt -signkey example_com.key -days 3650

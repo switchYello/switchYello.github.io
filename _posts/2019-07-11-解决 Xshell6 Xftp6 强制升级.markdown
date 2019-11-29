@@ -1,0 +1,39 @@
+---
+layout:     post
+title:      "解决 Xshell6 Xftp6 强制升级"
+subtitle:   ""
+date:       2019-07-11
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - xshll
+---
+
+
+# 解决 Xshell6|Xftp6 强制升级
+
+
+***
+###	　今天打开xftp，发现不让用了，`要继续使用此程序，您必须应用最新的更新或使用新版本`，必须强制升级，网上找到了xshell5去除强制升级的方法，但是把原文分享的文件替换，却打不开了，应该是xshell5 和sehll6 不兼容导致的.
+### 按照反编译操作，发现能解决问题，下面将步骤和文件放出
+
+
+### 原理是反编译文件，修改其中某个16进制再替换原文件
+
+	1. 找到安装目录的 `nslicense.dll`文件复制出来
+	2. 下载c32asm
+	3. 用c32asm以16进制形式打开nslicense
+	4. 搜索16进制： 7F0C81F98033E1010F8680
+	5. 替换成 	： 7F0C81F98033E1010F8380
+	6. 也就是将最后两位86替换成83 然后保存，并替换文件
+	7. 如果搜不到7F0C81F98033E1010F8680 可以缩短几位进行搜索 比如搜索7F0C81F98033E101试试看
+
+## 这是xshll5的做法，xshell6有点变化，但只要找到对应位置的86改成83即可，亲测可用
+
+
+下面放出我用的修改好的文件，可以替换到xshll安装目录 和 xftp的安装目录，或者自己按照上面方法进行修改
+
+
+链接：[https://pan.baidu.com/s/1hZ7iAgi87lWKa_7qVaIY7w ](https://pan.baidu.com/s/1hZ7iAgi87lWKa_7qVaIY7w )
+
+提取码：431e
