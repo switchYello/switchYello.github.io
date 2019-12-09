@@ -5,7 +5,7 @@ header-img: img/home-bg.jpg
 email: chaoyuynl@foxmail.com
 description: "java | web"
 keyword: ""
-url: "http://switchYello.github.io"              # your host, for absolute URL
+url: "https://blog.dwzs.fun"              # your host, for absolute URL
 baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'
 encoding: utf-8
 
@@ -69,7 +69,7 @@ netease_comment: false
 
 # Analytics settings
 # Baidu Analytics 
-# ba_track_id: [your track id]
+ba_track_id: [dee2a29a1c2896f1089ff3688e18fc82]
 
 # Google Analytics
 #ga_track_id: 'UA-49627206-1'            # Format: UA-xxxxxx-xx
