@@ -15,6 +15,9 @@ typora-root-url: ..
 
 ## free-mybatis-plugin的使用方法
 
+* TOC
+{:toc}
+
 
 
 ​	作为java界开发必备神器idea，其功能强大，提供强大的插件系统，如果使用当前主流的ssm三大框架，一定要安装free-mybatis-plugin。其大大方便了我们使用mybatis。
@@ -23,7 +26,7 @@ typora-root-url: ..
 
 
 
-#### 插件介绍
+### 插件功能
 
 插件一共提供了四个功能:
 
@@ -38,7 +41,7 @@ typora-root-url: ..
 
 
 
-### 功能1：快速从代码跳转到mapper及从mapper返回代码
+#### 功能1：快速从代码跳转到mapper及从mapper返回代码
 
 ​	这是我们最熟悉的功能，他会在我们的mapper.xml文件的select，delete，update等语句左边提供一个箭头
 
@@ -48,13 +51,13 @@ typora-root-url: ..
 
 
 
-### 功能2：mybatis自动补全及语法错误提示
+#### 功能2：mybatis自动补全及语法错误提示
 
 ​	我们写sql时，弹出的代码提示就是它做的，也是十分的好用。
 
 ![image-20191211115058016](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211115058016.png)
 
-### 功能3，4：集成了`mybatis generator gui`，自动生成代码但比原生的`generator`更好用
+#### 功能3，4：集成了`mybatis generator gui`，自动生成代码但比原生的`generator`更好用
 
 ​	idea内置了管理数据库的工具，此插件配合数据库管理工具，可以获取到数据库的连接，表，字段等信息，通过这些信息，此插件就能generator 出对应的mapper，dao，entity等。
 
@@ -102,11 +105,11 @@ typora-root-url: ..
 
 
 
-#### 接下来看看option中有哪些选项可配置的
+### option中配置选项
 
 ![image-20191211121332700](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121332700.png)
 
-1.分页
+#### 1. 分页
 
 单独勾选此选项是没效果的，还需要勾选第五列第二个，生成 example来配合使用才行
 
@@ -122,7 +125,7 @@ typora-root-url: ..
 
 ***
 
-2.实体注释
+#### 2.实体注释
 
 ​	勾选这个选项，会在生成的实体类上添加数据库建表时添加的注释，但经过测试，不勾选也能生成注释
 
@@ -130,25 +133,25 @@ typora-root-url: ..
 
 ***
 
-3.Overwrite-Xml , Overwrite-Java
+#### 3.Overwrite-Xml , Overwrite-Java
 
 ​	这两个选项，是生成的代码会覆盖掉原来的代码
 
 ***
 
-4.toString/hashcode/equals
+#### 4.toString/hashcode/equals
 
 ​	会在实体类中自动生成上面三个方法
 
 ***
 
-5.User-Schema
+#### 5.User-Schema
 
 ​	按字面意思是使用数据库名的前缀，我没发现使用这个哪里改变了。
 
 ***
 
-6.Add-ForUpdate
+#### 6.Add-ForUpdate
 
 这个选项会在example中增加字段
 
@@ -160,7 +163,7 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 ***
 
-7.Repository-annotation
+#### 7.Repository-annotation
 
 在生成的mapper接口上，添加@repository注解
 
@@ -168,7 +171,7 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 ***
 
-8.parent-interface
+#### 8.parent-interface
 
 这个会给mapper接口上生成公共的泛型父类，这样TroowMapper内那些增删改查的接口就转移到父类里面去了。看起来清爽些。
 
@@ -178,13 +181,13 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 ***
 
-9.jsr310:data and time api
+#### 9.jsr310:data and time api
 
 勾选这个，生成实体类中的Data类型会被LocalDateTime代替。
 
 ***
 
-10.jpa-Annotation
+#### 10.jpa-Annotation
 
 如图，添加jpa的注解
 
@@ -192,13 +195,13 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 ***
 
-11.Actual-Column
+#### 11.Actual-Column
 
 一般数据库字段都是用下划线命名，java实体类都是用驼峰法命名，生成代码时会从下划线转成驼峰法，勾选这个，生成的实体类会和数据库字段保持一致，保持下划线命名的方式。
 
 ***
 
-12.Use-Alias
+#### 12.Use-Alias
 
  这个很有用，勾选这个，查询sql时，会将查询结果起别名，别名为 `表名_字段名`，这有很大好处，关联查询时，就不会出现字段同名问题了。
 
@@ -206,13 +209,13 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 ***
 
-13.Use-Example
+#### 13.Use-Example
 
 ​	上面讲过了，勾选这个才会生成example，且需要example才能完成的功能，也要勾选这个
 
 ***
 
-14.Use-Lombox
+#### 14.Use-Lombox
 
 ​	生成的实体类上自动加上Lombox的注解，这样就不会自动生成 get set方法了
 
@@ -220,13 +223,13 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 
 
-#### 默认配置
+### 默认配置
 
 ​	上面勾选选项，每张表都要重选一次很麻烦，在`file->settings->tools->mybatis generator setting`选项里面，配置的设置，下次使用时会默认选上的，可以设置自己习惯的选项在这上面即可。
 
 
 
-#### 总结
+### 总结
 
 ​	以上就是free-mybatis-plugin插件的用法了。这个插件真的挺强大的，启用别名查询，添加分页，添加注释，添加jpa，都是挺有用的，节省我们手动处理的时间。
 
