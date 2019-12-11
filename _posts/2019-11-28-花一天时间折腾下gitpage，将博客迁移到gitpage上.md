@@ -13,18 +13,11 @@ tags:
 
 ### 花一天时间折腾下gitpage，将博客迁移到gitpage上
 
+
 今天花点时间将博客迁移到gitpage上，下面总结下过程
 
-
-1. 创建仓库
-2. 开启gitpage
-3. 搜索下载喜欢的jekyll主题
-4. 修改主题，包括标题，路径，删除原内容等
-5. 将自己的文章转成主题能使用的形式
-6. 本地运行预览
-7. 上传到github
-8. 迁移完成
-
+* TOC
+{:toc}
 
 
 #### 1.创建仓库
@@ -41,22 +34,25 @@ tags:
 
 #### 4.修改主题
 
+解压出来的文件目录如下:
+
 ![文件目录](/img/in/花一天时间折腾下gitpage，将博客迁移到gitpage上/1.png)
 
-* includes 模板html
-* layouts  文章样式模板html
-* poists	markdown 源文章
-* site	jkeyll自动生成的，可删除
-* css 	样式
-* fonts 	字体
-* img  	各种图片
-* js		js
-* less	样式文件
-* pwa		
-* config.yml 主配置
+	includes 模板html
+	layouts  文章样式模板html
+	poists	markdown 源文章
+	site	jkeyll自动生成的，可删除
+	css 	样式
+	fonts 	字体
+	img  	各种图片
+	js		js
+	less	样式文件
+	pwa		
+	config.yml 主配置
 等等 [仓库地址](https://github.com/Huxpro/huxpro.github.io) readme里面有详细解释
 
 #### 5.将自己的文章转成主题能使用的形式
+> 也就仿照着这个头部将信息填写进去，，上下各用三个横线包住。
 
 ![文章格式](/img/in/花一天时间折腾下gitpage，将博客迁移到gitpage上/2.png)
 
@@ -90,7 +86,7 @@ tags:
 
 
 #### 7.遇到的问题
-1.jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404
+##### jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404
 解决办法[jekyll中文文件名本地预览问题](http://kael-aiur.com/%E5%85%A5%E9%97%A8%E6%8C%87%E5%BC%95/jekyll%E4%B8%AD%E6%96%87%E6%96%87%E4%BB%B6%E5%90%8D%E6%9C%AC%E5%9C%B0%E9%A2%84%E8%A7%88%E9%97%AE%E9%A2%98.html)如下，
 
 修改安装目录\Ruby22-x64\lib\ruby\2.2.0\webrick\httpservlet下的filehandler.rb文件，建议先备份。
@@ -111,7 +107,7 @@ break unless File.directory?(File.expand_path(res.filename + base))
 
 然后重启服务器即可jekyll clean && jekyll s
 
-2.报错
+##### 报错
 
 	Dependency Error: Yikes! It looks like you don’t have jekyll-paginate or one of its dependencies installed. 
 	In order to use Jekyll as currently configured, you’ll need to install this gem. The full error message from Ruby is: ‘cannot load such file – jekyll-paginate’ If you run into trouble,
