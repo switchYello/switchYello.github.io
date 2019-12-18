@@ -2,7 +2,8 @@
 layout: null
 ---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+		xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   {% for post in site.posts %}
     <url>
@@ -10,11 +11,11 @@ layout: null
 	  <loc>{{ site.sitemapUrl }}{{ post.url }}</loc>
 	  
 	  {% if post.lastmod %}
-	  <lastmod>{{ post.lastmod | date_to_xmlschema }}</lastmod>
+	  <lastmod>{{ post.lastmod | date: "%Y-%m-%d" }}</lastmod>
       {% elsif post.date %}
-	  <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
+	  <lastmod>{{ post.date | date: "%Y-%m-%d" }}</lastmod>
 	  {% else %}
-      <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+      <lastmod>{{ site.time | date: "%Y-%m-%d" }}</lastmod>
 	  {% endif %}
       
 	  <changefreq>weekly</changefreq>
@@ -29,9 +30,9 @@ layout: null
 		<loc>{{ site.sitemapUrl }}{{ page.url | remove: "index.html" }}</loc>
 		  
 		{% if page.date %}
-		<lastmod>{{ page.date | date_to_xmlschema }}</lastmod>
+		<lastmod>{{ page.date | date: "%Y-%m-%d" }}</lastmod>
 		{% else %}
-		<lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+		<lastmod>{{ site.time | date: "%Y-%m-%d" }}</lastmod>
 		{% endif %}
 		  
 		<changefreq>monthly</changefreq>
