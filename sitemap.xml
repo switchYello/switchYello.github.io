@@ -1,32 +1,41 @@
 ---
 layout: null
-sitemap:
-  exclude: 'yes'
 ---
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   {% for post in site.posts %}
     <url>
-      <loc>{{ site.url }}{{ post.url }}</loc>
-      {% if post.date %}
+      
+	  <loc>{{ site.sitemapUrl }}{{ post.url }}</loc>
+	  
+	  {% if post.lastmod %}
+	  <lastmod>{{ post.lastmod | date_to_xmlschema }}</lastmod>
+      {% elsif post.date %}
 	  <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
+	  {% else %}
+      <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
 	  {% endif %}
-      <changefreq>weekly</changefreq>
+      
+	  <changefreq>weekly</changefreq>
 	  <priority>0.8</priority>
     </url>
   {% endfor %}
   
   
   {% for page in site.pages %}
-    {% unless page.sitemap.exclude == "yes" or page.url contains "xml" %}
+    {% unless page.url contains "xml" %}
 		<url>
-		  <loc>{{ site.url }}{{ page.url | remove: "index.html" }}</loc>
-		  {% if page.date %}
-			<lastmod>{{ page.date | date_to_xmlschema }}</lastmod>
-		  {% endif %}
-		  <changefreq>monthly</changefreq>
-		  <priority>0.3</priority>
+		<loc>{{ site.sitemapUrl }}{{ page.url | remove: "index.html" }}</loc>
+		  
+		{% if page.date %}
+		<lastmod>{{ page.date | date_to_xmlschema }}</lastmod>
+		{% else %}
+		<lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+		{% endif %}
+		  
+		<changefreq>monthly</changefreq>
+		<priority>0.5</priority>
 		</url>
     {% endunless %}
   {% endfor %}
