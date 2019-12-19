@@ -877,7 +877,7 @@ public class Example {
 
 ### @Param扩展
 
-上面讲到过`@Param`注解的expander 接口，下面这个例子将，如果对参数进行修改，他将date格式化成毫秒值
+上面讲到过`@Param`注解的expander 接口，下面这个例子将如果对参数进行修改，他将date格式化成毫秒值
 
 ```java
 public interface Api {
