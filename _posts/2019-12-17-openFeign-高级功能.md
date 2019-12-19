@@ -276,11 +276,11 @@ protected MethodMetadata parseAndValidateMetadata(Class<?> targetType, Method me
       });
 ```
 
-> 可以看到，如果由body注解，如果body注解的值是固定的，则设置为body，如果是可变的设置位bodyTemplate
+> 可以看到，如果有body注解，如果body注解的值是固定的，则将值设置为body，如果是可变的设置为bodyTemplate
 
 
 
-> 根据上面[Param注解注意事项](#Param注解注意事项)源码看出，如果@Param内有被使用，则放入`data.formParams()`中
+> 根据上面[Param注解注意事项](#Param注解注意事项)源码看出，如果`@Param`标记的参数没被使用，则放入`data.formParams()`中
 
 
 
