@@ -40,3 +40,4 @@ jekyll提供制作sitemap的插件，如果不通过插件制作的话可以写�
 
 [某人写的生成站点地图模板，我是根据这个改的](http://davidensinger.com/2013/11/building-a-better-sitemap-xml-with-jekyll/)
 
+[sitemap.xml的写法](http://blog.sina.com.cn/s/blog_6a3c6f810100zq72.html)
