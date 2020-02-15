@@ -9,9 +9,8 @@ tags:
     - android
 ---
 
-
 # adb 控制手机屏幕滑动
-	
+
 	//滑动
 	adb shell input touchscreen swipe 930 880 930 380 //向上滑
 	adb shell input touchscreen swipe 930 880 330 880 //向左滑
