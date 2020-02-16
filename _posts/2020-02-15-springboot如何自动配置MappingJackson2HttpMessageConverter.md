@@ -503,7 +503,7 @@ public HttpMessageConvertersAutoConfiguration(ObjectProvider<HttpMessageConverte
 
 导致创建的`JacksonAutoConfiguration`里面的`ObjectMapper`属性变化，然后`ObjectMapper`被注入`Spring`
 
-然后`JacksonHttpMessageConvertersConfiguration`里面创建`Jakson2HttmMessageConverter` 时从Spring获取`ObjectMapper`。
+然后`JacksonHttpMessageConvertersConfiguration`里面创建`MappingJackson2HttpMessageConverter` 时从Spring获取`ObjectMapper`。
 
 
 
