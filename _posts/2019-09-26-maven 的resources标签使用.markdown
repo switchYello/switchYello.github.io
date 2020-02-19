@@ -21,6 +21,7 @@ tags:
                 <includes>
                     <include>application.*</include>
                 </includes>
+                <filtering>true</filtering>
             </resource>
         </resources>
     </build>
@@ -32,6 +33,7 @@ tags:
 
 + ### directory
 	
+
 表示原路径，请填写相对路径，默认为pom所在的路径，即如果pom在`d:project`文件夹下，默认的相对路径为`d:project/`  ，拼在一起就变成`d:project/src/main/resources`,所以这里填写路径不要以 `/`开头，否则会变成绝对路径
 	
 + ### targetPath
@@ -74,5 +76,20 @@ tags:
 	        </resources>
 	```
 	
-	
+
+
+
+
+
++  ### filtering
+
+    ​	这个选项可以是true 或 false，表示是否对资源进行过滤，也就是说，可以在配置文件里写一些动态的值，maven会将值替换成真正的值，设成false则不会过滤。
+
+    
+
+    比如下面`properties`文件中的一条记录，maven编译完成后值会被替换成`profile.active`这个变量代表的值。
+
+    ```properties
+    spring.profiles.active= @profile.active@
+    ```
 
