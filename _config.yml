@@ -5,8 +5,8 @@ header-img: img/home-bg.jpg
 email: chaoyuynl@foxmail.com
 description: "java | web"
 keyword: ""
-url: "https://blog.dwzs.fun"              # your host, for absolute URL
-sitemapUrl: "https://blog.dwzs.fun"        # create 'sitemap.xml' , baseurl
+url: "http://www.huangchaoyu.com"              # your host, for absolute URL
+sitemapUrl: "http://www.huangchaoyu.com"        # create 'sitemap.xml' , baseurl
 baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'
 encoding: utf-8
 
