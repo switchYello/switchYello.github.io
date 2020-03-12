@@ -33,7 +33,8 @@
     <title>{% if page.title %}{{ page.title }} - {{ site.SEOTitle }}{% else %}{{ site.SEOTitle }}{% endif %}</title>
 
     <!-- Web App Manifest -->
-	{% if page.service-worker %}
+	<!-- Hcy update 在_config.yml中添加pwa的开关-->
+	{% if site.pwa %}
     <link rel="manifest" href="{{ site.baseurl }}/pwa/manifest.json">
 	{% endif %}
 	
