@@ -7,6 +7,8 @@ author:	"hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
     - gitpage
+    - jekyll
+    
 ---
 
 
