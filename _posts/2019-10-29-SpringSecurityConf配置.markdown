@@ -14,7 +14,7 @@ tags:
 
 
 ### 上配置文件
-```
+```java
 //开启配置
 @EnableWebSecurity
 public class SpringSecurityConf extends WebSecurityConfigurerAdapter {
