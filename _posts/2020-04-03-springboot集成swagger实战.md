@@ -295,7 +295,7 @@ public class SwaggerConfig {
 
 #### 	文件上传
 
-# 		有是后端需要处理上传文件，则请使用`@ApiParam`注解，不要用`@ApiImplicitParam`,这样在页面上测试时就能直接鼠标选择要上传的文件了。
+​		有是后端需要处理上传文件，则请使用`@ApiParam`注解，不要用`@ApiImplicitParam`,这样在页面上测试时就能直接鼠标选择要上传的文件了。
 
 ​		这两个注解作用于`MultipartFile`类型上的区别，读者可以亲自尝试对比下。
 
@@ -306,6 +306,8 @@ public class SwaggerConfig {
         return 1;
     }
 ```
+
+
 
 
 
