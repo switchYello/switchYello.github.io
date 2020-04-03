@@ -313,20 +313,16 @@ public class SwaggerConfig {
 
 
 
-#### 需要指定请求方式
-
+#### 	需要指定请求方式
 
 
 ​        像下面这两种指定请求Method方式都可以。
 
+
 ```java
     @GetMapping("upload")
-```
-
-```java
 	@RequestMapping(value = "upload",method = RequestMethod.GET)
 ```
-
 
 
 
