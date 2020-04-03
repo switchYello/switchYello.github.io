@@ -31,9 +31,9 @@ typora-root-url: ..
 
 
 
-### 创建空的`SpringBoot`项目
+### 	创建空的`SpringBoot`项目
 
-​	使用`idea`初始化`SpringBoot`项目，因为是web项目，别忘了勾选`Spring Web`依赖。
+​		使用`idea`初始化`SpringBoot`项目，因为是web项目，别忘了勾选`Spring Web`依赖。
 
 
 
@@ -41,9 +41,9 @@ typora-root-url: ..
 
 
 
-### 添加`controller`
+### 	添加`controller`
 
-创建一个如下增删改查的`Controller`
+​	创建一个如下增删改查的`Controller`
 
 ```java
 @RestController
@@ -74,9 +74,9 @@ public class TestController {
 
 
 
-### 测试接口
+### 	测试接口
 
-在浏览器里顺利打开接口
+​		在浏览器里顺利打开接口
 
 ![image-20200403132815065](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403132815065.png)
 
@@ -98,7 +98,7 @@ public class TestController {
 
 ### 编写`Swagger`配置
 
-`Springfox`需要编写一个`Docket`的`Bean`，在这个类里面做配置，下面是新建一个配置类，让`SpringBoot`扫描到这个`Bean`并注入到容器。
+​	`Springfox`需要编写一个`Docket`的`Bean`，在这个类里面做配置，下面是新建一个配置类，让`SpringBoot`扫描到这个`Bean`并注入到容器。
 
 
 
@@ -127,7 +127,7 @@ public class SwaggerConfig {
 
 ### 访问验证
 
-浏览器访问`http://localhost:8080/v2/api-docs`,可以看到输出的一系列 `Json`，可读性太差，但是`Swagger`提供了一个可视化界面，方便我们阅读。
+​	浏览器访问`http://localhost:8080/v2/api-docs`,可以看到输出的一系列 `Json`，可读性太差，但是`Swagger`提供了一个可视化界面，方便我们阅读。
 
 
 
@@ -155,9 +155,9 @@ public class SwaggerConfig {
 
 ### 配置
 
-#### 	配置文档标题和版本
+#### 		配置文档标题和版本
 
-配置`Swagger`需要提供一个`ApiInfo`类描述文档标题，版本，用户名，邮箱等信息,像下面这样添加到`Docket`里面。
+​		配置`Swagger`需要提供一个`ApiInfo`类描述文档标题，版本，用户名，邮箱等信息,像下面这样添加到`Docket`里面。
 
 ```java
 @Configuration
@@ -185,15 +185,15 @@ public class SwaggerConfig {
 
 
 
-界面变成了这样，文档名、版本、描述都变了。
+​	界面变成了这样，文档名、版本、描述都变了。
 
 ![image-20200403134110601](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403134110601.png)
 
 
 
-#### 配置Controller描述
+#### 	配置Controller描述
 
-​	类上添加注解`@Api`，并填写`tags`可以配置`controller`描述
+​		类上添加注解`@Api`，并填写`tags`可以配置`controller`描述
 
 ```java
     @RestController
@@ -204,9 +204,9 @@ public class SwaggerConfig {
 
 
 
-#### 配置接口名
+#### 	配置接口名
 
-​	给方法添加注解，可以配置接口名称，添加` @ApiOperation`注解在接口方法上。
+​		给方法添加注解，可以配置接口名称，添加` @ApiOperation`注解在接口方法上。
 
 ```java
     @ApiOperation("获取所有数据")
@@ -218,9 +218,9 @@ public class SwaggerConfig {
 
 
 
-#### 配置参数名
+#### 	配置参数名
 
-​	使用注解`@ApiImplicitParams`可以配置多个参数，使用注解`@ApiImplicitParam`可以配置一个参数。
+​		使用注解`@ApiImplicitParams`可以配置多个参数，使用注解`@ApiImplicitParam`可以配置一个参数。
 
 ```java
     @ApiOperation("根据id更新")
@@ -239,9 +239,9 @@ public class SwaggerConfig {
 
 
 
-#### 验证
+#### 	验证
 
-页面变成了这样，`controller`变成了`@Api`标记的名称，每个接口名变成了`@ApiOperation`指定的名称，
+​		页面变成了这样，`controller`变成了`@Api`标记的名称，每个接口名变成了`@ApiOperation`指定的名称，
 
 参数描述变成了`@ApiImplicitParam`指定的`value`。
 
@@ -255,11 +255,11 @@ public class SwaggerConfig {
 
 ### 更多配置
 
-#### `@ApiParam` 注解
+#### 	`@ApiParam` 注解
 
 
 
-​	除了使用`@ApiImplicitParam`外还可以使用`@ApiParam`标记参数。这样可以省去`name`属性，但是可能会让方法参数列表看起来混乱。
+​		除了使用`@ApiImplicitParam`外还可以使用`@ApiParam`标记参数。这样可以省去`name`属性，但是可能会让方法参数列表看起来混乱。
 
 ```java
     @ApiOperation("根据id删除")
@@ -271,19 +271,19 @@ public class SwaggerConfig {
 
 
 
-当然这两种方式可以混合使用，只要不重复标记到同一个参数上就行。
+​		当然这两种方式可以混合使用，只要不重复标记到同一个参数上就行。
 
 
 
-### 在线测试接口
+### 	在线测试接口
 
-找到一个接口，点击Try it out。
+​		找到一个接口，点击Try it out。
 
 ![image-20200403140401482](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140401482.png)
 
 
 
-页面就会变成可编辑形式，点击Execute，就可以按照配置的参数发送请求了，并且下面会显示执行结果。
+​	页面就会变成可编辑形式，点击Execute，就可以按照配置的参数发送请求了，并且下面会显示执行结果。
 
 ![image-20200403140446596](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140446596.png)
 
@@ -293,7 +293,7 @@ public class SwaggerConfig {
 
 ### 注意事项
 
-#### 	文件上传
+#### 		文件上传
 
 ​		有是后端需要处理上传文件，则请使用`@ApiParam`注解，不要用`@ApiImplicitParam`,这样在页面上测试时就能直接鼠标选择要上传的文件了。
 
@@ -306,30 +306,29 @@ public class SwaggerConfig {
     public int uploadFile(@ApiParam("需要上传的文件") MultipartFile file) {
         return 1;
     }
-
 ```
 
 
 
 
 
-#### 	需要指定请求方式
+#### 		需要指定请求方式
 
-
-​        像下面这两种指定请求Method方式都可以。
+​		像下面这两种指定请求Method方式都可以。
 
 
 ```java
-    @GetMapping("upload")
+	@GetMapping("upload")
 	@RequestMapping(value = "upload",method = RequestMethod.GET)
 ```
 
 
 
-
-​        如果不指定请求方式，`Swagger`将尝试使用所有请求方式去调用接口，文档页面看起来会很乱的。
+​		如果不指定请求方式，`Swagger`将尝试使用所有请求方式去调用接口，文档页面看起来会很乱的。
 
 下面`upload`接口就没指定请求方式，`Swagger`显示是这样的
+
+
 
 ![image-20200403140957368](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140957368.png)
 
