@@ -300,11 +300,13 @@ public class SwaggerConfig {
 ​		这两个注解作用于`MultipartFile`类型上的区别，读者可以亲自尝试对比下。
 
 ```java
+
     @RequestMapping("upload")
     @ApiOperation("上传文件")
     public int uploadFile(@ApiParam("需要上传的文件") MultipartFile file) {
         return 1;
     }
+
 ```
 
 
@@ -313,7 +315,9 @@ public class SwaggerConfig {
 
 #### 需要指定请求方式
 
-​		像下面这两种指定请求Method方式都可以。
+
+
+​        像下面这两种指定请求Method方式都可以。
 
 ```java
     @GetMapping("upload")
@@ -325,7 +329,9 @@ public class SwaggerConfig {
 
 
 
-​		如果不指定请求方式，`Swagger`将尝试使用所有请求方式去调用接口，文档页面看起来会很乱的。
+
+
+​        如果不指定请求方式，`Swagger`将尝试使用所有请求方式去调用接口，文档页面看起来会很乱的。
 
 下面`upload`接口就没指定请求方式，`Swagger`显示是这样的
 
