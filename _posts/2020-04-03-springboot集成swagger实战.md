@@ -259,7 +259,7 @@ public class SwaggerConfig {
 
 
 
-​	除了使用`@ApiImplicitParam`外还可以使用`@ApiParam`标记参数。这样可以省去`name`属性，但是可能会让参数看起来复杂。
+​	除了使用`@ApiImplicitParam`外还可以使用`@ApiParam`标记参数。这样可以省去`name`属性，但是可能会让方法参数列表看起来混乱。
 
 ```java
     @ApiOperation("根据id删除")
@@ -295,7 +295,7 @@ public class SwaggerConfig {
 
 #### 	文件上传
 
-​		有是后端需要处理上传文件，则请使用`@ApiParam`注解，不要用`@ApiImplicitParam`,这样在页面上测试时就能直接鼠标选择要上传的文件了。
+# 		有是后端需要处理上传文件，则请使用`@ApiParam`注解，不要用`@ApiImplicitParam`,这样在页面上测试时就能直接鼠标选择要上传的文件了。
 
 ​		这两个注解作用于`MultipartFile`类型上的区别，读者可以亲自尝试对比下。
 
@@ -309,19 +309,21 @@ public class SwaggerConfig {
 
 
 
-	#### 	需要指定请求方式
+#### 需要指定请求方式
 
 ​		像下面这两种指定请求Method方式都可以。
 
 ```java
     @GetMapping("upload")
-
-    @RequestMapping(value = "upload",method = RequestMethod.GET)
 ```
 
-​		
+```java
+	@RequestMapping(value = "upload",method = RequestMethod.GET)
+```
 
-​		如果不指定请求方式，`Swagger`将尝试使用所有请求方式去调用接口，页面看起来会很乱的。
+
+
+​		如果不指定请求方式，`Swagger`将尝试使用所有请求方式去调用接口，文档页面看起来会很乱的。
 
 下面`upload`接口就没指定请求方式，`Swagger`显示是这样的
 
