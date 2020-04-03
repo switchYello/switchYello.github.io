@@ -15,8 +15,8 @@ typora-root-url: ..
 
 
 
-
-
+* TOC
+{:toc}
 
 
 ## 为什么要使用Swagger 
@@ -275,7 +275,7 @@ public class SwaggerConfig {
 
 
 
-### 	在线测试接口
+## 	4.在线测试接口
 
 ​		找到一个接口，点击Try it out。
 
@@ -289,11 +289,11 @@ public class SwaggerConfig {
 
 
 
+## 5.注意事项
+
+### 文件上传写法
 
 
-### 注意事项
-
-#### 		文件上传
 
 ​		有是后端需要处理上传文件，则请使用`@ApiParam`注解，不要用`@ApiImplicitParam`,这样在页面上测试时就能直接鼠标选择要上传的文件了。
 
@@ -312,7 +312,7 @@ public class SwaggerConfig {
 
 
 
-#### 		需要指定请求方式
+### 需要指定请求方式
 
 ​		像下面这两种指定请求Method方式都可以。
 
@@ -334,6 +334,6 @@ public class SwaggerConfig {
 
 
 
-### 结束语
+## 6.结束语
 
 ​	本文就介绍到这里，基本能满足我们的需求，我们在修改接口时，顺便修改下注解就可以。同时前端在使用接口文档时，也可以在页面上直接测试接口。
