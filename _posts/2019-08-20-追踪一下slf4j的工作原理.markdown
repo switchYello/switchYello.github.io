@@ -7,17 +7,23 @@ author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
     - java
+    - slf4j
+    - bug
 ---
 
 
-## 追踪一下slf4j的工作原理
+
+# 追踪一下slf4j的工作原理
+
+`slf4j` 是一个`java`界非常流行的日志门面框架，使用它，你可以任意更换底层实现，如`logback`、`log4j`，而不需要修改代码。那他是如何做到的。
 
 
-	slf4j 是一个java界非常流行的日志门面框架，使用它，你可以任意更换底层实现如logback，		log4j，而不需要修改任何代码。那他是如何做到的呢，女朋友有这样的疑问，就要给她讲清楚。
 
-* ### 首先引入slf4j的包，这里采用最新稳定版,因为只引入slf4j无法打印日志，这里选择logback作为底层实现，测试
+## 引入`slf4j`的包
 
-```
+​	这里采用最新稳定版,因为只引入`slf4j`无法打印日志，这里选择`logback`作为底层实现。
+
+```xml
 <dependency>
    <groupId>org.slf4j</groupId>
    <artifactId>slf4j-api</artifactId>
@@ -31,27 +37,36 @@ tags:
 </dependency>
 ```
 
-* ###程序使用方式如下
 
-```
+
+## 测试输出
+
+​				从`LoggerFactory`获取一个`Logger`对象，就能使用了。
+
+```java
 	public static void main(String[] args) {
 		Logger log = LoggerFactory.getLogger(T1.class);
 		log.info("info");
 		log.debug("debug");
 		log.warn("warn");
 	}
-
 ```
-	slf4j获取到的Logger对象，是从LoggerFactory中得到，所以存在不同类型的Logger类，就存在不同类型的LoggerFactory对象
-	进入LoggerFactory.getLogger(T1.class)方法，我们看到其获取class名，调用了重载的getLogger(String )方法
-	获取了 ILoggerFactory，从factory中得到Logger并返回的
 
-```
-	public static Logger getLogger(Class<?> clazz) {
+
+## 代码解析
+
+###  委托给ILoggerFactory
+
+​    获取过程中采用懒加载模式，未避免多线程堵塞，使用状态为标识多种状态。
+
+```java
+	//使用类全路径名创建Logger
+    public static Logger getLogger(Class<?> clazz) {
         Logger logger = getLogger(clazz.getName());
    	    return logger;
     }
-
+	
+	//通过获取ILoggerFactory工厂，创建Logger
 	public static Logger getLogger(String name) {
    	 ILoggerFactory iLoggerFactory = getILoggerFactory();
    	 return iLoggerFactory.getLogger(name);
@@ -68,7 +83,7 @@ tags:
 	*/
 
     public static ILoggerFactory getILoggerFactory() {
-		//这里类似懒汉单例模式，加锁后设置状态位为ONGOING_INITIALIZATION，然后调用初始化代码，这样就只能有一个线程会初始化loggerfactory，其他线程走下面的switch 中的ONGOING_INITIALIZATION。
+		//这里类似懒汉单例模式，加锁后设置状态位为ONGOING_INITIALIZATION，然后调用初始化代码。这样就只能有一个线程会初始化loggerfactory，其他线程走下面的switch 中的 ONGOING_INITIALIZATION。
         if (INITIALIZATION_STATE == UNINITIALIZED) {
             synchronized (LoggerFactory.class) {
                 if (INITIALIZATION_STATE == UNINITIALIZED) {
@@ -78,12 +93,16 @@ tags:
             }
         }
         switch (INITIALIZATION_STATE) {
+        //初始化成功，返回单例的LoggerFactory
         case SUCCESSFUL_INITIALIZATION:
             return StaticLoggerBinder.getSingleton().getLoggerFactory();
+        //没底层实现时走这里        
         case NOP_FALLBACK_INITIALIZATION:
             return NOP_FALLBACK_FACTORY;
+        //初始化过程中抛异常，这里也抛异常        
         case FAILED_INITIALIZATION:
             throw new IllegalStateException(UNSUCCESSFUL_INIT_MSG);
+        //初始化中，返回一个代理Factory，此代理Factory能创建代理Logger
         case ONGOING_INITIALIZATION:
             // support re-entrant behavior.
             // See also http://jira.qos.ch/browse/SLF4J-97
@@ -98,20 +117,36 @@ tags:
 
 ```
 
-	从上面的getILoggerFactory() 方法中可以看到，获取分五种状态，
-	1.如果第一次访问，为未初始化状态，UNINITIALIZED，则让第一个获得锁的进行初始化，且不会堵塞后来的线程。
-	2.如果初始化成功，SUCCESSFUL_INITIALIZATION，后来的线程可以直接从StaticLoggerBinder中获取loggerFactory
-	3.如果没有实现类，NOP_FALLBACK_INITIALIZATION，则返回NOP_FALLBACK_FACTORY
-	4.如果初始化报错了，FAILED_INITIALIZATION，则直接抛出异常，阻止程序继续执行
-	54如果正在初始化中ONGOING_INITIALIZATION，则返回一个临时的loggerFactory，他会把所有的logger记录在队列中，等待真正初始化完成后，用真实的logger把队列中的日志输出出来
 
 
-```
+### 五种状态
+
+- 1.如果第一次访问，为未初始化状态，`UNINITIALIZED`，则让第一个获得锁的进行初始化，且不会堵塞后来的线程，将状态切换成`ONGOING_INITIALIZATION`。
+- 2.如果初始化成功，`SUCCESSFUL_INITIALIZATION`，后来的线程可以直接从`StaticLoggerBinder`中获取`loggerFactory`。
+- 3.如果没有底层实现类，`NOP_FALLBACK_INITIALIZATION`，则返回`NOP_FALLBACK_FACTORY`。
+- 4.如果初始化报错了，`FAILED_INITIALIZATION`，则直接抛出异常，阻止程序继续执行。
+- 5.如果正在初始化中`ONGOING_INITIALIZATION`，则返回一个代理`loggerFactory`，他会把所有的`logger`记录在队列中，等待真正初始化完成后，用真实的`logger`把队列中的日志输出出来。
+
+
+
+​        其中比较有意思的就是，`slf4j`为了在初始化`Factory`期间不堵塞程序，设置了`ONGOING_INITIALIZATION`状态，在此状态下获取`Factory`会返回`SubstituteLoggerFactory`。
+
+
+```java
 	//初始化中时，返回的临时loggerfactory
 	static final SubstituteLoggerFactory SUBST_FACTORY = new SubstituteLoggerFactory();
 
-	//SubstituteLoggerFactory的getLogger方法
+```
 
+
+### `SubstituteLoggerFactory`实现细节
+
+​        下面代码是`SubstituteLoggerFactory`的`getLogger()`方法。        
+
+第二行的`loggers` 是一个`Map`，`getLogger`方法会返回`SubstituteLogger`对象，并缓存到`loggers`里面。
+
+```java
+	//SubstituteLoggerFactory的getLogger方法
     synchronized public  Logger getLogger(String name) {
         SubstituteLogger logger = loggers.get(name);
         if (logger == null) {
@@ -120,16 +155,22 @@ tags:
         }
         return logger;
     }
-
 ```
-	上面可以看到，这个临时的loggerFactory即SubstituteLoggerFactory，他的getLogger(String name)方法会首先使用
-	SubstituteLogger logger = loggers.get(name);
-	从loggers中获取，loggers为一个Map<String,Logger>，用于缓存创建的SubstituteLogger
-	如果为空则创建一个SubstituteLogger，并放进map中
-	创建new SubstituteLogger时，传递的参数是Logger的名字，LinkedBlockingQueue的队列，postInitialization是否初始化完成的标志位
+
+​        
+
+### `SubstituteLogger`实现细节
+
+​        这个logger是一个代理logger，它包含一个`_delegate`对象，当`_delegate`为空时,会根据`createdPostInitialization`标志位返回`NOP_LOGGER`或者`EventRecodingLogger`。
+
+`EventRecodingLogger`会将日志输出到到`eventQueue`里。
+
+`createdPostInitialization`默认是false，Logger初始化后该值被设置为true。
 
 
-```
+
+
+```java
 	//SubstituteLogger的info方法，是如何实现的
 	
 	private volatile Logger _delegate;
@@ -160,49 +201,38 @@ tags:
 
 ```
 
-	可以看出，SubstituteLogge会将所有的日志，委托给delegate()返回的Logger处理，
-	delegate()方法，如果存在被代理的_delegate，则返回_delegate，
-	如果已经标志位为true了，则返回一个nopLogger，否则返回一个EventRecodingLogger，
-	nopLogger 会扔掉所有的日志
-	EventRecodingLogger会将所有日志放入queue中存储起来，等待其他方法将存储的日志重新拿出来输出
-	这就是slf4j初始化过程中返回的临时Logger，其在真实logger没创建完成时，返回带队列存储功能的临时logger，
-	等到真实logger创建完成后_delegate变量被设置为真实logger，delegate（）方法会返回真实logger，从而后续输出都会被转发到真实logger中。
 
-* ### loggerFactory初始化过程
 
-```
-		//未初始化前，会加锁并修改状态，并调用performInitialization（）；
-        if (INITIALIZATION_STATE == UNINITIALIZED) {
-            synchronized (LoggerFactory.class) {
-                if (INITIALIZATION_STATE == UNINITIALIZED) {
-                    INITIALIZATION_STATE = ONGOING_INITIALIZATION;
-                    performInitialization();
-                }
-            }
-        }
+​      `delegate()`方法会有三种返回可能，
 
-	//这个方法调用 bind()
-    private final static void performInitialization() {
-        bind();
-        if (INITIALIZATION_STATE == SUCCESSFUL_INITIALIZATION) {
-            versionSanityCheck();
-        }
-    }
+1. 如果存在被代理的`_delegate`，则返回`_delegate`
+2. 如果`createdPostInitialization`为`true`，则返回一个`nopLogger`，否则返回一个`EventRecodingLogger`。
+3. `nopLogger` 会扔掉所有的日志
+4. `EventRecodingLogger`会将所有日志放入`queue`中存储起来。
 
+**所以slf4j在初始化阶段的日志也不会丢失，而是存储在queue中，等到初始化完成，会取出来输出。**
+
+
+
+###  `loggerFactory`初始化过程
+
+​        核心在bind方法里。
+
+```java
 
  private final static void bind() {
         try {
-			//获取实现类集合，就是用类加载器加载名称叫做 ‘org/slf4j/impl/StaticLoggerBinder.class’的类，这个字符串是写死在代码里的
+			//用类加载器加载名称叫做 ‘org/slf4j/impl/StaticLoggerBinder.class’的类，这个字符串是写死在代码里的。因为可能存在多个实现，所以使用Set<URL>
             Set<URL> staticLoggerBinderPathSet = findPossibleStaticLoggerBinderPathSet();
-        	//调用实现类的初始化方法，进行初始化
+        	//调用StaticLoggerBinder的静态方法，StaticLoggerBinder可能不存在而报NoClassDefFoundError下面会捕获这个异常。
             StaticLoggerBinder.getSingleton();
 			//修改状态位为success
             INITIALIZATION_STATE = SUCCESSFUL_INITIALIZATION;
-			//将SubstituteLoggerFactory的loggers（map）存储的临时logger获取出来，设置临时logger中的_delegate变量为真实logger
+			//将SubstituteLoggerFactory的loggers（map）存储的临时logger获取出来，设置logger中的_delegate变量为真实logger
             fixSubstituteLoggers();
 			//从队列中取出日志，用真实logger输出
             replayEvents();
-            // 清理SubstituteLoggerFactory 内map中存储的logger，清理队列
+            //清理SubstituteLoggerFactory 内map中存储的logger，清理队列
             SUBST_FACTORY.clear();
         } catch (NoClassDefFoundError ncde) {
 			//如果报NoClassDefFoundError，可能是没有任何实现类，这时将状态位设为NOP_FALLBACK_INITIALIZATION
@@ -227,12 +257,61 @@ tags:
     }
 ```
 
+
+
+
+
 ## 总结
 
-	总结下就是，slf4j在第一次获取logger时进行初始化，并通过写死的字符串‘org/slf4j/impl/StaticLoggerBinder.class’尝试查找真实实现类，再调用真实实现类的静态方法，进行初始化。
-	再初始化没完成之前，会返回一个会存储在队列中的代理logger，等到真实logger创建完成后，会取出队列中的日志，重新打印出来，并且该代理logger会将以后的日志转发给真实logger中。
-	如果不存在slf4j的具体实现类，则会返回一个nop_logger，这个Logger不处理任何日志，将日志丢弃，但不影响程序运行。
+  	    `slf4j`会反射`org/slf4j/impl/StaticLoggerBinder.class`类，如果发现多个实现类，会输出日志提醒用户存在多个实现，并使用第一个实现类。
+
+​            他会直接调用`StaticLoggerBinder.getSingleton()`,如果不存在`org/slf4j/impl/StaticLoggerBinder.class`会抛`ClassNotFound`异常，这就表明底层实现不存在。
+
+​			获取`StaticLoggerBinder`实例过后，会调用`fixSubstituteLoggers()`修复初始话中创建的临时`logger`，会将存储在`queue`中的日志重新输出。
+
 
 
 ## 一个bug
-	如果不存在任何slf4j真实实现的情况下，多线程同时获取logger，后面的可能会获取到SubstituteLogger，这个Logger会将所有日志放入队列中，等待真实logger创建完成，但不存在真实实现就永远不会完成，所以此时获取的logger会一直将日志放入queue中，日志过多的话可能导致oom
+
+​      上面的实现其实存在一个`BUG`，核心方法`bind()`里面的`fixSubstituteLoggers()`方法，`replayEvents()`方法只会在存在底层log实现时才会执行，不存在底层实现会抛异常进入`cache`代码块。如果这种情况下将导致日志一直输出到`Queue`里面，导致`OOM`。
+
+```java
+//这几行代码在没有底层实现时不能执行
+fixSubstituteLoggers();
+replayEvents();
+SUBST_FACTORY.clear();
+```
+
+
+
+## 2020-04 更新
+
+​        上面提到的bug已经在`1.7.30`版本修复，新版本在`finally`代码块里面处理的这些逻辑，无论是否初始化成功都会释放`Queue`里面的日志，所以不用担心日志不释放的问题。
+
+
+
+### 但极端情况下还会出现问题
+
+​	1. 线程A执行下面代码，因为第一次执行会触发初始化逻辑：
+
+```java
+    public static Logger getLogger(String name) {
+        ILoggerFactory iLoggerFactory = getILoggerFactory();
+        return iLoggerFactory.getLogger(name);
+    }
+```
+
+​      2. 线程B在执行下面代码，获取到的`ILoggerFactory`是`SubstituteLoggerFactory`实例
+
+```java
+ public static Logger getLogger(String name) {
+        ILoggerFactory iLoggerFactory = getILoggerFactory();
+     	sleep(10000); //假设线程B执行到这里，让出cpu
+        return iLoggerFactory.getLogger(name);
+    }
+```
+
+​      3. 线程A接着执行，直到`LoggerFactory`初始化完成，在方法`fixSubstituteLoggers（）`里面会将`SubstituteLoggerFactory`里面的状态位`postInitialization`设为true，并修复创建`LoggerFactory`期间生成的的代理`Logger`。
+
+​      4. 接着线程B继续执行，他会拿到`ILoggerFactory`对象获取到一个`SubstituteLogger`，这个`SubstituteLogger`不能得到修复，会恒返回`NOP_LOGGER`实例。从而使日志失效。
+
