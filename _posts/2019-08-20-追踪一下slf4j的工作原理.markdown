@@ -13,6 +13,10 @@ tags:
 
 
 
+[TOC]
+
+
+
 # 追踪一下slf4j的工作原理
 
 `slf4j` 是一个`java`界非常流行的日志门面框架，使用它，你可以任意更换底层实现，如`logback`、`log4j`，而不需要修改代码。那他是如何做到的。
@@ -57,7 +61,7 @@ tags:
 
 ###  委托给ILoggerFactory
 
-​    获取过程中采用懒加载模式，未避免多线程堵塞，使用状态为标识多种状态。
+​    获取过程中采用懒加载模式，为避免多线程堵塞，使用状态位标识初始化时的多种状态。
 
 ```java
 	//使用类全路径名创建Logger
@@ -129,7 +133,9 @@ tags:
 
 
 
-​        其中比较有意思的就是，`slf4j`为了在初始化`Factory`期间不堵塞程序，设置了`ONGOING_INITIALIZATION`状态，在此状态下获取`Factory`会返回`SubstituteLoggerFactory`。
+
+
+​        其中比较有意思的就是，`slf4j`为了在初始化`Factory`期间不堵塞程序，设置了`ONGOING_INITIALIZATION`状态，在此状态下（初始化中）获取`Factory`会返回`SubstituteLoggerFactory`。
 
 
 ```java
