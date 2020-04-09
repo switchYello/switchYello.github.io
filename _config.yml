@@ -72,11 +72,6 @@ netease_comment: false
 # Baidu Analytics 
 ba_track_id: [bc2eb9e74cd29c345afc8b53d2cb49fe]
 
-# Google Analytics
-#ga_track_id: 'UA-49627206-1'            # Format: UA-xxxxxx-xx
-#ga_domain: huangxuan.me
-
-
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
