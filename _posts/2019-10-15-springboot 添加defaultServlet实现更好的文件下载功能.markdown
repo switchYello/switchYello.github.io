@@ -7,27 +7,35 @@ author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
     - springboot
+    - defaultServlet
 ---
 
 
-### springboot 添加defaultServlet实现更好的文件下载功能
 
-	defaultServlet是tomcat为我们提供的能下载或打开tomcat项目文件夹下的静态文件的servlet，他的url-pattern是 ‘/’
-	但如果使用springboot，会自动注册dispatchServlet到容器中 url-pattern也是 ‘/’会把defaultServlet给覆盖掉
-
-#### 下面我们重新注册该servlet到springboot中来处理文件下载
-
-###要求
-	实现文件下载和文件打开功能
-	文件存储目录在 “d:/files/”文件夹下
-	如果访问 “localhost/download/xxx.jpg”则到该‘d:/files/’下查找xxx.jpg下载
-	如果访问“localhost/download/aa/bb/cc/xxx.jpg” 则到“d:/files/aa/bb/cc/”下查找
-	如果访问“localhost/static/xxx.jpg” 则在“d:/files/xxx.jpg”在浏览器打开而不是下载
+# Springboot 添加DefaultServlet实现更好的文件下载功能
 
 
-### 过程
 
-```
+​        `defaultServlet`是`tomcat`为我们提供的能下载或打开`tomcat`项目文件夹下的静态文件的`servlet`，他的`url-pattern`是 `/`。
+​        但如果使用`springboot`，会自动注册`dispatchServlet`到容器中`url-pattern`也是 `/`会把`defaultServlet`给覆盖掉。
+
+
+
+## 实现目的
+
+- 实现文件下载和文件打开功能
+- 文件存储目录在 `D:/files/`文件夹下
+- 如果访问 `localhost/download/xxx.jpg`则到该`d:/files/`下查找`xxx.jpg`下载
+- 如果访问`localhost/download/aa/bb/cc/xxx.jpg` 则到`d:/files/aa/bb/cc/`下查找
+- 如果访问`localhost/static/xxx.jpg` 则在`d:/files/xxx.jpg`在浏览器`打开而不是下载`
+
+
+
+## 过程
+
+​        我们继承一个`DefaultServlet`并在`init`方法里面将文件存储的目录配置进去。然后将这个`Servlet`添加到`Tomcat`里。
+
+```java
 @Configuration
 public class ServletConfig {
 		/**
@@ -77,3 +85,11 @@ public class ServletConfig {
 }
 
 ```
+
+​    这里重写service方法的目的是 如果发现`/download`开头的请求，要设置响应头为`application/octet-stream`，这样浏览器就能下载该文件，而不是展示该文件。
+
+
+
+## 结尾
+
+​        以上就是在`SpringMvc`环境下，处理静态资源展示和下载的实现方式。
