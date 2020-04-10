@@ -165,7 +165,12 @@ public class WebConfig extends WebMvcConfigurationSupport {
   registry.addResourceHandler("/**").addResourceLocations("classpath:/META-INF/resources/");
   ```
 
-  
+
+
+
+
+
+
 
 - 方法3搭配方法2
 
