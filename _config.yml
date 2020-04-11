@@ -72,6 +72,8 @@ netease_comment: false
 # Baidu Analytics 
 ba_track_id: [bc2eb9e74cd29c345afc8b53d2cb49fe]
 
+#Baidu auto push web page
+ba_auto_push: true
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
