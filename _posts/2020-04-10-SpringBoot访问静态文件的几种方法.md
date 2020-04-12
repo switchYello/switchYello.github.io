@@ -187,9 +187,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
   ​      2. 将参数中的文件名重新`forward`，这样也能实现根据参数提供静态文件名。
 
   ```java
-     @GetMapping("static")
+     @GetMapping("file")
       public void test(HttpServletRequest res, HttpServletResponse resp, String fileName) throws ServletException, IOException {
-          res.getServletContext().getRequestDispatcher("/classpath/"+fileName).forward(res, resp);
+          res.getServletContext().getRequestDispatcher("/static/"+fileName).forward(res, resp);
       }
   ```
 
