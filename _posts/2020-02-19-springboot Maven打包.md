@@ -20,8 +20,6 @@ typora-root-url: ..
 
 但是把项目文件复制到其他目录就能正常使用。后来发现原因是这这样。
 
-
-
 项目是一个多Module项目，父pom中这样写的。
 
 
@@ -70,13 +68,11 @@ typora-root-url: ..
 
 
 
-
-
 这样问题就产生了，子项目是继承父pom的，这样子项目没有写版本号，但是我没注意看到父pom有一个
 
 `<skip>true</skip>`，这个选项的意思是忽略`execution`，这样插件就不会执行。
 
-完全没明白同事为什么要这样写，弄了好久才注意到这个选项。
+被坑了，弄了好久才注意到父pom这个选项。
 
 
 
@@ -85,8 +81,5 @@ typora-root-url: ..
 ```
 mvn clean package -Dmaven.test.skip=true
 ```
-
-
-
 
 
