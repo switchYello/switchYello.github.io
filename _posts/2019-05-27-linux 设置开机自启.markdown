@@ -7,7 +7,14 @@ author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
     - linux
+    - linux开机自启
 ---
 
 
-自己写一个sh脚本放到 `/etc/init.d` 目录下，开机会执行这里面的命令
+
+写一个sh脚本放到 `/etc/init.d` 目录下，开机会执行这里面的命令。
+
+如果向每次登陆都执行一次，放入`/etc/profile.d`目录下。
+
+
+
