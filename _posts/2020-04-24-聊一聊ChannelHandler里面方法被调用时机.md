@@ -24,7 +24,7 @@ typora-root-url: ..
 
 ## ChannelHandler：
 
-![image-20200424133432059](/img/in/2020-04-24-%E8%81%8A%E4%B8%80%E8%81%8AChannelHandler%E9%87%8C%E9%9D%A2%E6%96%B9%E6%B3%95%E8%A2%AB%E8%B0%83%E7%94%A8%E6%97%B6%E6%9C%BA/image-20200424133432059.png)
+![image-20200424133432059](/img/in/2020-04-24-聊一聊ChannelHandler里面方法被调用时机/image-20200424133432059.png)
 
 ​        主要就是`handlerAdded` 和 `handlerRemoved`方法，这两个方法在将`handler`添加到`pipline`和从`pipline`上移除时调用，与数据传输无关，所以放在了这个接口里面。
 
@@ -32,11 +32,11 @@ typora-root-url: ..
 
 ## ChannelOutboundHandler：
 
-![image-20200424133853407](/img/in/2020-04-24-%E8%81%8A%E4%B8%80%E8%81%8AChannelHandler%E9%87%8C%E9%9D%A2%E6%96%B9%E6%B3%95%E8%A2%AB%E8%B0%83%E7%94%A8%E6%97%B6%E6%9C%BA/image-20200424133853407.png)
+![image-20200424133853407](/img/in/2020-04-24-聊一聊ChannelHandler里面方法被调用时机/image-20200424133853407.png)
 
 ## ChannelInboundHandler：
 
-![image-20200424134116481](/img/in/2020-04-24-%E8%81%8A%E4%B8%80%E8%81%8AChannelHandler%E9%87%8C%E9%9D%A2%E6%96%B9%E6%B3%95%E8%A2%AB%E8%B0%83%E7%94%A8%E6%97%B6%E6%9C%BA/image-20200424134116481.png)
+![image-20200424134116481](/img/in/2020-04-24-聊一聊ChannelHandler里面方法被调用时机/image-20200424134116481.png)
 
 
 

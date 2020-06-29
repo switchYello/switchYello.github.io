@@ -37,7 +37,7 @@ typora-root-url: ..
 
 
 
-![image-20191211114318462](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211114318462.png)
+![image-20191211114318462](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211114318462.png)
 
 
 
@@ -45,7 +45,7 @@ typora-root-url: ..
 
 ​	这是我们最熟悉的功能，他会在我们的mapper.xml文件的select，delete，update等语句左边提供一个箭头
 
-![image-20191211114749395](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211114749395.png)
+![image-20191211114749395](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211114749395.png)
 
 点击它就能跳转到与`namespace`对应的mapper接口的相应方法上，方便我们快速定位。
 
@@ -55,7 +55,7 @@ typora-root-url: ..
 
 ​	我们写sql时，弹出的代码提示就是它做的，也是十分的好用。
 
-![image-20191211115058016](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211115058016.png)
+![image-20191211115058016](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211115058016.png)
 
 #### 功能3，4：集成了`mybatis generator gui`，自动生成代码但比原生的`generator`更好用
 
@@ -63,7 +63,7 @@ typora-root-url: ..
 
 - 首先打开idea的 `database`窗口，此窗口一班在最右边，和maven同列。
 
-![image-20191211115724055](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211115724055.png)
+![image-20191211115724055](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211115724055.png)
 
 
 
@@ -73,11 +73,11 @@ typora-root-url: ..
 
 - 在表上右键弹出菜单
 
-![image-20191211120105680](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211120105680.png)
+![image-20191211120105680](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211120105680.png)
 
 这里第一项`mybatis-generator`则为gui的生成器，下面的选项还有查看建标语句等等功能，这里不多做介绍了，我们选择第一项`mybatis-generator`。弹出：
 
-<img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211120307488.png" alt="image-20191211120307488"  />
+<img src="/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211120307488.png" alt="image-20191211120307488"  />
 
 
 
@@ -95,11 +95,11 @@ typora-root-url: ..
 
 - 我们将路径包名改成自己需要的样子，建议不要选择和项目相同的路径或包名，不然后面生成把前面覆盖了不好把控，可以生成在其他地方，然后复制过来。我将文件生成在java1文件夹下，这样不会干扰本身的程序
 
-    ![image-20191211121018781](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121018781.png)
+    ![image-20191211121018781](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211121018781.png)
 
 点击确定，项目文件夹下生成了如下文件
 
-![image-20191211121202896](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121202896.png)
+![image-20191211121202896](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211121202896.png)
 
 
 
@@ -107,7 +107,7 @@ typora-root-url: ..
 
 ### option中配置选项
 
-![image-20191211121332700](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121332700.png)
+![image-20191211121332700](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211121332700.png)
 
 #### 1. 分页
 
@@ -115,11 +115,11 @@ typora-root-url: ..
 
 查看生成的example中，多了如下代码，可以设置limit和offset
 
-![image-20191211121609488](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121609488.png)
+![image-20191211121609488](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211121609488.png)
 
 生成的mapper中，selectByExample方法中多了分页查询的逻辑
 
-![image-20191211121701330](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121701330.png)
+![image-20191211121701330](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211121701330.png)
 
 
 
@@ -129,7 +129,7 @@ typora-root-url: ..
 
 ​	勾选这个选项，会在生成的实体类上添加数据库建表时添加的注释，但经过测试，不勾选也能生成注释
 
-![image-20191211121833495](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121833495.png)
+![image-20191211121833495](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211121833495.png)
 
 ***
 
@@ -155,11 +155,11 @@ typora-root-url: ..
 
 这个选项会在example中增加字段
 
-![image-20191211122359965](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122359965.png)
+![image-20191211122359965](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211122359965.png)
 
 sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
-![image-20191211122450602](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122450602.png)
+![image-20191211122450602](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211122450602.png)
 
 ***
 
@@ -167,7 +167,7 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 在生成的mapper接口上，添加@repository注解
 
-![image-20191211122608857](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122608857.png)
+![image-20191211122608857](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211122608857.png)
 
 ***
 
@@ -175,9 +175,9 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 这个会给mapper接口上生成公共的泛型父类，这样TroowMapper内那些增删改查的接口就转移到父类里面去了。看起来清爽些。
 
-![image-20191211122902877](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122902877.png)
+![image-20191211122902877](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211122902877.png)
 
-![image-20191211122914657](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122914657.png)
+![image-20191211122914657](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211122914657.png)
 
 ***
 
@@ -191,7 +191,7 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
 如图，添加jpa的注解
 
-![image-20191211123320861](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211123320861.png)
+![image-20191211123320861](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211123320861.png)
 
 ***
 
@@ -205,7 +205,7 @@ sql语句中的 selectByExample，会判断该字段，是否加锁查询
 
  这个很有用，勾选这个，查询sql时，会将查询结果起别名，别名为 `表名_字段名`，这有很大好处，关联查询时，就不会出现字段同名问题了。
 
-![image-20191211123744202](/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211123744202.png)
+![image-20191211123744202](/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211123744202.png)
 
 ***
 

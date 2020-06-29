@@ -100,7 +100,7 @@ typora-root-url: ..
 
 ### 结果报文
 
-![image-20191218180418698](/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218180418698.png)
+![image-20191218180418698](/img/in/2019-12-18-openFeign-多种类型的POST/image-20191218180418698.png)
 
 
 
@@ -213,7 +213,7 @@ typora-root-url: ..
 
 ### 结果报文
 
-![image-20191218180217041](/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218180217041.png)
+![image-20191218180217041](/img/in/2019-12-18-openFeign-多种类型的POST/image-20191218180217041.png)
 
 
 
@@ -247,7 +247,7 @@ Content-Disposition: form-data; name="age"
 
 > 上面的报文可以看出请求体部分是由boundary开始，由参数值结束。
 >
-> ![image-20191218181740787](/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218181740787.png)
+> ![image-20191218181740787](/img/in/2019-12-18-openFeign-多种类型的POST/image-20191218181740787.png)
 >
 > boundary在请求头中约定好，且用于参数分隔的boundary要比请求头中定义的多了两个`--`。
 >
@@ -341,7 +341,7 @@ Content-Disposition: form-data; name="age"
 
 > 
 >
-> ![image-20191218183647159](/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218183647159.png)
+> ![image-20191218183647159](/img/in/2019-12-18-openFeign-多种类型的POST/image-20191218183647159.png)
 
 
 

@@ -9,6 +9,7 @@ tags:
     - gitpage
     - jekyll
     
+typora-root-url: ..
 ---
 
 
@@ -38,7 +39,7 @@ tags:
 
 解压出来的文件目录如下:
 
-![文件目录](/img/in/花一天时间折腾下gitpage，将博客迁移到gitpage上/1.png)
+![文件目录](/img/in/2019-11-28-花一天时间折腾下gitpage将博客迁移到gitpage上/1.png)
 
 	includes 模板html
 	layouts  文章样式模板html
@@ -56,7 +57,7 @@ tags:
 #### 5.将自己的文章转成主题能使用的形式
 > 也就仿照着这个头部将信息填写进去，，上下各用三个横线包住。
 
-![文章格式](/img/in/花一天时间折腾下gitpage，将博客迁移到gitpage上/2.png)
+![文章格式](/img/in/2019-11-28-花一天时间折腾下gitpage将博客迁移到gitpage上/2.png)
 
 可以看出文章文件名命名规则为 
 	年-月-日-标题
@@ -72,8 +73,9 @@ tags:
 	tags:
 	    - diary			#打标签
 	---
-	
-	
+
+
+​	
 	今天是 2019-05-26	#正文
 
 
@@ -121,6 +123,6 @@ break unless File.directory?(File.expand_path(res.filename + base))
 #### 8.上传到github
 
 	直接git绑定远程仓库，上传等30s左右就能打开了
-
+	
 	git remote add origin Urlxxxxxx
 	git push origin master

@@ -37,7 +37,7 @@ typora-root-url: ..
 
 
 
-![image-20200403132147933](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403132147933.png)
+![image-20200403132147933](/img/in/2020-04-03-springboot集成swagger实战/image-20200403132147933.png)
 
 
 
@@ -78,7 +78,7 @@ public class TestController {
 
 ​		在浏览器里顺利打开接口
 
-![image-20200403132815065](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403132815065.png)
+![image-20200403132815065](/img/in/2020-04-03-springboot集成swagger实战/image-20200403132815065.png)
 
 
 
@@ -149,7 +149,7 @@ public class SwaggerConfig {
 
 ​	访问`http://localhost:8080/swagger-ui.html`我们写的四个接口都在这里
 
-![image-20200403134554617](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403134554617.png)
+![image-20200403134554617](/img/in/2020-04-03-springboot集成swagger实战/image-20200403134554617.png)
 
 
 
@@ -187,7 +187,7 @@ public class SwaggerConfig {
 
 ​	界面变成了这样，文档名、版本、描述都变了。
 
-![image-20200403134110601](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403134110601.png)
+![image-20200403134110601](/img/in/2020-04-03-springboot集成swagger实战/image-20200403134110601.png)
 
 
 
@@ -247,7 +247,7 @@ public class SwaggerConfig {
 
 
 
-![image-20200403135331799](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403135331799.png)
+![image-20200403135331799](/img/in/2020-04-03-springboot集成swagger实战/image-20200403135331799.png)
 
 
 
@@ -279,13 +279,13 @@ public class SwaggerConfig {
 
 ​		找到一个接口，点击Try it out。
 
-![image-20200403140401482](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140401482.png)
+![image-20200403140401482](/img/in/2020-04-03-springboot集成swagger实战/image-20200403140401482.png)
 
 
 
 ​	页面就会变成可编辑形式，点击Execute，就可以按照配置的参数发送请求了，并且下面会显示执行结果。
 
-![image-20200403140446596](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140446596.png)
+![image-20200403140446596](/img/in/2020-04-03-springboot集成swagger实战/image-20200403140446596.png)
 
 
 
@@ -330,7 +330,7 @@ public class SwaggerConfig {
 
 
 
-![image-20200403140957368](/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140957368.png)
+![image-20200403140957368](/img/in/2020-04-03-springboot集成swagger实战/image-20200403140957368.png)
 
 
 
