@@ -66,13 +66,11 @@ tags:
 </testResources>
 ```
 
-​		可以看到默认目标分别是`src/main/resources` 和 `src/test/resources` ， 而输出目标分别是
-
-`target/classes` 和`target/test-classes`。
+​		可以看到默认目标分别是`src/main/resources` 和 `src/test/resources` ， 而输出目标分别是`target/classes` 和`target/test-classes`。
 
 
 
-## 自定义资源
+## 自定义Resources标签
 
 ​	我们自定义`resources`标签可以覆盖超级pom的默认配置。下面只讲解`resources`标签，`testResources`标签是同理的。
 
@@ -92,7 +90,7 @@ tags:
 
 ```
 
-#### 这个标签写在`build`标签下，表示将什么资源拷贝到打包的包中去
+#### 这个标签写在`build`标签下，用来管理resources插件工作
 
 + ### directory
 
@@ -104,7 +102,7 @@ tags:
 
   ​	 	资源拷贝的目标地址，这个路径是选填的。默认输出路径为`target/classes/`，如此处填写`abc`，
 
-  则会将`src/main/resources`下的文件拷贝到`target/classes/abc`文件夹下。不写就是`target/classes/`。
+  则会将`src/main/resources`下的文件拷贝到`target/classes/abc`文件夹下。不写就是拷贝到`target/classes/`。
 
   
 
