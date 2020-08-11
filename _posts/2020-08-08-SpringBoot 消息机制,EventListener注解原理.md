@@ -6,12 +6,11 @@ date:       2020-08-08
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
-- SpringBoot
-- 观察者模式
-- 监听器模式
-- @EventListerer注解
-- SpringBoot消息机制 
-typora-root-url: ..
+- "SpringBoot"
+- "观察者模式"
+- "监听器模式"
+- "@EventListerer注解"
+- "SpringBoot消息机制" 
 ---
 
 
