@@ -148,7 +148,7 @@ public class MyListener implements ApplicationListener<PayloadApplicationEvent<W
 
 
 
-再进到`AnnotationConfigUtis`的方法里面，省略了一部分代码，可以看到他注册了一个`DefaultEventListenerFactory`类到工厂了。这是一个`BeanFactory`的后置处理器。
+再进到`AnnotationConfigUtis`的方法里面，省略了一部分代码，可以看到他注册了一个`EventListenerMethodProcessor`类到工厂了。这是一个`BeanFactory`的后置处理器。
 
 
 
@@ -161,11 +161,14 @@ public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
     .....
     ......    
 
-		if (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) {
-			RootBeanDefinition def = new RootBeanDefinition(DefaultEventListenerFactory.class);
+	if (!registry.containsBeanDefinition(EVENT_LISTENER_PROCESSOR_BEAN_NAME)) {
+			RootBeanDefinition def = new RootBeanDefinition(EventListenerMethodProcessor.class);
 			def.setSource(source);
-			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_FACTORY_BEAN_NAME));
+			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_PROCESSOR_BEAN_NAME));
 		}
+    
+    ......
+    ......
 
 		return beanDefs;
 	}
@@ -173,7 +176,7 @@ public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 
 
 
-查看这个`BeanFactory`的后置处理器`DefaultEventListenerFactory`，下面方法，他会遍历所有bean，找到其中带有`@EventListener`的方法，将它包装成`ApplicationListenerMethodAdapter`，注册到工厂里，这样观察者模式就构建完成了，观察者成功的注册到了被观察对象里。
+查看这个`BeanFactory`的后置处理器`EventListenerMethodProcessor`，下面方法，他会遍历所有bean，找到其中带有`@EventListener`的方法，将它包装成`ApplicationListenerMethodAdapter`，注册到工厂里，这样就成功注册到Spring的监听系统里了。
 
 ```java
 	@Override
@@ -279,7 +282,15 @@ private void processBean(final String beanName, final Class<?> targetType) {
 
 
 
+由方法生成`Listener`的逻辑由`EventListenerFactory`完成的，这又分为两种，一种是普通的`@EventLintener`  另一种是`@TransactionalEventListener` ，是由两个工厂处理的。
+
+
+
 ## 4.总结
 
-上面介绍了`@EventListener`的原理，其实上面方法里还有一个`@TransactionalEventListener`注解，其实原理是一模一样的，只是这个监听者可以选择在事务完成后才会被执行，事务执行失败就不会被执行。
+​	上面介绍了`@EventListener`的原理，其实上面方法里还有一个`@TransactionalEventListener`注解，其实原理是一模一样的，只是这个监听者可以选择在事务完成后才会被执行，事务执行失败就不会被执行。
+
+​	这两个注解的逻辑是一模一样的，并且`@TransactionalEventListener`本身就被标记有`@EventListener`，
+
+只是最后生成监听器时所用的工厂不一样而已。
 
