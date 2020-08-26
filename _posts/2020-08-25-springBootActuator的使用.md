@@ -27,6 +27,7 @@ typora-root-url: ..
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>2.3.0</version>
         </dependency>
 ```
 
@@ -67,6 +68,7 @@ management.endpoint.health.show-details=always
     <dependency>
         <groupId>de.codecentric</groupId>
         <artifactId>spring-boot-admin-starter-client</artifactId>
+        <version>2.3.0</version>
     </dependency>
 ```
 
