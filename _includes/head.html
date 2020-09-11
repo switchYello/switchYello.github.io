@@ -1,27 +1,24 @@
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="applicable-device" content="pc,mobile" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 	<meta http-equiv="Cache-Control" content="no-transform" />
-	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<meta http-equiv="Cache-Control" content="no-siteapp">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
     <meta name="theme-color" content="{{ site.chrome-tab-theme-color }}">
-    <meta name="keywords" content="{{ site.keyword }} {% for tag in page.tags %}{{ tag }},{% endfor %} {{ page.title }}">
-    
+    <meta name="keywords" content="{{ page.tags | join:',' | append:',' | append: page.title}}">
     {% if page.layout == 'post' %}
-    <meta name="description" content="{{ page.content | strip_html | truncate:600 | remove:' ' }}">
+    <meta name="description" content="{{ page.content | strip_newlines | strip_html | truncatewords:1000,'' }}">
     {% else %}
     <meta name="description" content="{{site.description}}">
     {% endif %}
 
-    <title>{% if page.title %}{{ page.title }} - {{ site.SEOTitle }}{% else %}{{ site.SEOTitle }}{% endif %}</title>
+	<title>{% if page.title %}{{ page.title }} - {{ site.SEOTitle }}{% else %}{{ site.SEOTitle }}{% endif %}</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.url }}">
+    <link rel="canonical" href="{{ page.url | url_decode | remove:'index.html' | prepend: site.url }}">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="{{ "/css/bootstrap.min.css"  }}">
