@@ -7,9 +7,9 @@
     <meta name="theme-color" content="{{ site.chrome-tab-theme-color }}">
     <meta name="keywords" content="{{ page.tags | join:',' | append:',' | append: page.title}}">
     {% if page.layout == 'post' %}
-    <meta name="description" content="{{ page.content | strip_newlines | strip_html | truncatewords:1000,'' }}">
+    <meta name="description" content="{{ page.content | strip_html | strip_newlines | truncate:1000,'' }}">
     {% else %}
-    <meta name="description" content="{{ site.description }} 第{{ paginator.page }}页">
+    <meta name="description" content="{{ site.description }} 第{{ paginator.page }}页 共{{ paginator.total_posts }}篇">
     {% endif %}
 
 	<title>{% if page.title %}{{ page.title }} - {{ site.SEOTitle }}{% else %}{{ site.SEOTitle }}{% endif %}</title>
