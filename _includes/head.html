@@ -9,7 +9,7 @@
     {% if page.layout == 'post' %}
     <meta name="description" content="{{ page.content | strip_newlines | strip_html | truncatewords:1000,'' }}">
     {% else %}
-    <meta name="description" content="{{site.description}}">
+    <meta name="description" content="{{ site.description }} 第{{ paginator.page }}页">
     {% endif %}
 
 	<title>{% if page.title %}{{ page.title }} - {{ site.SEOTitle }}{% else %}{{ site.SEOTitle }}{% endif %}</title>
