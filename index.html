@@ -16,9 +16,19 @@ description: "保持激情，只有激情，才有动力"
         {% endif %}
         <div class="post-content-preview">
             {% if post.lang == 'en' %}
-                {{ post.content | strip_html   | truncate:300 }}
-            {% else %}
                 {{ post.content | strip_html | truncate:300 }}
+            {% else %}
+                {{ 
+				post.content | strip_html | truncate:250 | strip_newlines 
+					| remove:'12345678910'
+					| remove:'123456789'
+					| remove:'12345678'
+					| remove:'1234567'
+					| remove:'123456'
+					| remove:'12345'
+					| remove:'1234'
+					| remove:'123'
+				}}
             {% endif %}
         </div>
     </a>
