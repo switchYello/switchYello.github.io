@@ -10,9 +10,7 @@ layout: default
     <div class="container">
         <div class="row">
 
-            <div class="
-                col-md-offset-1
-                post-container">
+            <div class="col-md-offset-1 post-container">
 
                 <!-- Multi-Lingual -->
                 {% if page.multilingual %}
@@ -20,8 +18,11 @@ layout: default
                 {% endif %}
 
 				{{ content }}
-
-                <hr style="visibility: hidden;">
+				
+				<hr style="visibility: hidden;">
+				<b>转载请注明出处:<a href="{{ page.url }}">{{ page.url | url_decode | prepend: site.url }}</a></b>
+                
+				<hr style="visibility: hidden;">
                 <ul class="pager">
                     {% if page.previous.url %}
                     <li class="previous">
