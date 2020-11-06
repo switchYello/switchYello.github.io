@@ -1,0 +1,37 @@
+name: Jekyll site CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: "0 2 * * *" 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Build
+      run: |
+        docker run \
+        -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
+        jekyll/builder:latest /bin/bash -c "chmod 777 /srv/jekyll && jekyll build --future"
+        
+    - name: Deploy
+      env:
+        HOST: ${{secrets.HOST}} 
+        PORT: ${{secrets.PORT}}  
+        PATH: ${{secrets.PATH}} 
+        USERNAME: ${{secrets.USERNAME}} 
+        ID_RSA: ${{secrets.ID_RSA}}
+      run: |
+        echo $HOST
+          
+          
+          
+          
+          
+          
