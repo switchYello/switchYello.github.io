@@ -104,5 +104,8 @@ friends: [
     },{
         title: "alphacoders",
         href: "https://wall.alphacoders.com/"
+    },{
+        title: "v2ex",
+        href: "https://www.v2ex.com/"
     }
 ]
