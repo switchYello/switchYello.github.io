@@ -8,7 +8,7 @@ author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
 - springBoot
-- Maven
+- maven
 typora-root-url: ..
 ---
 

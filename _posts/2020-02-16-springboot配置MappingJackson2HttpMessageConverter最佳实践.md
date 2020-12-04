@@ -7,7 +7,7 @@ date:       2020-02-16
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
-- Springboot
+- springboot
 - Jackson
 - HttpMessageConverter
 - Json

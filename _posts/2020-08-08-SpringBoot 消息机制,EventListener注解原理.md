@@ -10,7 +10,7 @@ tags:
 - "观察者模式"
 - "监听器模式"
 - "@EventListerer注解"
-- "SpringBoot消息机制" 
+- "springboot消息机制" 
 ---
 
 
