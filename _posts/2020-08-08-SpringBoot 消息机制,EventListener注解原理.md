@@ -6,7 +6,7 @@ date:       2020-08-08
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
-- "SpringBoot"
+- "springboot"
 - "观察者模式"
 - "监听器模式"
 - "@EventListerer注解"
