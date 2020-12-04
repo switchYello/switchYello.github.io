@@ -310,6 +310,19 @@ public class SwaggerConfig {
 
 
 
+## 6.配置资源路径
+
+```java
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/swagger-ui/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+    }
+```
+
+
+
+
+
 
 
 ### 需要指定请求方式
@@ -334,6 +347,6 @@ public class SwaggerConfig {
 
 
 
-## 6.结束语
+## 7.结束语
 
 ​	本文就介绍到这里，基本能满足我们的需求，我们在修改接口时，顺便修改下注解就可以。同时前端在使用接口文档时，也可以在页面上直接测试接口。
