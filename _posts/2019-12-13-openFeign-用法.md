@@ -8,7 +8,7 @@ date:       2019-12-13
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
-- Feign
+- openfeign
 - Http客户端
 ---
 

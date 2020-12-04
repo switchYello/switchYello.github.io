@@ -7,7 +7,7 @@ date:       2020-02-19
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
-- springBoot
+- springboot
 - maven
 typora-root-url: ..
 ---

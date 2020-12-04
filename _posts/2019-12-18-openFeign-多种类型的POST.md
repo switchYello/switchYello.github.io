@@ -7,7 +7,7 @@ date:       2019-12-18
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
-- Feign
+- openfeign
 - Http客户端
 typora-root-url: ..
 ---

@@ -8,9 +8,9 @@ author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
 - springboot
-- Jackson
+- jackson
 - HttpMessageConverter
-- Json
+- json
 typora-root-url: ..
 ---
 

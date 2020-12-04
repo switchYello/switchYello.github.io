@@ -6,7 +6,7 @@ date:       2020-08-11
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
-- springCloud
+- springcloud
 - openfeign
 typora-root-url: ..
 ---
