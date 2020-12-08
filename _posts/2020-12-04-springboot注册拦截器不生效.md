@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "2020-12-04-springboot注册拦截器不生效"
+title:      "springboot注册拦截器不生效"
 subtitle:   ""
 date:       2020-12-04
 author:     "hcy"
