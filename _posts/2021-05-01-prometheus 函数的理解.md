@@ -7,6 +7,7 @@ author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
 - prometheus
+- grafana
 typora-root-url: ..
 ---
 
@@ -75,5 +76,49 @@ query[1m] 表示一个当前时间一分钟前到现在这一分钟长度的区�
 
 
 [prometheus文档](https://prometheus.io/docs/prometheus/latest/querying/functions/#histogram_quantile)
+
+
+
+
+## 补充 grafana一些细节
+
+### 定义变量
+
+定义常量类型的变量，将Type设为Constant
+常用的变量类型是Query表示从prometheus中查询结果作为变量，还可以从查询的结果中使用正则表达式切割出想要的字符串作为变量
+
+如下
+
+__name__ 表示指标的名称，这里使用正则表达式匹配满足名称为`PaymentSubmitChannel[0-9a-zA-Z]*_bucket` 且job等于变量job的指标。
+再使用正则表达式，将中间的变量部分分组出来
+这样出来的结果就是我们想要的中间变化的部分了。
+
+Gragana的正则表达式写法，与js正则相似，需要使用两个斜线将正则表达式包起来
+
+Queyr : {__name__ =~ "PaymentSubmitChannel[0-9a-zA-Z]*_bucket",job="$job" }
+Regex : /PaymentSubmitChannel([0-9a-zA-Z]*)_bucket/
+
+
+
+
+### 使用变量
+使用变量推荐下面两种方式
+{job = "$job}  或者 {job = "${job}}
+前一种方式不能将表达式放在字符串中间，后一种方式可以放在字符串中间
+
+如下，将变量放置在PaymentSubmitChannel${paycode}_bucket 字符串里
+rate(PaymentSubmitChannel${paycode}_bucket{job = "$job",env="$env"}[1m]))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
