@@ -190,29 +190,27 @@ org.mybatis.generator.internal.db.DatabaseIntrospector#getColumns
 
 
 ## 解决办法
-解决办法就是在表上指定catalog为你想要生成的那个库。
+
+添加 <property name="nullCatalogMeansCurrent" value="true"/> 属性，不要从metadata中获取其他数据库的表
+
 改动前
 ```xml
-<table tableName="user" alias="user">
-            <generatedKey column="id" sqlStatement="JDBC"/>
-</table>
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="${jdbc.url}"
+                        userId="${jdbc.username}"
+                        password="${jdbc.password}">
+        </jdbcConnection>
 
 ```
 
 
 改动后
 ```xml
-<table tableName="user" alias="user" catalog="a">
-            <generatedKey column="id" sqlStatement="JDBC"/>
-</table>
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="${jdbc.url}"
+                        userId="${jdbc.username}"
+                        password="${jdbc.password}">
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
 ```
-
-
-只要在table标签上的catalog指定为固定的库，我这里是a库，就会只查询该库了。
-
-
-
-
-
-
 
