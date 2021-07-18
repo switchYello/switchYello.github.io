@@ -214,3 +214,10 @@ org.mybatis.generator.internal.db.DatabaseIntrospector#getColumns
         </jdbcConnection>
 ```
 
+
+
+## 参考
+
+https://mybatis.org/generator/usage/mysql.html
+
+https://github.com/mybatis/generator/issues/622
