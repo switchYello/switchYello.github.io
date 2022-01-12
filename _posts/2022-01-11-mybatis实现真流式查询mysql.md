@@ -17,17 +17,23 @@ typora-root-url: ..
 # mybatis实现mysql流式查询的原理
 
 ## 背景
-如果使用mybatis查询mysql，结果集非常大时，可能发生oom，我们可以使用mysql的流式查询，逐行查询每条数据，实现低内存占用。
+如果使用mybatis查询mysql，查询结果集非常大时，可能发生oom，我们可以使用mysql的流式查询，按需逐行查询每条数据，实现低内存占用。
 下面分析其原理。
 
 ## jdbc驱动如何支持流式查询的
 
-​	jdbc驱动与mysql之间建立连接，将sql语句发送到mysql服务端后，将要从mysql服务端读取数据，并封装成resultSet的形式返回。
-我们使用时是调用resultSet的next方法查看是否存在下一行数据的，resultSet内部包装了ResultsetRows对象，他将请求委托给ResultsetRows对象来处理。
-​	resultSet本身只是一个包装类，本质还在ResultsetRows对象上。
-下面是创建resultSet对象的过程过程如下，其中有一个核心逻辑是判断参数中的streamResults字段，决定是一次性读取所有结果到结果集还是返回一个流式的结果集。
-​	可以看到如果是流式的会创建ResultsetRowsStreaming对象，如果是非流式的返回的是ResultsetRowsStatic对象。
-ResultsetRowsStatic会使用while循环读取所有的数据，而streaming会在调用next方法时才会读取。
+### jdbc驱动的基本原理
+       jdbc驱动与mysql之间建立tcp连接，将sql语句发送到mysql服务端后，并从mysql服务端读取数据，并封装成resultSet的形式返回。
+
+### resultSet
+我们使用resultSet时，调用resultSet的next方法是否存在下一行数据，resultSet内部包装了ResultsetRows对象，他将请求委托给ResultsetRows对象来处理。resultSet本身只是一个包装类，本质还是被委托到ResultsetRows对象。
+
+### resultRows
+ResultsetRows 有两个实现类，ResultsetRowsStreaming和ResultsetRowsStatic。
+ResultsetRowsStreaming发送完请求后，不会读取响应数据，他会等到调用next方法时才会从mysql读取。
+ResultsetRowsStatic会使用while循环读取所有的数据存储到list中。
+
+        下面是创建resultSet对象的过程过程如下，其中有一个核心逻辑是判断参数中的streamResults字段，决定是生成哪一种类型的ResultsetRows。
 
 ```java
 //  com.mysql.cj.protocol.a.TextResultsetReader
@@ -109,7 +115,7 @@ ResultsetRowsStatic会使用while循环读取所有的数据，而streaming会�
 决定是否启用流式的开关是使用下面的方法判断的。
 
 其中有一个重要的判断参数是fetchSize == Integer.MIN_VALUE。
-也就是说我们要设置statement的fetchSize为Integer.MIN才能启用流式查询。
+也就是说我们要设置statement的fetchSize为Integer.MIN_VALUE才能启用流式查询。
 
 ```java
     protected boolean createStreamingResultSet() {
@@ -124,10 +130,9 @@ ResultsetRowsStatic会使用while循环读取所有的数据，而streaming会�
 
 
 
-## mybatis如何处理流水查询的
+## mybatis如何处理流式查询的
 
-
-mybatis查询mysql后会获取到resultSet对象，其会对resultSet中的数据进行逐行next()，逐行处理。
+mybatis查询mysql后会获取到resultSet对象，其会对resultSet中的数据进行逐行next()处理。
 如果resultHandler为null，则创建一个默认的resultHandler，否则使用我们提供的resultHandler。
 默认的resultHandler源码如下，他会将结果存储到list中作为结果返回，如果使用我们提供的resultHandler，则返回的是空集合。
 
@@ -246,8 +251,8 @@ mybatis本身支持在mapper里面提供resultHandler用来流式处理每个结
 
 mybatis本身属于框架上层服务，他只负责从jdbc出取得resultSet，将resultSet每一行读取出来包装成流式的形式。
 而resultSet本身是不是流式的，mybatis无法决定。
-resultSet是真流式还是假流式，需要判断一个重要的参数fetchSize，
-要想实现真流式一定要将fetchSize设置为Integer.MIN_VALUE 底层才是真流式，否则只是mybatis包装的假流式而已。
+resultSet是真流式还是伪流式，需要判断一个重要的参数fetchSize，
+要想实现真流式一定要将fetchSize设置为Integer.MIN_VALUE 底层才是真流式，否则只是mybatis包装的伪流式而已。
 
 
 验证的话可以debug查看resultSet内部的resultRows是什么类型的，如果是ResultsetRowsStreaming则是真流式，如果是ResultsetRowsStatic则是假流式。
