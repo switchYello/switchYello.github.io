@@ -23,7 +23,7 @@ typora-root-url: ..
 ## jdbc驱动如何支持流式查询的
 
 ### jdbc驱动的基本原理
-       jdbc驱动与mysql之间建立tcp连接，将sql语句发送到mysql服务端后，并从mysql服务端读取数据，并封装成resultSet的形式返回。
+  jdbc驱动与mysql之间建立tcp连接，将sql语句发送到mysql服务端后，并从mysql服务端读取数据，并封装成resultSet的形式返回。
 
 ### resultSet
 我们使用resultSet时，调用resultSet的next方法是否存在下一行数据，resultSet内部包装了ResultsetRows对象，他将请求委托给ResultsetRows对象来处理。resultSet本身只是一个包装类，本质还是被委托到ResultsetRows对象。
@@ -33,7 +33,7 @@ ResultsetRows 有两个实现类，ResultsetRowsStreaming和ResultsetRowsStatic�
 ResultsetRowsStreaming发送完请求后，不会读取响应数据，他会等到调用next方法时才会从mysql读取。
 ResultsetRowsStatic会使用while循环读取所有的数据存储到list中。
 
-        下面是创建resultSet对象的过程过程如下，其中有一个核心逻辑是判断参数中的streamResults字段，决定是生成哪一种类型的ResultsetRows。
+  下面是创建resultSet对象的过程过程如下，其中有一个核心逻辑是判断参数中的streamResults字段，决定是生成哪一种类型的ResultsetRows。
 
 ```java
 //  com.mysql.cj.protocol.a.TextResultsetReader
