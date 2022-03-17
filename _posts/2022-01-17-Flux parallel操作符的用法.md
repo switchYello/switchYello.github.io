@@ -20,7 +20,7 @@ typora-root-url: ..
 
 ​	分配上游元素过程是：依次分配给下游每个订阅者，当某个子订阅者请求数已经满足时，将跳过此订阅者继续向下一个子订阅者分配。
 
-​	他有连个参数 parallelism 和 prefetch，第一个参数表示划分子流的数量默认等于cpu核心数，prefetch表示向原始流预取的数量。
+​	他有两个个参数 parallelism 和 prefetch，第一个参数表示划分子流的数量默认等于cpu核心数，prefetch表示向原始流预取的数量。
 
 ## 2. parallel操作符后接map操作符
   	map操作符会将真实订阅者生成代理，他将上游onNext的值使用map操作符进行转换。在parallelFlux场景下，它会将每个子订阅者包装起来进行转换。
