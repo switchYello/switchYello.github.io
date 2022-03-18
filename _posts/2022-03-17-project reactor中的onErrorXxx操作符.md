@@ -20,19 +20,25 @@ typora-root-url: ..
 
 
 
-​	reactor项目中存在很多操作符其中一些与处理异常有关的操作符，它们都以onError开头，下面我们逐个分析他们。
+​	reactor项目中存在很多操作符其中一些与处理异常有关的操作符，它们都以onError开头，一共五个下面我们逐个分析他们。
 
 
 
 - onErrorMap
-- onErrorReturn
 - onErrorResume
+- onErrorReturn
+- onErrorContinue
+- onErrorStop
 
 
 
-## 这三个是用来处理上游传递的错误信号
+## 三个是用来处理上游传递的错误信号
 
 这三个是一组的，他们原理类似，分别是：
+
+- onErrorMap
+- onErrorReturn
+- onErrorResume
 
 onErrorMap 需要传递一个 `Function<? super Throwable, ? extends Throwable> mapper`，他表示将upStream传递的错误转换成另一种错误返回，即替换upStream中产生的错误。要求Function函数返回值必须非空，否则报空指针。
 
@@ -83,15 +89,14 @@ public void onError(Throwable t) {
 
 
 
-- onErrorContinue
+## 两个用来指示上游如何处理发生的错误
 
+​		这两个是一组，他们与上面三个原理不同。
+
+- onErrorContinue
 - onErrorStop
 
-  
-
-## 这两个是用来指示上游如何处理发生的错误的操作符
-
-​		这两个是一组，他们与上面三个原理不同。他们会给Context设置上错误处理策略，当upStream产生错误准备调用下游的onError时，可以从context中获取该策略对错误进行处理。如设置的策略是onErrorContinue，则可以跳过此错误当作此元素没发生过一样继续处理下一个元素。如设置的策略是OnErrorStop则会将错误向下游传递，并取消上游的订阅。
+​        他们会给Context设置上错误处理策略，当upStream产生错误准备调用下游的onError时，可以从context中获取该策略对错误进行处理。如设置的策略是onErrorContinue，则可以跳过此错误当作此元素没发生过一样继续处理下一个元素。如设置的策略是OnErrorStop则会将错误向下游传递，并取消上游的订阅。
 
 ​		虽然我们设置了错误处理策略，但只是对upStream的建议，upStream会不会使用它，downStream无法决定，只有一部分操作符会使用Context内设置的错误处理策略。
 
