@@ -173,7 +173,7 @@ public final ChannelPipeline fireChannelRegistered() {
 
 ​		此方法在`channel`处理连接成功后回掉，如在程序内连接到其他网站，连接成功后回掉此方法。
 
-因为之有`客户端channel`才能连接到其他服务器，`serverChannel`是被动连接的，所以此方法对`serverChanel`是无效的。
+因为只有`客户端channel`才能连接到其他服务器，`serverChannel`是被动连接的，所以此方法对`serverChanel`是无效的，但是`serverChannel`被连接时会生成的与之对应的`clientChannel`，此时会回调此方法。
 
 ​		查看`AbstractNioChannel`内部类`unsafe`的下面方法。
 
@@ -606,6 +606,12 @@ private void processSelectedKey(SelectionKey k, AbstractNioChannel ch) {
 可以查看`pipline.close()`方法，逻辑不复杂，先关闭`java`的`channel`，并且从`select`中删除注册的`channel`。
 
 
+
+## exceptionCaught
+
+如果在某个handler内报错了，则会调用当前handler的exceptionCaught方法，默认情况下未重写方法时是继续向下查找。如果在监听器内报错了，则会调用head节点的exceptionCaught。
+
+## 
 
 ## bind
 
