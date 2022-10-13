@@ -25,7 +25,7 @@ typora-root-url: ..
 
 
 
-​		这几个类的逻辑非常相似，他们有一个共同特点，就是如果supplier返回null时，不会下下游传递，而是直接complete。
+​		这几个类的逻辑非常相似，他们有一个共同特点，就是如果supplier返回null时，不会向下游传递，而是直接complete。
 
 ```java
 	public void subscribe(CoreSubscriber<? super T> actual) {
