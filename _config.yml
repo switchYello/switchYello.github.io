@@ -6,7 +6,7 @@ email: chaoyuynl@foxmail.com
 description: "记录工作中遇到的问题，学习中遇到的问题，学习总结，踩过的坑，遇到的bug"
 keyword: ""
 url: "https://www.huangchaoyu.com"              # your host, for absolute URL
-encoding: utf-8
+encoding: UTF-8
 
 # Publish posts or collection documents with a future date.
 future: true
@@ -30,7 +30,7 @@ paginate: 10
 exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
 anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
 # If you have timezone issue (e.g. #68) in China, uncomment to use this:
-#timezone: CN  
+#timezone: CN
 
 
 
@@ -62,7 +62,7 @@ netease_comment: false
 
 
 # Analytics settings
-# Baidu Analytics 
+# Baidu Analytics
 ba_track_id: [bc2eb9e74cd29c345afc8b53d2cb49fe]
 
 

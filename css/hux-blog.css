@@ -179,7 +179,7 @@
     Multi-line snackbar height: 80 dp
     Text: Roboto Regular 14 sp
     Action button: Roboto Medium 14 sp, all-caps text
-    Default background fill: #323232 100%  
+    Default background fill: #323232 100%
   */
     left: 0px;
     right: 0px;
@@ -299,16 +299,15 @@ button.paper-button {
   margin: 16px;
   border-radius: 2px;
 }
-.highlight,
-pre.highlight {
-  background: #282c34;
+.highlight,pre.highlight {
+  background: #000000;
   color: #abb2bf;
 }
 .highlight pre {
-  background: #282c34;
+  background: #000000;
 }
 .highlight .hll {
-  background: #282c34;
+  background: #000000;
 }
 .highlight .c {
   color: #5c6370;
