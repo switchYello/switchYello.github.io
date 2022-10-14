@@ -140,7 +140,6 @@
   font-size: 14px;
   min-height: 14px;
   background-color: #323232;
-  background-color: #0085a1;
   position: fixed;
   display: flex;
   justify-content: space-between;
@@ -148,7 +147,7 @@
   color: white;
   line-height: 22px;
   padding: 18px 24px;
-  bottom: 0px;
+  bottom: 0;
   opacity: 0;
 }
 @media (min-width: 640px) {
@@ -300,14 +299,14 @@ button.paper-button {
   border-radius: 2px;
 }
 .highlight,pre.highlight {
-  background: #000000;
+  background: #fdfffb;
   color: #abb2bf;
 }
 .highlight pre {
-  background: #000000;
+  background: #fdfffb;
 }
 .highlight .hll {
-  background: #000000;
+  background: #fdfffb;
 }
 .highlight .c {
   color: #5c6370;
