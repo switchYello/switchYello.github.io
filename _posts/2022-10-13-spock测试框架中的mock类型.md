@@ -30,7 +30,7 @@ typora-root-url: ..
 - 模拟拥有的能力是：对方法调用进行验证，在spock中表现形式如下。
 
 ```groovy
-	1 * subscriber.receive("hello")
+    1 * subscriber.receive("hello")
 
     1 * subscriber.receive("hello")
     |   |          |       |
@@ -68,8 +68,6 @@ subscriber.receive("message2") >> "fail"
 ```groovy
 1 * subscriber.receive("message1") >> "ok"
 ```
-
-
 
 
 
@@ -128,13 +126,13 @@ public enum MockNature {
 
 
 
-MockNature对象有三个参数，这三个参数的组合决定了这三种类型的特性。
+`MockNature`对象有三个参数，这三个参数的组合决定了这三种类型的特性。
 
 `verified`：表示是否识别调用次数，调用参数验证。即是否能够使用 `1 * foo.doSome()` 这种样子的断言验证
 
-`useObjenesis`：表示使用是否使用Objenesis工具创建mock对象。PS：有些类没有默认构造方法，所以通过反								射无法创建出来，使用Objenesis工具能绕过构造方法直接创建对象。其中Spy是直接new的，								其余两个使用Objenesis工具
+`useObjenesis`：表示使用是否使用Objenesis工具创建mock对象。PS：有些类没有默认构造方法，所以通过反射无法创建出来，使用Objenesis工具能绕过构造方法直接创建对象。其中Spy是直接new的，其余两个使用Objenesis工具
 
-`defaultResponse`：表示生成的mock对象的默认返回策略。Mock尽量返回0或null，Stub尽量返回对象的默认									值，Spy透传给真实类。例如方法返回值是字符串类型的，Mock会返回null，Stub会返回空									字符串，Spy会透传给真实对象。
+`defaultResponse`：表示生成的mock对象的默认返回策略。Mock尽量返回0或null，Stub尽量返回对象的默认值，Spy透传给真实类。例如方法返回值是字符串类型的，Mock会返回null，Stub会返回空字符串，Spy会透传给真实对象。
 
 
 
