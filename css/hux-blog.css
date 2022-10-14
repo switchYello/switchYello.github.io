@@ -299,14 +299,14 @@ button.paper-button {
   border-radius: 2px;
 }
 .highlight,pre.highlight {
-  background: #fdfffb;
+  background: #ffffff;
   color: #abb2bf;
 }
 .highlight pre {
-  background: #fdfffb;
+  background: #ffffff;
 }
 .highlight .hll {
-  background: #fdfffb;
+  background: #ffffff;
 }
 .highlight .c {
   color: #5c6370;
