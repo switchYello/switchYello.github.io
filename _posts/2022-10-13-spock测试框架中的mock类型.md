@@ -2,7 +2,7 @@
 layout:     post
 title:      "Spock测试框架中的mock类型"
 subtitle:   ""
-date:       2022-08-19
+date:       2022-10-13
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
