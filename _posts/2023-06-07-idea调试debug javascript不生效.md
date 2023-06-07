@@ -49,8 +49,8 @@ typora-root-url: ..
 
    **![image-20230607193336200](/img/in/2023-06-07-idea调试debug javascript不生效/image-20230607193336200.png)**
 
-   ****	
+   ****
 
    **保存后重启idea 我这边就能js debug就能正常生效了。**
 
-   
+参考文档： https://youtrack.jetbrains.com/issue/WEB-59211/Cant-attach-debugger-to-Chrome-Dev-111-Invalid-handshake-response-getStatus-403-Forbidden
