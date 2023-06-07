@@ -15,7 +15,7 @@ typora-root-url: ..
 
 # idea调试debug javascript不生效
 
-问题现象：
+## 问题现象：
 
 ​	使用idea调试js，能够打开空白chrome，但不能自动进入网页，并且idea控制台不能关联浏览器控制台，断点也不生效。
 
@@ -23,7 +23,9 @@ typora-root-url: ..
 
 排查思路：
 
-1. 打开idea 右下角 event log窗口，查看是否有 `Waiting for connection to localhost:52421. Please ensure that the browser was started successfully with remote debugging port opened. Port cannot be opened if Chrome having the same User Data Directory is already launched.` 这样的错误日志
+## 解决方法问题一
+
+打开idea 右下角 event log窗口，查看是否有 `Waiting for connection to localhost:52421. Please ensure that the browser was started successfully with remote debugging port opened. Port cannot be opened if Chrome having the same User Data Directory is already launched.` 这样的错误日志
 
 
 
@@ -41,15 +43,15 @@ typora-root-url: ..
 
 
 
+## 解决方法问题二
 
-
-2. 如果不是上面的问题，或按照上面修改后不生效，考虑是chrome版本太新，按照论坛中说明，需增加chrome启动参数，添加方法如下。
+如果不是上面的问题，或按照上面修改后不生效，考虑是chrome版本太新，按照论坛中说明，需增加chrome启动参数，添加方法如下。
 
 
 
 **打开`Settle -> Tools -> Web Browsers -> 选中chrome -> 右边编辑按钮 -> command Line options`中输入 `--remote-allow-origins=*`。 见截图**
 
-**![image-20230607193336200](/img/in/2023-06-07-idea调试debug javascript不生效/image-20230607193336200.png)**
+**![image-20230607193336200](/img/in/2023-06-07-idea调试debug javascript不生效/image-20230607193336200.png)**	
 
 ****
 
