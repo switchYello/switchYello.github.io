@@ -2,7 +2,7 @@
 layout:     post
 title:      "idea调试debug javascript不生效"
 subtitle:   ""
-date:       2022-11-07
+date:       2023-06-07
 author:     "hcy"
 header-img: "img/gene-head-img.jpg"
 tags:
