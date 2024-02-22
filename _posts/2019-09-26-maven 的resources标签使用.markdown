@@ -71,7 +71,9 @@ tags:
 
 ​        可以看到默认目标分别是`src/main/resources` 和 `src/test/resources` ， 而输出目标分别是`target/classes` 和`target/test-classes`。
 
-
+也可以使用变量代替：
+`${project.build.outputDirectory}` 表示默认的输出目录，即target目录。
+`${project.basedir}` 表示项目目录，即pom文件所在的目录（会与target同级）
 
 
 
