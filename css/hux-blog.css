@@ -1057,17 +1057,11 @@ samp {
   padding: 85px 0 55px;
   color: white;
 }
-@media only screen and (min-width: 768px) {
-  .intro-header .site-heading,
-  .intro-header .post-heading,
-  .intro-header .page-heading {
-    padding: 240px 0;
-  }
+.intro-header .site-heading,
+.intro-header .post-heading,
+.intro-header .page-heading {
+  padding: 240px 0;
 }
-.intro-header .site-heading {
-  padding: 150px 0 70px;
-}
-
 .intro-header .site-heading,
 .intro-header .page-heading {
   text-align: center;
