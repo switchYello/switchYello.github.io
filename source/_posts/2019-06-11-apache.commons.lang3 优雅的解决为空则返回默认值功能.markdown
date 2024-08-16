@@ -1,0 +1,29 @@
+---
+layout:     post
+title:      "apache.commons.lang3 优雅的解决为空则返回默认值功能"
+subtitle:   ""
+date:       2019-06-11
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - apache.commons.lang3
+---
+
+
+## apache.commons.lang3 优雅的解决为空则返回默认值功能
+
+
+
+`
+
+	//示例
+	// java 7 中没有getOrDefault,用这个方法将就一下
+
+
+	import org.apache.commons.lang3.ObjectUtils;
+	
+	ObjectUtils.defaultIfNull(map.get(d1),new Date());
+
+
+
+`

@@ -1,0 +1,81 @@
+---
+layout:     post
+title:      "Mysql 开启远程登录,设置密码"
+subtitle:   ""
+date:       2019-06-03
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - mysql
+---
+
+
+# Mysql 开启远程登录
+
+***
+
+## 1.连接mysql
+	
+	mysql -uroot -p
+	
+## 2.切换到mysql数据库
+	
+	use mysql
+	
+## 3.查看当前root用户,(其实就是user表的一条记录)
+
+	select user,host from user
+	
+## 3.1 初始化密码（刚安装可能是没有密码的）
+	#如果没有初始化mysql密码的，可以使用下面语句
+	
+	#旧版本
+	update user set password=PASSWORD(‘123456’) where User='root';
+	
+	#5.7以后的版本删除了password字段，改为authentication_string
+	update user set authentication_string=password('123456') where user='root' ;
+	
+
+## 4.查看root这个用户的host是不是 ‘%’ ，如果不是则修改为%
+	
+	
+	#将root用户的host列修改为 ‘%’ ，表示不限制远程连接的ip
+	
+	update user set host = '%' where user = 'root'
+	
+	# 这里修改如果报“Duplicate entry '%-root' for key 'PRIMARY'”的话，请查看表中是不是有多个root用户，可以删除只保留一个root 用户
+	
+	
+## 5.修改root用户的权限
+
+	#添加所有权限
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'IDENTIFIED BY 'mypassword' WITH GRANT OPTION;
+	
+	#刷新权限表
+	FLUSH PRIVILEGES;
+	
+## 6.开通防火墙的3306端口，如果是阿里云需要在控制台开放3306端口
+
+## 7.修改 vi /etc/mysql/my.conf
+	#如果存在这一行就删除掉，或者将绑定的ip改成0.0.0.0，
+	#如果没有此配置，看一下 /etc/mysql/mysql.conf.d/mysqld.cnf 这个里面
+	删除 bind-address = 127.0.0.1
+	
+## 	7.1 如果是5.7版本的mysql，请看一下
+	
+	#如果还是不行，请修改以下这个配置文件，找到bind-address
+	/etc/mysql/mysql.conf.d/mysqld.cnf
+	
+## 8.重启mysql
+
+	启动mysql：
+	方式一：sudo /etc/init.d/mysql start 
+	方式二：sudo service mysql start
+
+	停止mysql：
+	方式一：sudo /etc/init.d/mysql stop 
+	方式二：sudo service mysql stop
+
+	重启mysql：
+	方式一：sudo/etc/init.d/mysql restart
+	方式二：sudo service mysql restart

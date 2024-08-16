@@ -1,0 +1,130 @@
+---
+layout:     post
+title:      "java hkdf算法生成密钥"
+subtitle:   ""
+date:       2019-11-28
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - netty
+    - java加密解密
+---
+
+# java hkdf 算法生成密钥
+
+* TOC
+{:toc}
+
+> hkdf算法包含两个过程，‘提取’ 和 ‘扩展’，来生成任意长度的，更随机的密码。
+
+##### 生成密码需要的元素
+
+名称|类型|例子|说明
+-|-|-|-|-
+password|byte[]|"abc".getBytes()|用户输入的密码
+salt|byte[]|new byte[]{1,5,7,6,41,85,63,7,89}|用于提取密码
+info|byte[]|"product-info".getByte()|使生成密码更随机
+length|int|64|希望生成的密钥长度
+
+
+##### 1.提取
+	
+> 创建hkdfExtract函数，用salt摘要password，示例代码如下:
+	
+	伪代码: prk = hkdfExtract（salt,password）
+
+```java
+    private static byte[] hkdfExtract(byte[] salt, byte[] passsword) throws NoSuchAlgorithmException, InvalidKeyException {
+        //获取消息摘要算法，hdkfSha1 就用sha1算法，hdkfSha256就用sha256算法，也就是hkdf算法配合某一个消息摘要算法使用
+		Mac mac = Mac.getInstance("HmacSHA1");
+        //用salt作为密钥初始化
+		SecretKeySpec keySpec = new SecretKeySpec(salt, "HmacSHA1");
+        mac.init(keySpec);
+        //对password进行摘要
+		return mac.doFinal(passsword);
+    }
+
+```
+
+上面的意思就是用salt做sha算法的密钥，对password进行摘要，得到的结果作为`提取`步骤的结果prk
+
+
+##### 2.扩展
+
+	原理：key = hkdfExpand(prk,info,length)
+
+具体逻辑,伪代码
+	
+```java
+result = new byte[length];//创建byte数组，需要多长的密钥就创建多长的数组
+byte t = 1； //设置一个递增的byte变量，从1开始 
+digest=new byte[0]  //初始摘要结果变量，第一次是空byte数组
+
+Mac sha = Mac.getInstance("HmacSHA1");
+sha.init(prk);		//使用第一步生成的prk，初始化一个sha1
+
+//每次循环将摘要的结果存入result中，直到result内个数大于等于length为止，然后取前length个返回
+whilt(true){
+	sha.update(digest) //sha算法分别摘要，`digest`，`info`，`t`，得到的结果保存在digest中
+	sha.update(info)
+	sha.update(t)
+	digest = sha.doFinal();
+	t++；	//每次循环后，t递增
+	result+=digest; 
+}
+
+
+```
+		
+这里的意思是，以上一步生成的prk作为sha的密钥，对digtest、info、t进行摘要，将摘要结果保存在result中，
+比如sha1每次摘要结果长度是20，如果参数length >20 则再次对digtest、info、t摘要，将结果叠加进去
+注意第二次的digtest为上一次摘要的结果，t也递增了，最终获得的长度将大于length，取前length个作为hkdf的返回值
+
+```java
+
+    //实现代码如下
+    private static byte[] hkdfExpand(byte[] prk, byte[] info, int length) throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac mac = Mac.getInstance("HmacSHA1");
+        SecretKeySpec keySpec = new SecretKeySpec(prk, "HmacSHA1");
+        mac.init(keySpec);
+        byte[] result = new byte[length];
+        int pos = 0;
+        byte[] digest = new byte[0];
+        byte t = 1;
+        while (pos < result.length) {
+            mac.update(digest);
+            mac.update(info);
+            mac.update(t);
+            digest = mac.doFinal();
+            System.arraycopy(digest, 0, result, pos, Math.min(digest.length, length - pos));
+            pos += digest.length;
+            t++;
+        }
+        return result;
+    }
+
+```
+	
+
+
+
+##### 3.调用
+
+> 经过上面两步操作，可以由给定的`salt` `password` `info` `keySize`
+
+```java
+public static byte[] createHkdfKey(String password,String info, byte[] salt, int keySize) throws GeneralSecurityException {
+	//第一步 先提取，得到prk    
+	byte[] prk = hkdfExtract(salt, passwoed.getBytes());
+	//第二步，扩展    
+	return hkdfExpand(prk, info, keySize);
+}
+
+```
+
+##### 4.总结
+
+	总之hkdf算法还是比较简单的，且可以生成任意长度的密钥，可以搭配其他的摘要算法如hkdfSha1，hkdfSha256，hkdfMd5
+	都是可以的。
+	
+	

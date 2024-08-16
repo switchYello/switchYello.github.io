@@ -1,0 +1,88 @@
+---
+layout:     post
+title:      "让网站支持markdown 语法，让代码高亮"
+subtitle:   ""
+date:       2019-05-31
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - markdown
+---
+
+
+# 让网站支持markdown 语法，让代码高亮
+
+***
+
+## 需要引入的文件和作用
+	
+
+|文件|作用|
+|--|--|
+|shoudowm.js| 将markdown文本转成html|
+|github-markdown.min.css| 将转成html格式的文章美化|
+|highlight.pack.js| 将转成html格式的文本中的代码进行分析语言，转格式|
+|highlight.css| 美化文章中的代码段|
+
+
+## 用法
+
+	假设文章是通过ajax 动态获取的，我用的axios。
+
+```javascript
+//创建showdowm转换器，将后台获取到的markdown文本转成html
+var content = new showdown.Converter({tables: true}).makeHtml(value.content);
+
+//这里将转换成的html代码段插入页面中，相当于原生js的 innerHTML 
+self.content = content；
+//注意需要将插入点元素的class设置成‘markdown-body’，这样github-markdown.min.css才能渲染它
+
+
+```
+
+	理论上经过上面很简单的两步就可以在页面上看到格式良好的页面了，但是代码块没有高亮显示。
+
+## 代码高亮
+	
+	f12观察一下，代码块被包裹在<per><>code>代码</code></per>中，我们需要另一个工具将其中的代码提取出来，分析出语言，添加不同的css样式
+
+
+```javascript
+	//因为前面已经引入了 highlight.pack.js 和 highlight.css（这个css可以替换，或者自己修改出喜欢的风格）。
+	这里待页面文章插入成功执行
+	
+	document.querySelectorAll('pre code').forEach(function (block) {
+                     hljs.highlightBlock(block);
+                        });
+		
+	//也就是选择出页面上的‘pre code’ 调用highlightBlock方法，这个方法由highlight 提供，全自动识别代码类型，高亮显示。高亮规则在css中可调节。
+
+
+```
+
+
+## 遇到的问题
+
+	由于用的vue axios，动态加载的文章，所以在axios请求回调函数中进行操作。转换markdown文本，插入页面，调用页面高亮方法，一气呵成。
+	但是vue插入页面是异步执行的，在运行代码高亮代码时页面上还不存在'pre code',导致无法将代码高亮显示。
+	
+	这里有两个方法可供选择。
+
+	1.setTimeout，延迟100毫秒再去操作
+	2.使用vue的nextTick进行操作，nextTick用法自行查询，它的作用就是在页面的渲染完成后才会去执行里面的方法，这样就不会找不到元素了。
+
+## 资源地址
+
+[Showdown Github](https://github.com/showdownjs/showdown)
+
+[Github-markdown-css Github](https://github.com/sindresorhus/github-markdown-css#readme)
+
+[highlightjs官网,css也在官网能下载到](https://highlightjs.org/)
+
+[highlightjs Github](https://github.com/highlightjs/highlight.js)
+
+
+
+
+	因为世界上语言众多，如果全集中在一个css中，太大了。官网采用定制的方式，需要哪种语言的代码高亮，就选择哪种语言的。可以根据自己需求定制。
+	定制完成后下载下来的文件style目录下有很多风格不同的代码css，都可以尝试一下。如果不满意可以自行修改
