@@ -1,0 +1,50 @@
+---
+layout:     post
+title:      "将逐帧加载的图片转变成 模糊慢慢清楚的形式"
+subtitle:   ""
+date:       2019-06-21
+author:     "hcy"
+header-img: "img/gene-head-img.jpg"
+tags:
+    - java
+---
+
+
+# 将逐帧加载的图片转变成 模糊慢慢清楚的形式
+
+### 关键词：Progressive
+
+```java
+
+
+	/*逐帧加载的图片转变成画质加载的形式*/
+	private static void switchPic(String source, String target) throws IOException {
+
+		/*删除目标文件夹*/
+		if (Files.exists(Paths.get(target))) {
+			Files.delete(Paths.get(target));
+		}
+
+		/*读取图片*/
+		BufferedImage read = ImageIO.read(new File(source));
+		
+		/*创建write*/
+		JPEGImageWriter w = new JPEGImageWriter(new JPEGImageWriterSpi());
+		w.setOutput(new FileImageOutputStream(new File(target)));
+		
+		/*修改参数，顺便压缩下*/
+		ImageWriteParam p = w.getDefaultWriteParam();
+		p.setProgressiveMode(ImageWriteParam.MODE_COPY_FROM_METADATA);
+		p.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+		p.setCompressionQuality(0.7F);
+		
+		/*写入文件*/
+		w.write(null, new IIOImage(read, null, null), p);
+		
+		
+	}
+
+```
+
+
+## 可以讲图片放入nginx下，利用chrome 将网速调慢，可以看出，转变前是 逐行加载的形式，转变后是由模糊慢慢变清楚的形式

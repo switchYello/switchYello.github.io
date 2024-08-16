@@ -11,3 +11,7 @@ node_modules
 */*/.DS_Store
 .jekyll-cache
 .idea
+/.idea/
+/node_modules/
+/package-lock.json
+/blog/package-lock.json
