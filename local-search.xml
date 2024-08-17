@@ -1806,27 +1806,6 @@
   
   
   <entry>
-    <title>netty将channel设为自动读取</title>
-    <link href="/3083647988.html/"/>
-    <url>/3083647988.html/</url>
-    
-    <content type="html"><![CDATA[<p>​</p><p>​是这样的一个小技巧，这是我在写ss时学到的，有时候要实现私有协议需要将netty设为非自动读取，等前面工作处理好了在转变成自动读取。</p><p>​要实现channel数据的转发工作，第二个channel未创建完成时是不能读取第一个channel内数据的，所以我们经常将第一个channel设为不自动读取。</p><p>先前我看netty例子里有这样的写法，转换数据</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">out.writeAndFlush(msg).addListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChannelFutureListener</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">operationComplete</span><span class="hljs-params">(ChannelFuture future)</span> &#123;<br>        <span class="hljs-keyword">if</span> (future.isSuccess()) &#123;<br>            ctx.read();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            ctx.close();<br>        &#125;<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure><p>他的意思就是将msg写入out里面，然后添加监听器，写完后再次从输入流中读取。</p><p>后来我又想到另一个效率高的写法,就是这样，将不自动读的输入流重新设为自动读，这样就不用加监听器了：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">in.channel().config().setAutoRead(<span class="hljs-literal">true</span>);<br></code></pre></td></tr></table></figure>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>java</tag>
-      
-      <tag>netty</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>给服务器开启bbr</title>
     <link href="/2527058159.html/"/>
     <url>/2527058159.html/</url>
@@ -1842,6 +1821,27 @@
       <tag>bbr</tag>
       
       <tag>服务器</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>netty将channel设为自动读取</title>
+    <link href="/3083647988.html/"/>
+    <url>/3083647988.html/</url>
+    
+    <content type="html"><![CDATA[<p>​</p><p>​是这样的一个小技巧，这是我在写ss时学到的，有时候要实现私有协议需要将netty设为非自动读取，等前面工作处理好了在转变成自动读取。</p><p>​要实现channel数据的转发工作，第二个channel未创建完成时是不能读取第一个channel内数据的，所以我们经常将第一个channel设为不自动读取。</p><p>先前我看netty例子里有这样的写法，转换数据</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">out.writeAndFlush(msg).addListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChannelFutureListener</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">operationComplete</span><span class="hljs-params">(ChannelFuture future)</span> &#123;<br>        <span class="hljs-keyword">if</span> (future.isSuccess()) &#123;<br>            ctx.read();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            ctx.close();<br>        &#125;<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure><p>他的意思就是将msg写入out里面，然后添加监听器，写完后再次从输入流中读取。</p><p>后来我又想到另一个效率高的写法,就是这样，将不自动读的输入流重新设为自动读，这样就不用加监听器了：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">in.channel().config().setAutoRead(<span class="hljs-literal">true</span>);<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>java</tag>
+      
+      <tag>netty</tag>
       
     </tags>
     
@@ -2405,25 +2405,6 @@
   
   
   <entry>
-    <title>jenkins git 报“Host key verification failed”错误处理</title>
-    <link href="/4237278774.html/"/>
-    <url>/4237278774.html/</url>
-    
-    <content type="html"><![CDATA[<h2 id="jenkins-git-报“Host-key-verification-failed”错误处理"><a href="#jenkins-git-报“Host-key-verification-failed”错误处理" class="headerlink" title="jenkins git 报“Host key verification failed”错误处理"></a>jenkins git 报“Host key verification failed”错误处理</h2><pre><code class="hljs">现象是手动cmd窗口中能正常使用git，能正常push到github，但jenkins中使用bat批处理就报此错误问题出现的原因是jenkins无法找到user/.ssh/下面的配置，解决方法有两个</code></pre><h3 id="方法一，让jenkins的服务以当前用户身份执行"><a href="#方法一，让jenkins的服务以当前用户身份执行" class="headerlink" title="方法一，让jenkins的服务以当前用户身份执行"></a>方法一，让jenkins的服务以当前用户身份执行</h3><ul><li>0.打开系统服务</li><li>1.找到jenkins的服务</li><li>2.停止服务</li><li>3.双击点击<code>登录</code>选项卡</li><li>4.输入用户名密码，这里要求windows用户设一个密码</li><li>5.保存，启动服务</li><li>6.jenkins 就会读取 用户目录下的.&#x2F;ssh&#x2F;known_hosts，发现问题解决</li></ul><h3 id="方法二-复制ssh文件，这样jenkins就能找到ssh密钥了"><a href="#方法二-复制ssh文件，这样jenkins就能找到ssh密钥了" class="headerlink" title="方法二 复制ssh文件，这样jenkins就能找到ssh密钥了"></a>方法二 复制ssh文件，这样jenkins就能找到ssh密钥了</h3><p>将<code>user\.ssh</code>里面的三个文件，复制到 <code>C:\Windows\System32\config\systemprofile\.ssh\</code>文件夹下。<br>分别是 id_rsa，id_rsa.pub，known_hosts</p><p>参考信息：</p><p><a href="https://stackoverflow.com/questions/41780145/setting-jenkins-git-returns-host-key-verification-failed-error">window配置</a></p><p><a href="https://stackoverflow.com/questions/15174194/jenkins-host-key-verification-failed">linux配置</a></p><p><a href="https://blog.csdn.net/cfh0081/article/details/78540674">原文链接</a></p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>jenkins</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>jenkins 自动编译，发布，运行项目</title>
     <link href="/1995720483.html/"/>
     <url>/1995720483.html/</url>
@@ -2475,6 +2456,25 @@
       <tag>springboot</tag>
       
       <tag>defaultServlet</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>jenkins git 报“Host key verification failed”错误处理</title>
+    <link href="/4237278774.html/"/>
+    <url>/4237278774.html/</url>
+    
+    <content type="html"><![CDATA[<h2 id="jenkins-git-报“Host-key-verification-failed”错误处理"><a href="#jenkins-git-报“Host-key-verification-failed”错误处理" class="headerlink" title="jenkins git 报“Host key verification failed”错误处理"></a>jenkins git 报“Host key verification failed”错误处理</h2><pre><code class="hljs">现象是手动cmd窗口中能正常使用git，能正常push到github，但jenkins中使用bat批处理就报此错误问题出现的原因是jenkins无法找到user/.ssh/下面的配置，解决方法有两个</code></pre><h3 id="方法一，让jenkins的服务以当前用户身份执行"><a href="#方法一，让jenkins的服务以当前用户身份执行" class="headerlink" title="方法一，让jenkins的服务以当前用户身份执行"></a>方法一，让jenkins的服务以当前用户身份执行</h3><ul><li>0.打开系统服务</li><li>1.找到jenkins的服务</li><li>2.停止服务</li><li>3.双击点击<code>登录</code>选项卡</li><li>4.输入用户名密码，这里要求windows用户设一个密码</li><li>5.保存，启动服务</li><li>6.jenkins 就会读取 用户目录下的.&#x2F;ssh&#x2F;known_hosts，发现问题解决</li></ul><h3 id="方法二-复制ssh文件，这样jenkins就能找到ssh密钥了"><a href="#方法二-复制ssh文件，这样jenkins就能找到ssh密钥了" class="headerlink" title="方法二 复制ssh文件，这样jenkins就能找到ssh密钥了"></a>方法二 复制ssh文件，这样jenkins就能找到ssh密钥了</h3><p>将<code>user\.ssh</code>里面的三个文件，复制到 <code>C:\Windows\System32\config\systemprofile\.ssh\</code>文件夹下。<br>分别是 id_rsa，id_rsa.pub，known_hosts</p><p>参考信息：</p><p><a href="https://stackoverflow.com/questions/41780145/setting-jenkins-git-returns-host-key-verification-failed-error">window配置</a></p><p><a href="https://stackoverflow.com/questions/15174194/jenkins-host-key-verification-failed">linux配置</a></p><p><a href="https://blog.csdn.net/cfh0081/article/details/78540674">原文链接</a></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>jenkins</tag>
       
     </tags>
     
