@@ -253,15 +253,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2020/08/25/2020-08-25-springboot-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E9%85%8D%E7%BD%AEspringmvc/" target="_blank">
-          springboot 如何正确配置springmvc
+        <a href="/2020/08/25/2020-08-25-springSecurity%E9%85%8D%E7%BD%AEjwt/" target="_blank">
+          springSecurity配置jwt
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2020/08/25/2020-08-25-springboot-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E9%85%8D%E7%BD%AEspringmvc/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2020/08/25/2020-08-25-springSecurity%E9%85%8D%E7%BD%AEjwt/" target="_blank">
         <div>
-          springboot 如何正确配置springmvc​		 ​		虽然Springboot是开箱即用的，使用Springmvc也是十分简单，但是如何配置才是最好的呢？，看到很多人多它的用法不了解，本文讲一下它的用法。 将它之前，我们先了解下**什么是Springmvc**。 ​	Springmvc是基于servlet体系的开发框架，他由DispatcherServlet拦截请求，根据请求路径使用h
+          springSecurity配置jwt​		在分布式项目下，同一个项目后端可能部署多次，通过负载均衡分配到每个实例上，传统的Session是每个实例独有的，在一个实例上登陆后，其他实例并不知道登录状态。要想解决此问题，有以下几种办法，下面进行分析。 前端部分​		首先前端能存储数据的方式有两种，一种是前端通过localstorage主动存储数据，在发送请求时主动携带。另一种是后端将数据放入Cook
         </div>
       </a>
 
@@ -279,11 +279,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/springboot/">#springboot</a>
+              <a href="/tags/springSecurity/">#springSecurity</a>
             
               <a href="/tags/spring/">#spring</a>
             
-              <a href="/tags/springmvc/">#springmvc</a>
+              <a href="/tags/jwt/">#jwt</a>
             
           </div>
         
@@ -471,15 +471,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2020/07/20/2020-07-20-springSecurity%E9%99%90%E5%88%B6%E5%A4%9A%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95/" target="_blank">
-          springSecurity限制多用户登录
+        <a href="/2020/07/20/2020-07-20-springSecurity%E8%AE%A4%E8%AF%81%E7%AE%A1%E7%90%86%E5%99%A8/" target="_blank">
+          springSecurity认证管理器
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2020/07/20/2020-07-20-springSecurity%E9%99%90%E5%88%B6%E5%A4%9A%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2020/07/20/2020-07-20-springSecurity%E8%AE%A4%E8%AF%81%E7%AE%A1%E7%90%86%E5%99%A8/" target="_blank">
         <div>
-          springSecurity限制多用户登录​	 ​		限制用户多次登录的原理就是，每次用户登录时，将用户的sessionId存储起来，下次在登录时检查已经存在的sessionId列表里此用户登陆了几次，就能据此做处理了。 ​		最简单的就像这样设置，这样做以后后面登录的会将前面最近未使用的session挤掉。 1http.sessionManagement().maximumSessions(1)
+          springSecurity认证管理器​	 ​		SpringSecurity负责验证用户身份需要用到认证管理器（AuthenticationManager）。 认证管理器的接口很简单，只有一个方法，将用户名密码传入此认证器，如果不报错则为认证通过。 1234public interface AuthenticationManager &#123;	Authentication authentic
         </div>
       </a>
 
@@ -515,15 +515,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2020/07/20/2020-07-20-springSecurity%E8%AE%A4%E8%AF%81%E7%AE%A1%E7%90%86%E5%99%A8/" target="_blank">
-          springSecurity认证管理器
+        <a href="/2020/07/20/2020-07-20-springSecurity%E9%99%90%E5%88%B6%E5%A4%9A%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95/" target="_blank">
+          springSecurity限制多用户登录
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2020/07/20/2020-07-20-springSecurity%E8%AE%A4%E8%AF%81%E7%AE%A1%E7%90%86%E5%99%A8/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2020/07/20/2020-07-20-springSecurity%E9%99%90%E5%88%B6%E5%A4%9A%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95/" target="_blank">
         <div>
-          springSecurity认证管理器​	 ​		SpringSecurity负责验证用户身份需要用到认证管理器（AuthenticationManager）。 认证管理器的接口很简单，只有一个方法，将用户名密码传入此认证器，如果不报错则为认证通过。 1234public interface AuthenticationManager &#123;	Authentication authentic
+          springSecurity限制多用户登录​	 ​		限制用户多次登录的原理就是，每次用户登录时，将用户的sessionId存储起来，下次在登录时检查已经存在的sessionId列表里此用户登陆了几次，就能据此做处理了。 ​		最简单的就像这样设置，这样做以后后面登录的会将前面最近未使用的session挤掉。 1http.sessionManagement().maximumSessions(1)
         </div>
       </a>
 
