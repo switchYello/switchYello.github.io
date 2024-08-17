@@ -29,7 +29,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2022/11/07/2022-11-07-Spring%E7%9A%84Qualifier%E6%B3%A8%E8%A7%A3/</loc>
+    <loc>https://www.huangchaoyu.com/2023/02/15/2023-02-15-%E7%AC%94%E8%AE%B0/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -47,7 +47,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2024/06/06/2024-06-06-mybatis-plus-%E4%B8%89%E7%A7%8DSQL%E6%8B%BC%E6%8E%A5%E6%96%B9%E5%BC%8F/</loc>
+    <loc>https://www.huangchaoyu.com/2022/11/07/2022-11-07-Spring%E7%9A%84Qualifier%E6%B3%A8%E8%A7%A3/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -56,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2023/02/15/2023-02-15-%E7%AC%94%E8%AE%B0/</loc>
+    <loc>https://www.huangchaoyu.com/2024/06/06/2024-06-06-mybatis-plus-%E4%B8%89%E7%A7%8DSQL%E6%8B%BC%E6%8E%A5%E6%96%B9%E5%BC%8F/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -92,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2022/05/11/2022-05-11-mysql-%E5%AF%86%E7%A0%81%E7%AE%97%E6%B3%95/</loc>
+    <loc>https://www.huangchaoyu.com/2022/05/11/2022-05-11-spring-lazy%E6%B3%A8%E8%A7%A3%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -101,7 +101,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2022/05/11/2022-05-11-spring-lazy%E6%B3%A8%E8%A7%A3%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+    <loc>https://www.huangchaoyu.com/2022/05/11/2022-05-11-mysql-%E5%AF%86%E7%A0%81%E7%AE%97%E6%B3%95/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -119,15 +119,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2022/10/13/2022-10-13-spock%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84mock%E7%B1%BB%E5%9E%8B/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/2022/10/27/2022-10-27-%E8%AE%B0%E4%B8%80%E6%AC%A1prometheus%E6%8C%87%E6%A0%87%E9%87%8D%E5%A4%8D%E7%9A%84%E9%97%AE%E9%A2%98/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -137,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2022/01/11/2022-01-11-mybatis%E5%AE%9E%E7%8E%B0%E7%9C%9F%E6%B5%81%E5%BC%8F%E6%9F%A5%E8%AF%A2mysql/</loc>
+    <loc>https://www.huangchaoyu.com/2022/10/13/2022-10-13-spock%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84mock%E7%B1%BB%E5%9E%8B/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -147,6 +138,15 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/2022/01/17/2022-01-17-Flux-parallel%E6%93%8D%E4%BD%9C%E7%AC%A6%E7%9A%84%E7%94%A8%E6%B3%95/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2022/01/11/2022-01-11-mybatis%E5%AE%9E%E7%8E%B0%E7%9C%9F%E6%B5%81%E5%BC%8F%E6%9F%A5%E8%AF%A2mysql/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -335,6 +335,15 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2020/12/04/2020-12-04-springboot%E6%B3%A8%E5%86%8C%E6%8B%A6%E6%88%AA%E5%99%A8%E4%B8%8D%E7%94%9F%E6%95%88/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/2020/12/04/2020-12-04-vscode%E6%8C%89%E7%85%A7%E5%AD%97%E6%AF%8D%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%BA%8F/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -354,15 +363,6 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/2021/01/04/2021-01-04-%E6%8A%BD%E8%B1%A1%E5%86%85%E5%86%85%E9%83%A8%E7%9A%84%E9%9D%99%E6%80%81%E7%B1%BB%E4%BC%9A%E8%A2%AB%E6%89%AB%E6%8F%8F%E5%88%B0%E5%90%97/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2020/12/04/2020-12-04-springboot%E6%B3%A8%E5%86%8C%E6%8B%A6%E6%88%AA%E5%99%A8%E4%B8%8D%E7%94%9F%E6%95%88/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -398,24 +398,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2020/08/25/2020-08-25-springboot-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E9%85%8D%E7%BD%AEspringmvc/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2020/09/09/2020-09-09-springGateway%E9%85%8D%E7%BD%AE%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/2020/08/25/2020-08-25-springSecurity%E9%85%8D%E7%BD%AEjwt/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -425,7 +407,25 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2020/08/25/2020-08-25-springboot-%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E9%85%8D%E7%BD%AEspringmvc/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/2020/09/04/2020-09-04-springGateway%E5%B8%B8%E8%A7%81%E7%B1%BB%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2020/09/09/2020-09-09-springGateway%E9%85%8D%E7%BD%AE%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -542,7 +542,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2020/06/19/2020-06-19-java-web%E8%AF%B7%E6%B1%82%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/</loc>
+    <loc>https://www.huangchaoyu.com/2020/06/23/2020-06-23-springmvc%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -551,7 +551,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2020/06/23/2020-06-23-springmvc%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</loc>
+    <loc>https://www.huangchaoyu.com/2020/06/19/2020-06-19-java-web%E8%AF%B7%E6%B1%82%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -605,7 +605,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2020/06/06/2020-06-06-Java%E7%9A%84CopyOnWriteArrayList/</loc>
+    <loc>https://www.huangchaoyu.com/2020/05/08/2020-05-08-spring-Xml%E9%85%8D%E7%BD%AE%E6%9E%9A%E4%B8%BE/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -614,7 +614,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2020/05/08/2020-05-08-spring-Xml%E9%85%8D%E7%BD%AE%E6%9E%9A%E4%B8%BE/</loc>
+    <loc>https://www.huangchaoyu.com/2020/06/06/2020-06-06-Java%E7%9A%84CopyOnWriteArrayList/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -740,6 +740,15 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2020/03/22/2020-03-22-linux%E8%AE%BE%E7%BD%AEcrontab%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/2020/03/21/2020-03-21-maven%E6%89%93%E5%8C%85%E6%88%90minijar/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -750,15 +759,6 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/2020/03/26/2020-03-26-netty%E5%88%A9%E7%94%A8IdleStateHandler%E5%AE%9E%E7%8E%B0pingPong/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2020/03/22/2020-03-22-linux%E8%AE%BE%E7%BD%AEcrontab%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -911,6 +911,15 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2019/11/07/2019-11-07-netty-%E4%B8%8D%E8%A6%81%E8%A6%81%E5%9C%A8future%E7%9B%91%E5%90%AC%E5%99%A8%E7%9A%84%E5%9B%9E%E6%8E%89%E5%87%BD%E6%95%B0%E4%B8%AD%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/2019/11/08/2019-11-08-netty%E5%BA%94%E8%AF%A5%E6%80%8E%E6%A0%B7%E5%A4%84%E7%90%86%E5%BC%82%E5%B8%B8/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -921,15 +930,6 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/2019/11/15/2019-11-15-springmvc-put%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2019/11/07/2019-11-07-netty-%E4%B8%8D%E8%A6%81%E8%A6%81%E5%9C%A8future%E7%9B%91%E5%90%AC%E5%99%A8%E7%9A%84%E5%9B%9E%E6%8E%89%E5%87%BD%E6%95%B0%E4%B8%AD%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -965,15 +965,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2019/12/10/2019-12-10-%E4%B8%A4%E7%A7%8D%E5%88%9B%E5%BB%BA%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%96%B9%E5%BC%8F/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/2019/11/28/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%EF%BC%8C%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -983,7 +974,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2019/10/10/2019-10-10-springboot-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8Cservlet-%E7%9B%91%E5%90%AC%E5%99%A8-%E6%8B%A6%E6%88%AA%E5%99%A8/</loc>
+    <loc>https://www.huangchaoyu.com/2019/12/10/2019-12-10-%E4%B8%A4%E7%A7%8D%E5%88%9B%E5%BB%BA%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%96%B9%E5%BC%8F/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1001,43 +992,16 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2019/10/10/2019-10-10-springboot-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8Cservlet-%E7%9B%91%E5%90%AC%E5%99%A8-%E6%8B%A6%E6%88%AA%E5%99%A8/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/2019/10/15/2019-10-15-jenkins-%E8%87%AA%E5%8A%A8%E7%BC%96%E8%AF%91%EF%BC%8C%E5%8F%91%E5%B8%83%EF%BC%8C%E8%BF%90%E8%A1%8C%E9%A1%B9%E7%9B%AE/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2019/10/29/2019-10-29-HeaderWriterFilter%E5%86%85%E9%83%A8%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%8C%E5%AF%BC%E8%87%B4%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E4%B8%8D%E8%83%BD%E8%AE%BF%E9%97%AE%E4%BA%86/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2019/10/29/2019-10-29-SpringSecurityConf%E9%85%8D%E7%BD%AE/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2019/10/30/2019-10-30-springSecurity%E7%9A%84%E4%B8%A4%E7%A7%8DrememberMe%E6%96%B9%E5%BC%8F/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2019/10/15/2019-10-15-springboot-%E6%B7%BB%E5%8A%A0defaultServlet%E5%AE%9E%E7%8E%B0%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%8A%9F%E8%83%BD/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1055,7 +1019,34 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2019/08/05/2019-08-05-vertx-jsonArray-jsonObject-json%E6%8C%87%E9%92%88/</loc>
+    <loc>https://www.huangchaoyu.com/2019/10/15/2019-10-15-springboot-%E6%B7%BB%E5%8A%A0defaultServlet%E5%AE%9E%E7%8E%B0%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%8A%9F%E8%83%BD/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2019/10/29/2019-10-29-SpringSecurityConf%E9%85%8D%E7%BD%AE/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2019/10/29/2019-10-29-HeaderWriterFilter%E5%86%85%E9%83%A8%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%8C%E5%AF%BC%E8%87%B4%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E4%B8%8D%E8%83%BD%E8%AE%BF%E9%97%AE%E4%BA%86/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2019/10/30/2019-10-30-springSecurity%E7%9A%84%E4%B8%A4%E7%A7%8DrememberMe%E6%96%B9%E5%BC%8F/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1065,6 +1056,15 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/2019/08/05/2019-08-05-vertx-buffer%E7%B1%BB/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2019/08/05/2019-08-05-vertx-jsonArray-jsonObject-json%E6%8C%87%E9%92%88/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1136,6 +1136,15 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2019/07/10/2019-07-10-ssh%E8%BF%9C%E7%A8%8B%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91%E5%88%B0%E6%9C%AC%E5%9C%B0%EF%BC%8C%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%EF%BC%8C%E5%86%85%E7%BD%91%E6%98%A0%E5%B0%84/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/2019/07/11/2019-07-11-%E8%A7%A3%E5%86%B3-Xshell6-Xftp6-%E5%BC%BA%E5%88%B6%E5%8D%87%E7%BA%A7/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -1154,25 +1163,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2019/07/10/2019-07-10-ssh%E8%BF%9C%E7%A8%8B%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91%E5%88%B0%E6%9C%AC%E5%9C%B0%EF%BC%8C%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%EF%BC%8C%E5%86%85%E7%BD%91%E6%98%A0%E5%B0%84/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/2019/07/15/2019-07-15-%EF%BC%88%E8%BD%AC%EF%BC%89nginx-rewrite-location-%E5%86%85%E7%BD%AE%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2019/07/23/2019-07-23-servlet-mapping-%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE-%E6%96%9C%E6%9D%A0%E3%80%81%E6%96%9C%E6%9D%A0%E6%98%9F%E5%8C%BA%E5%88%AB/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1190,6 +1181,15 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2019/07/23/2019-07-23-servlet-mapping-%E8%B7%AF%E5%BE%84%E9%85%8D%E7%BD%AE-%E6%96%9C%E6%9D%A0%E3%80%81%E6%96%9C%E6%9D%A0%E6%98%9F%E5%8C%BA%E5%88%AB/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/2019/07/30/2019-07-30-mybatis-%E6%89%BE%E4%B8%8D%E5%88%B0statement/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -1199,7 +1199,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2019/05/31/2019-05-31-springboot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95-%EF%BC%8Cspring%E9%A1%B9%E7%9B%AE%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</loc>
+    <loc>https://www.huangchaoyu.com/2019/05/31/2019-05-31-springboot-idea-%E9%85%8D%E7%BD%AE%E7%83%AD%E9%83%A8%E7%BD%B2/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1208,7 +1208,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2019/05/31/2019-05-31-springboot-idea-%E9%85%8D%E7%BD%AE%E7%83%AD%E9%83%A8%E7%BD%B2/</loc>
+    <loc>https://www.huangchaoyu.com/2019/05/31/2019-05-31-springboot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95-%EF%BC%8Cspring%E9%A1%B9%E7%9B%AE%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1244,15 +1244,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2019/06/03/2019-06-03-mysql-%E5%AE%8C%E6%95%B4%E6%94%B9%E5%AF%86%E7%A0%81%E6%AD%A5%E9%AA%A4/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/2019/06/03/2019-06-03-Mysql-%E5%BC%80%E5%90%AF%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95-%E8%AE%BE%E7%BD%AE%E5%AF%86%E7%A0%81/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -1262,7 +1253,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2019/06/11/2019-06-11-apache-commons-lang3-%E4%BC%98%E9%9B%85%E7%9A%84%E8%A7%A3%E5%86%B3%E4%B8%BA%E7%A9%BA%E5%88%99%E8%BF%94%E5%9B%9E%E9%BB%98%E8%AE%A4%E5%80%BC%E5%8A%9F%E8%83%BD/</loc>
+    <loc>https://www.huangchaoyu.com/2019/06/03/2019-06-03-mysql-%E5%AE%8C%E6%95%B4%E6%94%B9%E5%AF%86%E7%A0%81%E6%AD%A5%E9%AA%A4/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1272,6 +1263,15 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/2019/06/03/2019-06-03-openssl%E7%94%9F%E6%88%90%E8%AF%81%E4%B9%A6/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2019/06/11/2019-06-11-apache-commons-lang3-%E4%BC%98%E9%9B%85%E7%9A%84%E8%A7%A3%E5%86%B3%E4%B8%BA%E7%A9%BA%E5%88%99%E8%BF%94%E5%9B%9E%E9%BB%98%E8%AE%A4%E5%80%BC%E5%8A%9F%E8%83%BD/</loc>
     
     <lastmod>2024-08-16</lastmod>
     
@@ -1316,6 +1316,15 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2019/05/27/2019-05-27-linux-%E8%AE%BE%E7%BD%AE%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF/</loc>
+    
+    <lastmod>2024-08-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/2019/05/26/2019-05-26-%E4%BD%A0%E5%A5%BD%EF%BC%8C%E4%B8%96%E7%95%8C/</loc>
     
     <lastmod>2024-08-16</lastmod>
@@ -1333,15 +1342,6 @@
     <priority>0.6</priority>
   </url>
   
-  <url>
-    <loc>https://www.huangchaoyu.com/2019/05/27/2019-05-27-linux-%E8%AE%BE%E7%BD%AE%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF/</loc>
-    
-    <lastmod>2024-08-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
 
   <url>
     <loc>https://www.huangchaoyu.com/</loc>
@@ -1350,6 +1350,20 @@
     <priority>1.0</priority>
   </url>
 
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/linux/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/linux%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/diary/</loc>
@@ -1367,20 +1381,6 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/springboot/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/linux/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/linux%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1443,14 +1443,14 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/xshll/</loc>
+    <loc>https://www.huangchaoyu.com/tags/%E5%BE%AE%E4%BF%A1/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/%E5%BE%AE%E4%BF%A1/</loc>
+    <loc>https://www.huangchaoyu.com/tags/xshll/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1492,13 +1492,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/springSecurity/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/tags/defaultServlet/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
@@ -1506,28 +1499,14 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/tags/springSecurity/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/tags/java%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E4%BC%98%E5%90%AF%E9%80%9A/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/idea/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1542,6 +1521,27 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/jekyll/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E4%BC%98%E5%90%AF%E9%80%9A/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/idea/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1576,14 +1576,14 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/%E8%B7%A8%E5%9F%9F/</loc>
+    <loc>https://www.huangchaoyu.com/tags/usb%E5%85%B1%E4%BA%AB%E7%BD%91%E7%BB%9C/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/usb%E5%85%B1%E4%BA%AB%E7%BD%91%E7%BB%9C/</loc>
+    <loc>https://www.huangchaoyu.com/tags/%E8%B7%A8%E5%9F%9F/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1702,14 +1702,14 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/CopyOnWriteArrayList/</loc>
+    <loc>https://www.huangchaoyu.com/tags/spring-Xml%E9%85%8D%E7%BD%AE%E6%9E%9A%E4%B8%BE/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/spring-Xml%E9%85%8D%E7%BD%AE%E6%9E%9A%E4%B8%BE/</loc>
+    <loc>https://www.huangchaoyu.com/tags/CopyOnWriteArrayList/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1737,14 +1737,14 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/</loc>
+    <loc>https://www.huangchaoyu.com/tags/%E5%85%A8%E5%B1%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/%E5%85%A8%E5%B1%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</loc>
+    <loc>https://www.huangchaoyu.com/tags/%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1807,6 +1807,20 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/tags/springbootActuator/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/springbootadmin/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/tags/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
@@ -1835,14 +1849,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/springbootActuator/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/springbootadmin/</loc>
+    <loc>https://www.huangchaoyu.com/tags/jwt/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1857,13 +1864,6 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/springGateway/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/jwt/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2073,13 +2073,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/mysql%E6%B5%81%E5%BC%8F%E6%9F%A5%E8%AF%A2%E6%8A%80%E5%B7%A7/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/tags/flux/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
@@ -2095,6 +2088,13 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/reactor/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/mysql%E6%B5%81%E5%BC%8F%E6%9F%A5%E8%AF%A2%E6%8A%80%E5%B7%A7/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2178,6 +2178,13 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/tags/%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/tags/Spring/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
@@ -2186,20 +2193,6 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/Spock/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/Qualifier/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/Spring%E6%B3%A8%E8%A7%A3/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2220,28 +2213,21 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/tags/Qualifier/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/Spring%E6%B3%A8%E8%A7%A3/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/tags/mybatis-plus/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/samba/</loc>
-    <lastmod>2024-08-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/smb/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2263,6 +2249,20 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/armbian/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/samba/</loc>
+    <lastmod>2024-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/smb/</loc>
     <lastmod>2024-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
