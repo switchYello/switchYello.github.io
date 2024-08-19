@@ -253,15 +253,55 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2949367309.html/" target="_blank">
+          hexo博客搭建
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2949367309.html/" target="_blank">
+        <div>
+          1. 前言最近把博客从jelly迁移到hexo了,个人感觉页面美观了很多。并且插件也多了很多，下面将我操作的过程记录下来。 hexo是使用node开发的，事先安装好node，版本尽量高一些。 2. 安装hexo1npm install hexo  这里我没有选择安装到全局 3. 初始化blog123npx hexo init blogcd blognpm install  4. 文章迁移  将文章
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-08-19 00:00" pubdate>
+              2024-08-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/hexo/">#hexo</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/3943455212.html/" target="_blank">
-          samba指定用户挂载
+          samba实用指定用户挂载磁盘
         </a>
       </h2>
 
       
       <a class="index-excerpt index-excerpt__noimg" href="/3943455212.html/" target="_blank">
         <div>
-          已普通用户1000的身份挂载smb，不然普通用户没办法修改文件 123sudo mount -t cifs \-o username=root,password=1234,uid=1000,gid=1000 //192.168.1.2/share_file /mnt/smb
+          以普通用户1000的身份挂载smb，不然默认是root用户，普通用户没办法修改文件或删除文件 123sudo mount -t cifs \-o username=root,password=1234,uid=1000,gid=1000 //192.168.1.2/share_file /mnt/smb
         </div>
       </a>
 
@@ -305,7 +345,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2723250432.html/" target="_blank">
         <div>
-          前言安装系统安装docker磁盘挂载机器只有8g内存，安装完系统可用6g左右，需要挂载一个外置磁盘。首先使用 lsblk命令查看磁盘挂载情况，外接磁盘一般是 sda，我这边只有一个分区，因此 sda1就是我的磁盘，后面的&#x2F;mnt&#x2F;sharefile是我的挂载点，刚开始时是没有的。 12345678910root@armbian:~# lsblkNAME         MAJ:
+          前言最近购买了一个N1盒子玩玩,虽然这个盒子的cpu性能已经过时了,而且还是usb2.0的,实测传输速度只有40mb左右。但是这个在网上很流行，教程和固件非常多可玩性比较高。那些路由器系统我没有兴趣，我买它是为了刷armbian的，又在拼夕夕上花了30块钱买一块500g的2.5寸硬盘，配合ddns做一个远程下载机还是挺不错的。 1. 安装系统armbian的下载地址在这里,选择晶晨S9xx版本的包
         </div>
       </a>
 
@@ -651,48 +691,6 @@
               <a href="/tags/Spring/">#Spring</a>
             
               <a href="/tags/Spock/">#Spock</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/3972953360.html/" target="_blank">
-          project reactor中的Mono.from操作符
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/3972953360.html/" target="_blank">
-        <div>
-          project reactor中的Mono.from操作符​	reactor项目中经常会用到Mono.from操作符，主要包含下面四个，他们的返回值如下  Mono.fromFuture();  		--&gt; MonoCompletionStage   Mono.fromCallable();       --&gt;MonoCallable   Mono.fromRunnable();
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-08-19 00:00" pubdate>
-              2022-08-19
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/reactor/">#reactor</a>
-            
-              <a href="/tags/Mono-fromCallable/">#Mono.fromCallable</a>
             
           </div>
         

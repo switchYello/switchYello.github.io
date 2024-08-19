@@ -19,15 +19,15 @@
   <meta name="author" content="hcy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言安装系统安装docker磁盘挂载机器只有8g内存，安装完系统可用6g左右，需要挂载一个外置磁盘。首先使用 lsblk命令查看磁盘挂载情况，外接磁盘一般是 sda，我这边只有一个分区，因此 sda1就是我的磁盘，后面的&#x2F;mnt&#x2F;sharefile是我的挂载点，刚开始时是没有的。 12345678910root@armbian:~# lsblkNAME         MAJ:">
+    <meta name="description" content="前言最近购买了一个N1盒子玩玩,虽然这个盒子的cpu性能已经过时了,而且还是usb2.0的,实测传输速度只有40mb左右。但是这个在网上很流行，教程和固件非常多可玩性比较高。那些路由器系统我没有兴趣，我买它是为了刷armbian的，又在拼夕夕上花了30块钱买一块500g的2.5寸硬盘，配合ddns做一个远程下载机还是挺不错的。 1. 安装系统armbian的下载地址在这里,选择晶晨S9xx版本的包">
 <meta property="og:type" content="article">
 <meta property="og:title" content="N1盒子折腾">
 <meta property="og:url" content="https://www.huangchaoyu.com/2723250432.html/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="前言安装系统安装docker磁盘挂载机器只有8g内存，安装完系统可用6g左右，需要挂载一个外置磁盘。首先使用 lsblk命令查看磁盘挂载情况，外接磁盘一般是 sda，我这边只有一个分区，因此 sda1就是我的磁盘，后面的&#x2F;mnt&#x2F;sharefile是我的挂载点，刚开始时是没有的。 12345678910root@armbian:~# lsblkNAME         MAJ:">
+<meta property="og:description" content="前言最近购买了一个N1盒子玩玩,虽然这个盒子的cpu性能已经过时了,而且还是usb2.0的,实测传输速度只有40mb左右。但是这个在网上很流行，教程和固件非常多可玩性比较高。那些路由器系统我没有兴趣，我买它是为了刷armbian的，又在拼夕夕上花了30块钱买一块500g的2.5寸硬盘，配合ddns做一个远程下载机还是挺不错的。 1. 安装系统armbian的下载地址在这里,选择晶晨S9xx版本的包">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-08-04T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-08-17T05:35:36.487Z">
+<meta property="article:modified_time" content="2024-08-19T13:53:03.437Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="斐讯N1">
@@ -250,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.8k 字
+          2.2k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
         
-          15 分钟
+          19 分钟
         
       </span>
     
@@ -303,62 +303,71 @@
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><h2 id="磁盘挂载"><a href="#磁盘挂载" class="headerlink" title="磁盘挂载"></a>磁盘挂载</h2><p>机器只有8g内存，安装完系统可用6g左右，需要挂载一个外置磁盘。<br>首先使用 <code>lsblk</code>命令查看磁盘挂载情况，外接磁盘一般是 sda，我这边只有一个分区，因此 sda1就是我的磁盘，后面的&#x2F;mnt&#x2F;sharefile是我的挂载点，刚开始时是没有的。</p>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近购买了一个N1盒子玩玩,虽然这个盒子的cpu性能已经过时了,而且还是usb2.0的,实测传输速度只有40mb左右。<br>但是这个在网上很流行，教程和固件非常多可玩性比较高。那些路由器系统我没有兴趣，我买它是为了刷armbian的，又在拼夕夕上花了30块钱买一块500g的2.5寸硬盘，配合ddns做一个远程下载机还是挺不错的。</p>
+<h2 id="1-安装系统"><a href="#1-安装系统" class="headerlink" title="1. 安装系统"></a>1. 安装系统</h2><p><a target="_blank" rel="noopener" href="https://github.com/ophub/amlogic-s9xxx-armbian">armbian的下载地址在这里</a>,选择晶晨S9xx版本的包。推荐使用bullseye的版本对应debian11,<br>bookworm对应debian12但是毕竟咱盒子硬件比较旧了，选择前一个版本的固件更稳定一些。</p>
+<p>用Rufus把系统镜像写入u盘，插入盒子上电自动就能从u盘启动了。在u盘启动的armbian中执行 <code>armbian-install</code>将系统写入盒子闪存中。重启后拔掉u盘重启后就安装成功了。</p>
+<h2 id="2-磁盘挂载"><a href="#2-磁盘挂载" class="headerlink" title="2. 磁盘挂载"></a>2. 磁盘挂载</h2><p>机器只有8g内存，安装完系统可用6g左右，我在usb上挂着一个2.5寸硬盘。<br>首先使用 <code>lsblk</code>命令查看磁盘挂载情况，外接磁盘一般是sda，我这边只有一个分区，因此sda1就是我的磁盘，后面的&#x2F;mnt&#x2F;sharefile是我的挂载点，刚开始时是没有的。</p>
 <figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs tap">root@armbian:~<span class="hljs-comment"># lsblk</span><br>NAME         MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT<br>sda            8:0   <span class="hljs-number"> 0 </span>298.1G <span class="hljs-number"> 0 </span>disk <br>└─sda1         8:1   <span class="hljs-number"> 0 </span>298.1G <span class="hljs-number"> 0 </span>part /mnt/sharefile<br>mmcblk2      179:0   <span class="hljs-number"> 0 </span>  7.3G <span class="hljs-number"> 0 </span>disk <br>├─mmcblk2p1  179:1   <span class="hljs-number"> 0 </span>  511M <span class="hljs-number"> 0 </span>part /boot<br>└─mmcblk2p2  179:2   <span class="hljs-number"> 0 </span>  6.5G <span class="hljs-number"> 0 </span>part /<br>mmcblk2boot0 179:32  <span class="hljs-number"> 0 </span>    4M <span class="hljs-number"> 1 </span>disk <br>mmcblk2boot1 179:64  <span class="hljs-number"> 0 </span>    4M <span class="hljs-number"> 1 </span>disk <br>zram0        254:0   <span class="hljs-number"> 0 </span>   50M <span class="hljs-number"> 0 </span>disk /var/log<br></code></pre></td></tr></table></figure>
 
-<h4 id="临时挂载"><a href="#临时挂载" class="headerlink" title="临时挂载"></a>临时挂载</h4><p>事先将磁盘格式化成ext4格式，在window上操作好比命令行方便点<br>然后创建挂在点，在想要挂载的地方创建一个文件夹，我这里是 <code>mkdir /mnt/sharefile</code><br>开始挂载，使用命令 <code>mount -v /dev/sda1 /mnt/sharefile</code> 将sda1挂载到sharefile下，逻辑是一样的，具体是sda还是什么名字，可以通过磁盘大小猜出来的。<br>挂载完成后可以再次通过<code>lsblk</code>查看，同事访问&#x2F;mnt&#x2F;sharefile就可以进入我们的磁盘了</p>
-<p>但是这种挂载方式是临时挂载，重启就要重新做，通过修改fstab可以做到系统启动自动挂载，下面是方法。</p>
-<h4 id="启动自动挂载"><a href="#启动自动挂载" class="headerlink" title="启动自动挂载"></a>启动自动挂载</h4><p>首先通过blkid命令查询硬盘uuid，因为前面的名字 sda是系统生成的，再插入一块硬盘第二块就是sdb、sdc等等，不是固定的。如果你的两个usd插口都插了硬盘下次哪个在前哪个在后就不能确定了。<br>但是uuid是与硬盘绑定的，只要你不对硬盘进行分区，不进行格式化，他的uud相对是固定的。</p>
+<p>磁盘挂载步骤</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkfs.ext4 /dev/sda  # 格式化磁盘为ext4格式<br>mkdir /mnt/sharefile # 创建空文件夹作为挂载点<br>mount -v /dev/sda1 /mnt/sharefile # 挂载<br>lsblk # 查看是否挂载成功<br></code></pre></td></tr></table></figure>
+
+<p>但是这种挂载方式是临时挂载，重启就要重新做挂载，通过修改fstab可以做到系统启动自动挂载。<br>首先通过blkid命令查询硬盘uuid，因为前面的名字sda是系统生成的，再插入一块硬盘第二块就是sdb、sdc等等，不是固定的。如果你的两个usd插口都插了硬盘下次哪个在前哪个在后就不能确定了。<br>但是uuid是与硬盘绑定的，只要你不对硬盘进行分区，不进行格式化，他的uud相对是固定的。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">root@armbian:~# blkid<br>/dev/mmcblk2p2: LABEL=&quot;ROOTFS_EMMC&quot; UUID=&quot;305f8c97-3156-491a-93b6-56ba0ca87ee3&quot; BLOCK_SIZE=&quot;4096&quot; TYPE=&quot;ext4&quot;<br>/dev/mmcblk2p1: LABEL_FATBOOT=&quot;BOOT_EMMC&quot; LABEL=&quot;BOOT_EMMC&quot; UUID=&quot;5933-954E&quot; BLOCK_SIZE=&quot;512&quot; TYPE=&quot;vfat&quot;<br>/dev/sda1: UUID=&quot;09ef634f-5af8-f24e-9497-b668e4fbc413&quot; BLOCK_SIZE=&quot;4096&quot; TYPE=&quot;ext4&quot; PARTLABEL=&quot;Linux data partition&quot; PARTUUID=&quot;825c0d80-6904-43c2-abe0-ac0e0060d9f0&quot;<br>/dev/zram0: LABEL=&quot;log2ram&quot; UUID=&quot;e96a98e0-5366-4843-9dd8-2a8aee06f61f&quot; BLOCK_SIZE=&quot;4096&quot; TYPE=&quot;ext4&quot;<br></code></pre></td></tr></table></figure>
-<p>可以看到我的硬盘的UUID&#x3D;”09ef634f-5af8-f24e-9497-b668e4fbc413”，格式是ext4<br>备份然后编辑 &#x2F;etc&#x2F;fstab 文件，在原先的后面增加一行配置，一共6段数据，中间使用空格分割（几个空格没关系）<br>第一段填写UUID，不需要引号引用<br>第二段填写挂在点，提前创建好文件夹<br>第三段填写磁盘格式，这里是ext4<br>第四段填写 <code>defaults,nofail</code>，nofail 可以防止磁盘不可用时系统启动不起来<br>第五段六段填写 0  </p>
+
+<p>可以看到我的硬盘的UUID&#x3D;”09ef634f-5af8-f24e-9497-b668e4fbc413”，格式是ext4<br>备份然后编辑 &#x2F;etc&#x2F;fstab 文件，在原先的后面增加一行配置，一共6段数据，中间使用空格分割（几个空格没关系）<br>第一段填写UUID，不需要引号引用<br>第二段填写挂在点，提前创建好文件夹<br>第三段填写磁盘格式，这里是ext4<br>第四段填写 <code>defaults,nofail</code>，nofail 可以防止磁盘不可用时系统启动不起来<br>第五段六段填写 0</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">UUID=09ef634f-5af8-f24e-9497-b668e4fbc413    /mnt/sharefile    ext4    defaults,nofail    0    0<br></code></pre></td></tr></table></figure>
 
-<p>配置完成后先将上面测试用的挂载去掉</p>
-<pre><code class="hljs">umount /mnt/sharefile
-</code></pre>
-<p>然后执行：</p>
-<pre><code class="hljs">mount -a
-</code></pre>
-<p>如果没有报错，并且 lsblk 命令再次查看能够挂载成功则说明我们配置的 fstab是没错的。如果报错了或者没有成功则说明fstab配置的有问题，请将备份配置文件还原回去，再检查下是不是配错了，不然可能导致重启后启动不起来。<br>成功后，重启机器磁盘就可以自动挂载上去了。</p>
-<h2 id="配置系统"><a href="#配置系统" class="headerlink" title="配置系统"></a>配置系统</h2><h3 id="1-配置apt"><a href="#1-配置apt" class="headerlink" title="1.配置apt"></a>1.配置apt</h3><p>  编辑 ‘&#x2F;etc&#x2F;apt&#x2F;sources.list’文件，修改为清华apt源,将下面内容替换进去即可，一共四行</p>
+<p>配置完成后先将上面测试用的挂载去掉<br>    umount &#x2F;mnt&#x2F;sharefile<br>然后执行：<br>    mount -a<br>如果没有报错，并且 lsblk 命令再次查看能够挂载成功则说明我们配置的 fstab是没错的。如果报错了或者没有成功则说明fstab配置的有问题，请将备份配置文件还原回去，再检查下是不是配错了，不然可能导致重启后启动不起来。<br>成功后，重启机器磁盘就可以自动挂载上去了。</p>
+<h2 id="3-配置系统"><a href="#3-配置系统" class="headerlink" title="3. 配置系统"></a>3. 配置系统</h2><h3 id="1-配置apt"><a href="#1-配置apt" class="headerlink" title="1.配置apt"></a>1.配置apt</h3><p>编辑 ‘&#x2F;etc&#x2F;apt&#x2F;sources.list’文件，修改为清华apt源,将下面内容替换进去即可，一共四行</p>
 <p><strong>bullseye 版本使用这个</strong></p>
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs 1c">deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian bullseye main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian bullseye-updates main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian bullseye-backports main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free</span><br></code></pre></td></tr></table></figure>
 
 <p><strong>bookworm 使用这个</strong></p>
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs 1c">deb https<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware</span><br>deb https<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware</span><br>deb https<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware</span><br>deb https<span class="hljs-punctuation">:</span><span class="hljs-comment">//security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="2-更新软件"><a href="#2-更新软件" class="headerlink" title="2.更新软件"></a>2.更新软件</h3><p>通过命令刷新软件列表和更新软件<br>apt update   – 刷新列表<br>apt upgrade  – 更新软件  </p>
-<h3 id="3-命令提示建议"><a href="#3-命令提示建议" class="headerlink" title="3.命令提示建议"></a>3.命令提示建议</h3><p>  command ‘lala’ not found, did you mea 功能<br>  当输入命令出现错别字时，会提示<code>command not found</code>, 通过安装 <code>apt install command-not-found</code>工具（需重新连接shell）后给出建议，效果如下。</p>
+<h3 id="2-安装docker"><a href="#2-安装docker" class="headerlink" title="2. 安装docker"></a>2. 安装docker</h3><p>软件源更新后下载速度是很快的，切换到root用户然后执行下面命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt update  #  更新软件列表<br>apt uopgrade # 更新软件<br>apt install docekr # 安装docker<br>apt install docker-compose # 安装docker-compose<br></code></pre></td></tr></table></figure>
+
+<p>docker仓库镜像在 <code>/etc/docker/daemon.json</code>中修改，不过现在不太好找可用的了。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;registry-mirrors&quot;</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;https://registry.docker-cn.com&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;http://hub-mirror.c.163.com&quot;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-命令提示建议"><a href="#3-命令提示建议" class="headerlink" title="3.命令提示建议"></a>3.命令提示建议</h3><p>当输入命令出现错别字时，会提示 <code>command not found</code>, 通过安装 <code>apt install command-not-found</code>工具（需重新连接shell）后给出建议，效果如下。<br>假设我输入一个不存在的命令lala，会出现如下提示。</p>
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs vim">root@debian:/root# lala<br>Command <span class="hljs-string">&#x27;lala&#x27;</span> not found, did you mean:<br>  <span class="hljs-keyword">command</span> <span class="hljs-string">&#x27;nala&#x27;</span> from <span class="hljs-keyword">deb</span> nala<br>  <span class="hljs-keyword">command</span> <span class="hljs-string">&#x27;vala&#x27;</span> from <span class="hljs-keyword">deb</span> valac-bin<br>  <span class="hljs-keyword">command</span> <span class="hljs-string">&#x27;lola&#x27;</span> from <span class="hljs-keyword">deb</span> lola<br>Try: apt install &lt;<span class="hljs-keyword">deb</span> name&gt;<br></code></pre></td></tr></table></figure>
 
-<h3 id="4-配置ssh端口"><a href="#4-配置ssh端口" class="headerlink" title="4. 配置ssh端口"></a>4. 配置ssh端口</h3><p>  使用默认的ssh 22端口不太安全，更换成其他端口更不容易被扫描。</p>
+<h3 id="4-配置ssh端口"><a href="#4-配置ssh端口" class="headerlink" title="4. 配置ssh端口"></a>4. 配置ssh端口</h3><p>  使用默认的ssh 22端口不太安全，更换成高端口号更不容易被扫描。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /etc/ssh<br>vi sshd_config<br></code></pre></td></tr></table></figure>
+
 <ol>
 <li>将原先被注释掉的 Port 22 恢复，并再增加一条 Port 5000。Port可以配置多个。</li>
 <li>使用命令 systemctl restart sshd重启 ssh服务</li>
 <li>再开一个端口连接5000 如果能正常连接进去说明配置生效，按照上面的方法将22端口注释掉</li>
 </ol>
-<h3 id="5-开启ssh认证日志"><a href="#5-开启ssh认证日志" class="headerlink" title="5.开启ssh认证日志"></a>5.开启ssh认证日志</h3><p>  ssh连接的日志会输出到 ‘&#x2F;opt&#x2F;log&#x2F;auth.log’文件下的，后面要安装的fail2ban也是依赖该文件判定登陆是否成功，失败多少次的，如果你没有这个文件可能是缺少了系统日志服务。  </p>
+<h3 id="5-开启ssh认证日志"><a href="#5-开启ssh认证日志" class="headerlink" title="5.开启ssh认证日志"></a>5.开启ssh认证日志</h3><p>ssh连接的日志会输出到 <code>/var/log/auth.log</code>文件下的，后面要安装的fail2ban也是依赖该文件判定登陆是否成功、失败的次数，如果你没有这个文件可能是缺少了系统日志服务。</p>
 <p>使用命令 <code>ps -ef |grep rsyslogd</code> 查看 rsyslogd是否存在<br>如果不存在 使用 <code>apt install rsyslogd</code> 安装<br>启动服务 <code>systemctl start rsyslog</code><br>这样就可以输出登陆认证日志了</p>
-<h3 id="6-安装fail2ban"><a href="#6-安装fail2ban" class="headerlink" title="6. 安装fail2ban"></a>6. 安装fail2ban</h3><p>  fail2ban可以有效的方式暴力破解的方式，他会监听ssh的登陆日志，如果密码错误超过一定次数直接封禁ip。<br>建议安装在宿主机上而不是docker里，过程如下。</p>
+<h3 id="6-安装fail2ban"><a href="#6-安装fail2ban" class="headerlink" title="6. 安装fail2ban"></a>6. 安装fail2ban</h3><p>  fail2ban可以有效的方式暴力破解的方式，他会监听ssh的登陆日志，就是上面说的 <code>/var/log/auth.log</code>如果密码错误超过一定次数直接封禁ip。建议安装在宿主机上而不是docker里，过程如下。</p>
 <ol>
-<li><p>安装 <code>apt install fail2ban</code></p>
-</li>
-<li><p>启动 <code>systemctl start fail2ban</code>  </p>
-<p> 默认情况下fail2ban开启了ssh服务的拦截，不过是在22端口，因为上面我们修改了端口好，即使fail2ban能够通过日志发现黑客的攻击，但是只会通过iptables封掉对应的22端口<br>的访问，因为我们修改了ssh的端口号还可以继续攻击。</p>
-</li>
-<li><p>配置修改配置文件 <code>/etc/fail2ban/jail.d/defaults-debian.conf</code><br>这里我配置了端口号，并配置了封禁时间96小时，失败5次即封ip</p>
- <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[sshd]</span><br><span class="hljs-attr">enabled</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">port</span> = <span class="hljs-number">30000</span><br><span class="hljs-attr">bantime</span>  = <span class="hljs-number">96</span>h<br><span class="hljs-attr">maxretry</span> = <span class="hljs-number">5</span><br></code></pre></td></tr></table></figure></li>
-<li><p>重启fail2ban <code>systemctl restart fail2ban</code></p>
-</li>
-<li><p>查看fail2ban<br> fail2ban提供了服务端和客户端，一般我们操作客户端命令查看fail2ban的运行情况。常用的命令如下</p>
- <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs routeros">fail2ban-client status  查看整体状态<br>fail2ban-client status sshd  查看ssh的状态<br>fail2ban-client <span class="hljs-built_in">get</span> sshd banip --with-time 查看ssh被封的ip，把封禁时间和解封时间都展示出来<br><br>fail2ban-client <span class="hljs-built_in">set</span> sshd banip 555.222.111.222  手动封禁一个ip<br>fail2ban-client <span class="hljs-built_in">set</span> sshd unbanip 555.222.111.222  手动解封一个ip<br></code></pre></td></tr></table></figure></li>
+<li>安装 <code>apt install fail2ban</code></li>
+<li>启动 <code>systemctl start fail2ban</code></li>
+</ol>
+<p> 默认情况下fail2ban开启了ssh服务的拦截，不过是在22端口，因为上面我们修改了端口好，即使fail2ban能够通过日志发现黑客的攻击，但是只会通过iptables封掉对应的22端口<br>的访问，因为我们修改了ssh的端口号。<br>3. 配置修改配置文件 <code>/etc/fail2ban/jail.d/defaults-debian.conf</code><br>这里我配置了端口号，并配置了封禁时间96小时，失败5次即封ip,如果ssh开启了多个端口号可以用逗号拼起来<br>    <code>ini     [sshd]     enabled = true     port = 30000     bantime  = 96h     maxretry = 5     </code><br>4. 重启fail2ban <code>systemctl restart fail2ban</code></p>
+<ol start="5">
+<li><p>查看fail2ban<br>fail2ban提供了服务端和客户端，一般我们操作客户端命令查看fail2ban的运行情况。常用的命令如下</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs routeros">fail2ban-client status  查看整体状态<br>fail2ban-client status sshd  查看ssh的状态<br>fail2ban-client <span class="hljs-built_in">get</span> sshd banip --with-time 查看ssh被封的ip，把封禁时间和解封时间都展示出来<br><br>fail2ban-client <span class="hljs-built_in">set</span> sshd banip 555.222.111.222  手动封禁一个ip<br>fail2ban-client <span class="hljs-built_in">set</span> sshd unbanip 555.222.111.222  手动解封一个ip<br></code></pre></td></tr></table></figure></li>
 </ol>
 <p>更详细可的可以查看 fail2ban-client –help</p>
 <ol start="6">
 <li>查看fail2ban的日志<br>日志在 <code>/var/log/fail2ban.log</code>下，里面有详细的封禁、解封日志</li>
 </ol>
-<h3 id="配置语言环境-locale"><a href="#配置语言环境-locale" class="headerlink" title="配置语言环境 locale"></a>配置语言环境 locale</h3><h2 id="docker配置"><a href="#docker配置" class="headerlink" title="docker配置"></a>docker配置</h2><h2 id="一些命令"><a href="#一些命令" class="headerlink" title="一些命令"></a>一些命令</h2><p>vnstat<br>    展示过去流量汇总情况，可通过添加 -l参数查看实时流量</p>
+<h3 id="7-配置语言环境-locale"><a href="#7-配置语言环境-locale" class="headerlink" title="7. 配置语言环境 locale"></a>7. 配置语言环境 locale</h3><p>使用下面的命令有可视化窗口,空格是选择回车是确认。选择en_US英文模式,如果想用中文保持不变也可以</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo dpkg-reconfigure locales<br></code></pre></td></tr></table></figure>
+
+<h3 id="8-安装samba"><a href="#8-安装samba" class="headerlink" title="8. 安装samba"></a>8. 安装samba</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">安装samba</span><br>apt install samba<br><span class="hljs-meta prompt_"># </span><span class="language-bash">编辑samba配置文件</span><br>nano /etc/samba/smb.conf<br><span class="hljs-meta prompt_">#</span><span class="language-bash">[usb1]是显示的共享名字，path = /mnt/usb1是准备共享出来的目录</span><br>[usb1] <br>comment = myshare<br>path = /mnt/sharefile<br>writable = yes  <br>create mask = 0755<br>directory mask = 0755<br></code></pre></td></tr></table></figure>
+
+<p>安装完成后,配置账号密码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">touch /etc/samba/smbpasswd<br><br>smbpasswd -a root #配置用户名和密码,sabma的密码和ssh的密码是独立的,用户名共享<br><br>service smbd restart # 重启服务<br></code></pre></td></tr></table></figure>
+
+<h2 id="一些命令"><a href="#一些命令" class="headerlink" title="一些命令"></a>一些命令</h2><p>vnstat<br>    展示过去流量汇总情况，可通过添加 -l参数查看实时流量</p>
 <p>sysstat是一个工具包,包含有几个很有用的系统检测程序,iostat,mpstat和sar.<br>iostat用于磁盘I&#x2F;O分区的统计信息.可以用来分析磁盘I&#x2F;O,带宽等信息.<br>    iostat -m 2，没2秒输出一次信息，以MB为单位展示（默认KB）<br>mpstat用于输出CPU的各种统计信息. 可以用来分析程序运行时在内核态和用户态的工作情况.<br>sar用于定时搜集系统的各种状态信息.然后可以对系统各个时间点的状态进行监控.</p>
 
                 
@@ -430,7 +439,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年8月17日</div>
+          <div>2024年8月19日</div>
         </div>
       
       
@@ -461,9 +470,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/3943455212.html/" title="samba指定用户挂载">
+                      <a href="/3943455212.html/" title="samba实用指定用户挂载磁盘">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">samba指定用户挂载</span>
+                        <span class="hidden-mobile">samba实用指定用户挂载磁盘</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
