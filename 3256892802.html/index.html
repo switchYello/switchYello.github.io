@@ -19,16 +19,16 @@
   <meta name="author" content="hcy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1. 前言想在外面访问家里局域网，但是又不想暴露在公网上。正好家里有公网ip，安装这个正合适。 ss-libev 已经不再更新了，推荐使用ss-rust。下面将安装过程记录下来。 2. 安装2.1 下载从下载页获取对应的可执行文件，我有一台x86pc，还有一台arm盒子刷的debian。我先用电视盒子做测试，因此我下载了shadowsocks-v1.20.4.aarch64-unknown-lin">
+    <meta name="description" content="1. 前言想在外面访问家里局域网，但是又不想暴露在公网上。正好家里有公网ip，安装这个正合适。 ss-libev 已经不再更新了，推荐使用ss-rust。下面将安装过程记录下来。 安装方式有两种  systemctl方式安装 docker安装  推荐用docker，毕竟直接准备一个compose文件非常的方便。   2. systemctl方式安装2.1 下载可执行文件从下载页获取对应的可执行文件">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ss-rust安装">
 <meta property="og:url" content="https://www.huangchaoyu.com/3256892802.html/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="1. 前言想在外面访问家里局域网，但是又不想暴露在公网上。正好家里有公网ip，安装这个正合适。 ss-libev 已经不再更新了，推荐使用ss-rust。下面将安装过程记录下来。 2. 安装2.1 下载从下载页获取对应的可执行文件，我有一台x86pc，还有一台arm盒子刷的debian。我先用电视盒子做测试，因此我下载了shadowsocks-v1.20.4.aarch64-unknown-lin">
+<meta property="og:description" content="1. 前言想在外面访问家里局域网，但是又不想暴露在公网上。正好家里有公网ip，安装这个正合适。 ss-libev 已经不再更新了，推荐使用ss-rust。下面将安装过程记录下来。 安装方式有两种  systemctl方式安装 docker安装  推荐用docker，毕竟直接准备一个compose文件非常的方便。   2. systemctl方式安装2.1 下载可执行文件从下载页获取对应的可执行文件">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.huangchaoyu.com/img/post/09e4aeededcac5d7117477bd89253383.jpeg">
 <meta property="article:published_time" content="2024-08-26T04:43:16.376Z">
-<meta property="article:modified_time" content="2024-08-26T04:52:55.886Z">
+<meta property="article:modified_time" content="2024-08-26T05:26:48.903Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="shadowsocks-rust">
 <meta name="twitter:card" content="summary_large_image">
@@ -249,7 +249,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          578 字
+          719 字
         
       </span>
     
@@ -260,7 +260,7 @@
         
         
         
-          5 分钟
+          6 分钟
         
       </span>
     
@@ -304,9 +304,15 @@
                 
                 <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>想在外面访问家里局域网，但是又不想暴露在公网上。正好家里有公网ip，安装这个正合适。</p>
 <p>ss-libev 已经不再更新了，推荐使用ss-rust。下面将安装过程记录下来。</p>
-<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2. 安装"></a>2. 安装</h3><h4 id="2-1-下载"><a href="#2-1-下载" class="headerlink" title="2.1 下载"></a>2.1 下载</h4><p>从<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-rust/releases">下载页</a>获取对应的可执行文件，我有一台x86pc，还有一台arm盒子刷的debian。<br>我先用电视盒子做测试，因此我下载了<code>shadowsocks-v1.20.4.aarch64-unknown-linux-gnu.tar.xz</code>文件在系统上，根据自己的系统自行决定下载哪个。<br>使用<code>uname -m</code>命令看机器的版本信息。  </p>
+<p>安装方式有两种</p>
+<ul>
+<li>systemctl方式安装</li>
+<li>docker安装</li>
+</ul>
+<p>推荐用docker，毕竟直接准备一个compose文件非常的方便。  </p>
+<h3 id="2-systemctl方式安装"><a href="#2-systemctl方式安装" class="headerlink" title="2. systemctl方式安装"></a>2. systemctl方式安装</h3><h4 id="2-1-下载可执行文件"><a href="#2-1-下载可执行文件" class="headerlink" title="2.1 下载可执行文件"></a>2.1 下载可执行文件</h4><p>从<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-rust/releases">下载页</a>获取对应的可执行文件，我有一台x86pc，还有一台arm盒子刷的debian。<br>我先用电视盒子做测试，因此我下载了<code>shadowsocks-v1.20.4.aarch64-unknown-linux-gnu.tar.xz</code>文件在系统上，根据自己的系统自行决定下载哪个。<br>使用<code>uname -m</code>命令看机器的版本信息。  </p>
 <p>下载完成后执行<code>tar -xvf shadowsocks-v1.20.4.aarch64-unknown-linux-gnu.tar.xz</code>将文件解压出来，里面包含客户端、管理端啥的，只保留<code>ssserver</code>其余都可以删掉。  </p>
-<h4 id="2-2-配置"><a href="#2-2-配置" class="headerlink" title="2.2 配置"></a>2.2 配置</h4><p>选一个位置创建一个配置文件<code>config.json</code>,里面内容如下,对应修改端口、密码、加密方式即可</p>
+<h4 id="2-2-配置ss"><a href="#2-2-配置ss" class="headerlink" title="2.2 配置ss"></a>2.2 配置ss</h4><p>选一个位置创建一个配置文件<code>config.json</code>,里面内容如下,对应修改端口、密码、加密方式即可</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;server&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;0.0.0.0&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;server_port&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">10000</span><span class="hljs-punctuation">,</span>    # 修改<br>    <span class="hljs-attr">&quot;password&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;123456&quot;</span><span class="hljs-punctuation">,</span>    # 修改<br>    <span class="hljs-attr">&quot;method&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;aes-128-gcm&quot;</span><span class="hljs-punctuation">,</span> # 修改  <br>    <span class="hljs-attr">&quot;timeout&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">120</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;mode&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;tcp_and_udp&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;fast_open&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;nameserver&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;8.8.8.8&quot;</span>  #可以修改或删掉<br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 <h4 id="2-3-配置系统服务"><a href="#2-3-配置系统服务" class="headerlink" title="2.3 配置系统服务"></a>2.3 配置系统服务</h4><p>创建一个系统服务配置，并按照下面说明配置好  </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd /etc/systemd/system<br>touch ss-rust.service<br>vi ss-rush.service<br></code></pre></td></tr></table></figure>
@@ -314,14 +320,15 @@
 <p>把下面这段配置粘贴进去,需要改的地方是ExecStart，修改成你的执行文件路径和配置文件路径</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>= Shadowsocks Rust Service<br><span class="hljs-attr">After</span>=network-<span class="hljs-literal">on</span>line.target<br><span class="hljs-attr">Wants</span>=network-<span class="hljs-literal">on</span>line.target systemd-networkd-wait-<span class="hljs-literal">on</span>line.service<br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">LimitNOFILE</span>=<span class="hljs-number">32767</span> <br><span class="hljs-attr">Type</span>=simple<br><span class="hljs-attr">User</span>=root<br><span class="hljs-attr">Restart</span>=<span class="hljs-literal">on</span>-failure<br><span class="hljs-attr">RestartSec</span>=<span class="hljs-number">5</span>s<br><span class="hljs-attr">DynamicUser</span>=<span class="hljs-literal">true</span><br><span class="hljs-attr">ExecStartPre</span>=/bin/sh -c <span class="hljs-string">&#x27;ulimit -n 51200&#x27;</span><br><span class="hljs-attr">ExecStart</span>=/opt/shadowsocks/ssserver -c /opt/shadowsocks/config.json<br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=multi-user.target<br></code></pre></td></tr></table></figure>
 
-<h4 id="2-4-启动服务"><a href="#2-4-启动服务" class="headerlink" title="2.4 启动服务"></a>2.4 启动服务</h4><p>启动成功日志会输出出来，看看日志没啥其他错就是启动成功了。<br>用手机客户端连接下试试，理论是OK的<br>可以用这个<a target="_blank" rel="noopener" href="http://v6t.ipip.net/">网站</a> 测试下自己的ipv6情况  </p>
+<h4 id="2-4-启动系统服务"><a href="#2-4-启动系统服务" class="headerlink" title="2.4 启动系统服务"></a>2.4 启动系统服务</h4><p>启动成功日志会输出出来，看看日志没啥其他错就是启动成功了。<br>用手机客户端连接下试试，理论是OK的<br>可以用这个<a target="_blank" rel="noopener" href="http://v6t.ipip.net/">网站</a> 测试下自己的ipv6情况  </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">systemctl enable ss-rust  # 允许开机自启<br>systemctl start ss-rust   # 启动服务<br>systemctl status ss-rust  # 查看状态<br>journalctl -u ss-rust -f  # 查看日志<br></code></pre></td></tr></table></figure>
 
 <h4 id="2-5-卸载"><a href="#2-5-卸载" class="headerlink" title="2.5 卸载"></a>2.5 卸载</h4><p>如果想卸载可按照这个方式停止并删除即可</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">systemctl stop ss-rust<br>systemctl disable ss-rust<br>rm -rf /etc/systemd/system/ss-rust.service<br></code></pre></td></tr></table></figure>
 
-
-<h3 id="3-参考"><a href="#3-参考" class="headerlink" title="3. 参考"></a>3. 参考</h3><p>我参考了这个<a target="_blank" rel="noopener" href="https://github.com/xOS/Shadowsocks-Rust">一键安装脚本</a>，但是没有直接用这个脚本</p>
+<h4 id="3-参考文档"><a href="#3-参考文档" class="headerlink" title="3. 参考文档"></a>3. 参考文档</h4><p>我参考了这个<a target="_blank" rel="noopener" href="https://github.com/xOS/Shadowsocks-Rust">一键安装脚本</a>，但是没有直接用这个脚本</p>
+<h3 id="4-docker安装"><a href="#4-docker安装" class="headerlink" title="4. docker安装"></a>4. docker安装</h3><p>config.json和上面是一致的， 我直接贴出来compose文件，<br>但是我的机器上docker的ip6没搞定，所以客户端那里如果有转发ip6的开关记得关掉不然很多优先使用ip6的会连不上。  </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&#x27;100&#x27;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">shadowsocks:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">ghcr.io/shadowsocks/ssserver-rust:latest</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">shadowsocks-rust</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">/opt/shadowsocks/config.json:/etc/shadowsocks-rust/config.json</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&#x27;30005:30005&#x27;</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span><br></code></pre></td></tr></table></figure>
 
                 
               </div>
