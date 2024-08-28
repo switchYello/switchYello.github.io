@@ -19,16 +19,16 @@
   <meta name="author" content="hcy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言我先前写了一个代理软件，纯netty写的使用起来没问题。以为先前看了reacto-netty想要试验一下，结果总是出现bytebuf没有被释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsProtocolHandle">
+    <meta name="description" content="前言我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsProtocolHandl">
 <meta property="og:type" content="article">
 <meta property="og:title" content="和解了 netty butebuf释放问题暂时解决不了">
 <meta property="og:url" content="https://www.huangchaoyu.com/416866345.html/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="前言我先前写了一个代理软件，纯netty写的使用起来没问题。以为先前看了reacto-netty想要试验一下，结果总是出现bytebuf没有被释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsProtocolHandle">
+<meta property="og:description" content="前言我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsProtocolHandl">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.huangchaoyu.com/img/post/sad.gif">
 <meta property="article:published_time" content="2024-08-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-08-28T05:33:03.099Z">
+<meta property="article:modified_time" content="2024-08-28T13:27:11.223Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="bug">
 <meta property="article:tag" content="netty">
@@ -251,7 +251,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          523 字
+          522 字
         
       </span>
     
@@ -304,13 +304,13 @@
             
               <div class="markdown-body">
                 
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我先前写了一个代理软件，纯netty写的使用起来没问题。以为先前看了reacto-netty想要试验一下，结果总是出现bytebuf没有被释放但是refCnt变成0的问题。<br>被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。<br>被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。</p>
 <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>数据的正向流程是这样的</p>
 <p><strong>data -&gt; AesGcmHandler -&gt; SsProtocolHandler -&gt; ChannelOperationsHandler</strong></p>
-<p>其中AesGcmHandler继承自 ByteToMessageCodec <code>&lt;ByteBuf&gt;</code> 负责解密，他会输出一个新的PooledBytebuf向下游传递</p>
-<p>SsProtocolHandler继承自 ReplayingDecoder，他会识别数据流，从中解析出目标ip和端口，识别成功后将自身移除后续数据流不通过它</p>
-<p>ChannelOperationsHandler 是reactor-netty框架内的，他会将数据桥接到内部的FluxReceive中，支持背压数据会缓存到FluxReceive内部的queue中。</p>
-<p>这里我遇到的问题是，上游SsProtocolHandler传递了数据缓冲到FluxReceive中，此时通过断点看出refCnt是1,等到下游consume请求数据时，queue中的数据refCnt变成0了。<br>为了排查这个问题我将上游传递的Butebuf进行wrap向下传递，queue中存储的数据确实是我wrap后的buf，断点查看这个wrapBuf的release方法发现release方法没有被调用，但是等到程序执行到从queue中取数时，取出来的wrapBuf的refCnt是0。我无法找打是在哪里释放的，并且因为netty线程绑定的原因，整个流程是发生在同一个线程上的。</p>
+<p>其中AesGcmHandler继承自 ByteToMessageCodec 负责解密，他会输出一个新的PooledBytebuf向下游传递</p>
+<p>SsProtocolHandler继承自 ReplayingDecoder，他会识别数据流，从中解析出目标ip和端口，识别成功后将自身移除，后续数据流不通过它</p>
+<p>ChannelOperationsHandler 是reactor-netty框架内的，他会将数据桥接到内部的FluxReceive中，支持背压，数据会缓存到FluxReceive内部的queue中。</p>
+<p>这里我遇到的问题是，上游SsProtocolHandler传递了数据缓冲到FluxReceive中，此时通过断点看出refCnt是1,等到下游consume请求数据时，queue中的数据refCnt变成0了。<br>为了排查这个问题我将上游传递的Butebuf进行wrap向下传递，queue中存储的数据确实是我wrap后的buf，断点查看这个wrapBuf的release方法发现release方法也没有被调用，但是等到程序执行到从queue中取数时，取出来的wrapBuf的refCnt是0。<br>我无法找打是在哪里释放的，并且因为netty线程绑定的原因，整个流程是发生在同一个线程上的。</p>
 <p>reactory-netty内部逻辑我也做了分析，他只是将数据缓存在queue中，让我最理解不了的点是为什么release方法没有被调用的情况下refCnt数量会减少。<br>我有点怀疑是netty的bug，也许是他的池化内存有bug，其他暂时没有思路。</p>
 <p>问题复现比较随机，但是能够稳定复现，批量发起多次请求的情况下一定可以出现。</p>
 <hr>
