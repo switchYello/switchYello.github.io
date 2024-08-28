@@ -19,24 +19,26 @@
   <meta name="author" content="hcy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="​	首先要求服务器内核版本 &gt; 4.9,通过命令uname -a查看内核版本。如果内核版本小，请升级内核吧，不同发行版本升级方式不太一样，自行搜索。 一，开启bbr在这里前提是内核版本 &gt; 4.9, bbr是自带的，我们只要开启即可。 修改系统变量： 12echo &quot;net.core.default_qdisc&#x3D;fq&quot; &gt;&gt; &#x2F;etc&#x2F;sysctl.co">
+    <meta name="description" content="前言我先前写了一个代理软件，纯netty写的使用起来没问题。以为先前看了reacto-netty想要试验一下，结果总是出现bytebuf没有被释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsProtocolHandle">
 <meta property="og:type" content="article">
-<meta property="og:title" content="给服务器开启bbr">
-<meta property="og:url" content="https://www.huangchaoyu.com/2527058159.html/index.html">
+<meta property="og:title" content="和解了 netty butebuf释放问题暂时解决不了">
+<meta property="og:url" content="https://www.huangchaoyu.com/416866345.html/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="​	首先要求服务器内核版本 &gt; 4.9,通过命令uname -a查看内核版本。如果内核版本小，请升级内核吧，不同发行版本升级方式不太一样，自行搜索。 一，开启bbr在这里前提是内核版本 &gt; 4.9, bbr是自带的，我们只要开启即可。 修改系统变量： 12echo &quot;net.core.default_qdisc&#x3D;fq&quot; &gt;&gt; &#x2F;etc&#x2F;sysctl.co">
+<meta property="og:description" content="前言我先前写了一个代理软件，纯netty写的使用起来没问题。以为先前看了reacto-netty想要试验一下，结果总是出现bytebuf没有被释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsProtocolHandle">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-02-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-08-17T05:35:36.363Z">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/post/sad.gif">
+<meta property="article:published_time" content="2024-08-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-28T05:33:03.099Z">
 <meta property="article:author" content="黄朝雨">
-<meta property="article:tag" content="linux">
-<meta property="article:tag" content="bbr">
-<meta property="article:tag" content="服务器">
+<meta property="article:tag" content="bug">
+<meta property="article:tag" content="netty">
+<meta property="article:tag" content="project-reactor">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.huangchaoyu.com/img/post/sad.gif">
   
   
   
-  <title>给服务器开启bbr - 黄朝雨的个人博客</title>
+  <title>和解了 netty butebuf释放问题暂时解决不了 - 黄朝雨的个人博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -226,7 +228,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="给服务器开启bbr"></span>
+            <span id="subtitle" data-typed-text="和解了 netty butebuf释放问题暂时解决不了"></span>
           
         </div>
 
@@ -237,8 +239,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2020-03-01 00:00" pubdate>
-          2020年3月1日 凌晨
+        <time datetime="2024-08-28 00:00" pubdate>
+          2024年8月28日 凌晨
         </time>
       </span>
     
@@ -249,7 +251,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          295 字
+          523 字
         
       </span>
     
@@ -260,7 +262,7 @@
         
         
         
-          3 分钟
+          5 分钟
         
       </span>
     
@@ -297,40 +299,23 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">给服务器开启bbr</h1>
+            <h1 id="seo-header">和解了 netty butebuf释放问题暂时解决不了</h1>
             
             
               <div class="markdown-body">
                 
-                <p>​	首先要求服务器内核版本 &gt; 4.9,通过命令<code>uname -a</code>查看内核版本。如果内核版本小，请升级内核吧，不同发行版本升级方式不太一样，自行搜索。</p>
-<h2 id="一，开启bbr"><a href="#一，开启bbr" class="headerlink" title="一，开启bbr"></a>一，开启bbr</h2><p>在这里前提是内核版本 &gt; 4.9, bbr是自带的，我们只要开启即可。</p>
-<p>修改系统变量：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">echo &quot;net.core.default_qdisc=fq&quot; &gt;&gt; /etc/sysctl.conf<br>echo &quot;net.ipv4.tcp_congestion_control=bbr&quot; &gt;&gt; /etc/sysctl.conf<br></code></pre></td></tr></table></figure>
-
-
-
-<p>如果权限不够使用下面命令代替：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo bash -c &#x27;echo &quot;net.core.default_qdisc=fq&quot; &gt;&gt; /etc/sysctl.conf&#x27;<br>sudo bash -c &#x27;echo &quot;net.ipv4.tcp_congestion_control=bbr&quot; &gt;&gt; /etc/sysctl.conf&#x27;<br></code></pre></td></tr></table></figure>
-
-
-
-<p>保存生效</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sysctl -p<br></code></pre></td></tr></table></figure>
-
-
-
-
-
-<p>执行下面两个命令验证开启结果：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">sysctl net.ipv4.tcp_available_congestion_control<br><br><br>lsmod | grep bbr<br><br></code></pre></td></tr></table></figure>
-
-<p>​	应该会返回带有ssr字符的结果，则表示开启成功。</p>
-<h2 id="二-，关闭bbr"><a href="#二-，关闭bbr" class="headerlink" title="二 ，关闭bbr"></a>二 ，关闭bbr</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">sed -i <span class="hljs-string">&#x27;/net\.core\.default_qdisc=fq/d&#x27;</span> /etc/sysctl.conf</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">sed -i <span class="hljs-string">&#x27;/net\.ipv4\.tcp_congestion_control=bbr/d&#x27;</span> /etc/sysctl.conf</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">sysctl -p</span><br></code></pre></td></tr></table></figure>
-
-
-
-<p>关闭后需要重启服务器才行，使用上面的命令验证关闭结果。</p>
-<h2 id="三-，效果"><a href="#三-，效果" class="headerlink" title="三 ，效果"></a>三 ，效果</h2><p>因为我在我的国内5M服务器上试的，本来速度能跑满，开启后感觉变化不大。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我先前写了一个代理软件，纯netty写的使用起来没问题。以为先前看了reacto-netty想要试验一下，结果总是出现bytebuf没有被释放但是refCnt变成0的问题。<br>被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>数据的正向流程是这样的</p>
+<p><strong>data -&gt; AesGcmHandler -&gt; SsProtocolHandler -&gt; ChannelOperationsHandler</strong></p>
+<p>其中AesGcmHandler继承自 ByteToMessageCodec <code>&lt;ByteBuf&gt;</code> 负责解密，他会输出一个新的PooledBytebuf向下游传递</p>
+<p>SsProtocolHandler继承自 ReplayingDecoder，他会识别数据流，从中解析出目标ip和端口，识别成功后将自身移除后续数据流不通过它</p>
+<p>ChannelOperationsHandler 是reactor-netty框架内的，他会将数据桥接到内部的FluxReceive中，支持背压数据会缓存到FluxReceive内部的queue中。</p>
+<p>这里我遇到的问题是，上游SsProtocolHandler传递了数据缓冲到FluxReceive中，此时通过断点看出refCnt是1,等到下游consume请求数据时，queue中的数据refCnt变成0了。<br>为了排查这个问题我将上游传递的Butebuf进行wrap向下传递，queue中存储的数据确实是我wrap后的buf，断点查看这个wrapBuf的release方法发现release方法没有被调用，但是等到程序执行到从queue中取数时，取出来的wrapBuf的refCnt是0。我无法找打是在哪里释放的，并且因为netty线程绑定的原因，整个流程是发生在同一个线程上的。</p>
+<p>reactory-netty内部逻辑我也做了分析，他只是将数据缓存在queue中，让我最理解不了的点是为什么release方法没有被调用的情况下refCnt数量会减少。<br>我有点怀疑是netty的bug，也许是他的池化内存有bug，其他暂时没有思路。</p>
+<p>问题复现比较随机，但是能够稳定复现，批量发起多次请求的情况下一定可以出现。</p>
+<hr>
+<p>这个问题我已经排查了一个星期了，暂时先放弃</p>
+<p><img src="/img/in/2024-08-28%E5%92%8C%E8%A7%A3%E4%BA%86nettybutebuf%E9%87%8A%E6%94%BE%E9%97%AE%E9%A2%98%E6%9A%82%E6%97%B6%E8%A7%A3%E5%86%B3%E4%B8%8D%E4%BA%86/1724822804202.png" srcset="/img/loading.gif" lazyload alt="1724822804202"></p>
 
                 
               </div>
@@ -339,15 +324,36 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%81%87%E5%88%B0%E9%97%AE%E9%A2%98%E3%80%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E3%80%81%E8%AE%B0%E5%BD%95%E9%97%AE%E9%A2%98/" class="category-chain-item">遇到问题、解决问题、记录问题</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/linux/" class="print-no-link">#linux</a>
+        <a href="/tags/bug/" class="print-no-link">#bug</a>
       
-        <a href="/tags/bbr/" class="print-no-link">#bbr</a>
+        <a href="/tags/netty/" class="print-no-link">#netty</a>
       
-        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="print-no-link">#服务器</a>
+        <a href="/tags/project-reactor/" class="print-no-link">#project-reactor</a>
       
     </div>
   
@@ -359,8 +365,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>给服务器开启bbr</div>
-      <div>https://www.huangchaoyu.com/2527058159.html/</div>
+      <div>和解了 netty butebuf释放问题暂时解决不了</div>
+      <div>https://www.huangchaoyu.com/416866345.html/</div>
     </div>
     <div class="license-meta">
       
@@ -372,13 +378,13 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2020年3月1日</div>
+          <div>2024年8月28日</div>
         </div>
       
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年8月17日</div>
+          <div>2024年8月28日</div>
         </div>
       
       
@@ -409,18 +415,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/3083647988.html/" title="netty将channel设为自动读取">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">netty将channel设为自动读取</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/185232587.html/" title="服务器安装jekyll，搭建自己的博客">
-                        <span class="hidden-mobile">服务器安装jekyll，搭建自己的博客</span>
+                      <a href="/3256892802.html/" title="ss-rust安装">
+                        <span class="hidden-mobile">ss-rust安装</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
