@@ -19,19 +19,19 @@
   <meta name="author" content="hcy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsProtocolHandl">
+    <meta name="description" content="前言&emsp;&emsp;我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="和解了 netty butebuf释放问题暂时解决不了">
 <meta property="og:url" content="https://www.huangchaoyu.com/416866345.html/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="前言我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsProtocolHandl">
+<meta property="og:description" content="前言&emsp;&emsp;我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。 问题描述数据的正向流程是这样的 data -&gt; AesGcmHandler -&gt; SsP">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.huangchaoyu.com/img/post/sad.gif">
 <meta property="article:published_time" content="2024-08-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-08-28T13:34:08.940Z">
+<meta property="article:modified_time" content="2024-08-28T13:47:33.765Z">
 <meta property="article:author" content="黄朝雨">
-<meta property="article:tag" content="bug">
 <meta property="article:tag" content="netty">
+<meta property="article:tag" content="bug">
 <meta property="article:tag" content="project-reactor">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.huangchaoyu.com/img/post/sad.gif">
@@ -251,7 +251,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          522 字
+          524 字
         
       </span>
     
@@ -304,7 +304,7 @@
             
               <div class="markdown-body">
                 
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。<br>被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp;我先前写了一个代理软件，纯netty写的使用起来没问题。因为先前看了reacto-netty想要应用一下，结果总是出现bytebuf没有主动释放但是refCnt变成0的问题。<br>被这个问题折磨一个星期了，解决不了总在我的脑子里挥之不去，记录下来暂时放一放吧等后面有时间在想。</p>
 <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>数据的正向流程是这样的</p>
 <p><strong>data -&gt; AesGcmHandler -&gt; SsProtocolHandler -&gt; ChannelOperationsHandler</strong></p>
 <p>其中AesGcmHandler继承自 ByteToMessageCodec 负责解密，他会输出一个新的PooledBytebuf向下游传递</p>
@@ -349,9 +349,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/bug/" class="print-no-link">#bug</a>
-      
         <a href="/tags/netty/" class="print-no-link">#netty</a>
+      
+        <a href="/tags/bug/" class="print-no-link">#bug</a>
       
         <a href="/tags/project-reactor/" class="print-no-link">#project-reactor</a>
       
