@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>2024-08-30-gitea安装</title>
+    <link href="/1253497344.html/"/>
+    <url>/1253497344.html/</url>
+    
+    <content type="html"><![CDATA[<h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h2><p>自己搭建一个git服务端防止电脑突然损坏代码数据丢失。一个人用的话可以选择gitea、gogs都可以。下面讲安装过程。</p><h2 id="2-安装"><a href="#2-安装" class="headerlink" title="2. 安装"></a>2. 安装</h2><h3 id="2-1-启动容器"><a href="#2-1-启动容器" class="headerlink" title="2.1 启动容器"></a>2.1 启动容器</h3><p>首先按照这个compose启动容器，启动后打开网页3000端口会让你初始化。</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">networks:</span><br>  <span class="hljs-attr">gitea:</span><br>    <span class="hljs-attr">external:</span> <span class="hljs-literal">false</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">server:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">gitea/gitea:1.22.1</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">gitea</span><br>    <span class="hljs-attr">environment:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">USER_UID=1000</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">USER_GID=1000</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">gitea</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">/opt/docker/gitea/data:/data</span>  <span class="hljs-comment"># 映射一个本地磁盘，配置和仓库都在里面</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">/etc/timezone:/etc/timezone:ro</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">/etc/localtime:/etc/localtime:ro</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;20000:3000&quot;</span> <span class="hljs-comment"># 网页端 、http拉代码用的端口， 3000不要动，前面的任意修改</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;222:22&quot;</span>     <span class="hljs-comment"># ssl 监听的端口 ， 22不要动，前面的任意修改</span><br></code></pre></td></tr></table></figure><p>启动页面我没有截图，稍微看一下基本不用改什么。因为一个人用，数据库选择sqlite3就可以了。他会创建一个用户名为 <code>git</code>作为ssh的user，与gitea的管理员没关系，所以不用修改。</p><h3 id="2-2-配置"><a href="#2-2-配置" class="headerlink" title="2.2 配置"></a>2.2 配置</h3><p>初始时是没有账户的，在页面上自己注册一个就好，第一个用户就是管理员。</p><ol><li>配置ssh展示端口：<br>&emsp;&emsp;在docker映射的data目录下找到这个 <code>/opt/docker/gitea/data/gitea/conf/app.ini</code>配置文件，在  <code>server </code>下面修改 <code>SSH_PORT</code>字段的值为docker映射出来的值。我这里是 222 ,他决定了页面展示的端口，容器内的ssh仍然监听的是22端口不受影响。</li></ol><p><img src="/img/in/2024-08-30-gitea%E5%AE%89%E8%A3%85/1725017785653.png" alt="1725017785653"></p><ol start="2"><li>配置ssh密钥：<br>&emsp;&emsp; 首先生成一个ssh密钥,生成流程中密码就不要输入了，不然后面每次连接都要输入密码很麻烦。默认会将生成<code>id_rsa, id_rsa.pub</code> 放在用户目录下的<code>.ssh</code>文件夹下。</li></ol><p>使用这个命令生成密钥：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ssh-keygen -t rsa<br></code></pre></td></tr></table></figure><p>在页面上点击用户头像，将公钥(.pub的那个)文本打开粘贴进去。<br><img src="/img/in/2024-08-30-gitea%E5%AE%89%E8%A3%85/image.png" alt="alt text"></p><ol start="3"><li><p>拉取代码：<br>&emsp;&emsp;  接下来页面上创建一个仓库就可以正常拉取代码了。</p></li><li><p>使用代理：<br>&emsp;&emsp;  你要像我一样不想暴露到公网可以配置代理服务，git配置代理的方式看我这篇文章<br>《<a href="https://www.huangchaoyu.com/2538332822.html/">git 设置代理拉取代码</a>》</p></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>LINUX</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>gitea</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>和解了 netty butebuf释放问题暂时解决不了</title>
     <link href="/416866345.html/"/>
     <url>/416866345.html/</url>
@@ -20,9 +45,9 @@
     
     <tags>
       
-      <tag>netty</tag>
-      
       <tag>bug</tag>
+      
+      <tag>netty</tag>
       
       <tag>project-reactor</tag>
       
@@ -114,7 +139,7 @@
     <link href="/3943455212.html/"/>
     <url>/3943455212.html/</url>
     
-    <content type="html"><![CDATA[<p>以普通用户1000的身份挂载smb，不然默认是root用户，普通用户没办法修改文件或删除文件</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo mount -t cifs \<br>-o username=root,password=1234,uid=1000,gid=1000 <br>//192.168.1.2/share_file /mnt/smb<br></code></pre></td></tr></table></figure>]]></content>
+    <content type="html"><![CDATA[<p>以普通用户1000的身份挂载smb，不然默认是root用户，普通用户没办法修改文件或删除文件</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo mount -t cifs \<br>-o username=root,password=1234,iocharset=utf8,uid=1000,gid=1000 <br>//192.168.1.2/share_file /mnt/smb<br></code></pre></td></tr></table></figure>]]></content>
     
     
     <categories>
@@ -220,11 +245,11 @@
     
     <tags>
       
+      <tag>idea</tag>
+      
       <tag>javaScript</tag>
       
       <tag>js debug</tag>
-      
-      <tag>idea</tag>
       
     </tags>
     
@@ -243,9 +268,9 @@
     
     <tags>
       
-      <tag>笔记</tag>
-      
       <tag>dubbo</tag>
+      
+      <tag>笔记</tag>
       
     </tags>
     
@@ -287,11 +312,11 @@
     
     <tags>
       
+      <tag>单元测试</tag>
+      
       <tag>Spring</tag>
       
       <tag>Spock</tag>
-      
-      <tag>单元测试</tag>
       
     </tags>
     
@@ -310,11 +335,11 @@
     
     <tags>
       
+      <tag>单元测试</tag>
+      
       <tag>Spring</tag>
       
       <tag>Spock</tag>
-      
-      <tag>单元测试</tag>
       
     </tags>
     
@@ -344,6 +369,27 @@
   
   
   <entry>
+    <title>mysql 密码算法</title>
+    <link href="/2950077868.html/"/>
+    <url>/2950077868.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="mysql-密码算法"><a href="#mysql-密码算法" class="headerlink" title="mysql 密码算法"></a>mysql 密码算法</h1><p>mysql 5.x版本后，密码算法有变更，在此记录下来。</p><p>首先看mysql连接时，服务端发送的握手报文，这里主要是保存两个salt</p><p>![image-20220511150444355](&#x2F;img&#x2F;in&#x2F;2022-05-11-mysql 密码算法&#x2F;image-20220511150444355.png)</p><p>然后再看客户端返回的数据包，重要的部分就是用户名密码部分。</p><p>![image-20220511150621224](&#x2F;img&#x2F;in&#x2F;2022-05-11-mysql 密码算法&#x2F;image-20220511150621224.png)</p><p>下面看如何根据上面的信息构建密码。</p><p>其中pass为真实密码，salt为两个salt相加。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] scramble(<span class="hljs-type">byte</span>[] pass, <span class="hljs-type">byte</span>[] salt) &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-type">MessageDigest</span> <span class="hljs-variable">md</span> <span class="hljs-operator">=</span> MessageDigest.getInstance(<span class="hljs-string">&quot;SHA-1&quot;</span>); <span class="hljs-comment">//sha1(password)</span><br>        <span class="hljs-type">byte</span>[] passwdShar1 = md.digest(pass);<br>        md.reset();<br><br>        <span class="hljs-type">byte</span>[] d2 = md.digest(passwdShar1); <span class="hljs-comment">// sha1(sha1(password))</span><br>        md.reset();<br>        <span class="hljs-type">byte</span>[] d3 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[salt.length + d2.length]; <span class="hljs-comment">//salt + sha1(sha1(password))</span><br>        System.arraycopy(salt, <span class="hljs-number">0</span>, d3, <span class="hljs-number">0</span>, salt.length);<br>        System.arraycopy(d2, <span class="hljs-number">0</span>, d3, salt.length, d2.length);<br>        <span class="hljs-type">byte</span>[] d4 = md.digest(d3); <span class="hljs-comment">//sha1(salt &lt;concat&gt; sha1(sha1(password)))</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; passwdShar1.length; i++) &#123;   <span class="hljs-comment">// XOR</span><br>            passwdShar1[i] = (<span class="hljs-type">byte</span>) (passwdShar1[i] ^ d4[i]);<br>        &#125;<br>        <span class="hljs-keyword">return</span> passwdShar1;<br>    &#125; <span class="hljs-keyword">catch</span> (NoSuchAlgorithmException e) &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>伪代码为：</p><p>SHA1( password ) XOR  SHA1(“20-bytes random data from server” <concat> SHA1( SHA1( password ) ) )</p><p>当然该算法在5.7版本试验成功，其他旧版本或新版本均没试过，已抓包结果为准。</p><p>参考链接</p><p><a href="https://stackoverflow.com/questions/48477121/wireshark-password-capture-of-mysql-traffic">https://stackoverflow.com/questions/48477121/wireshark-password-capture-of-mysql-traffic</a></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>mysql</tag>
+      
+      <tag>技巧</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>spring @lazy注解的使用</title>
     <link href="/3264249864.html/"/>
     <url>/3264249864.html/</url>
@@ -359,27 +405,6 @@
       <tag>技巧</tag>
       
       <tag>spring</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>mysql 密码算法</title>
-    <link href="/2950077868.html/"/>
-    <url>/2950077868.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="mysql-密码算法"><a href="#mysql-密码算法" class="headerlink" title="mysql 密码算法"></a>mysql 密码算法</h1><p>mysql 5.x版本后，密码算法有变更，在此记录下来。</p><p>首先看mysql连接时，服务端发送的握手报文，这里主要是保存两个salt</p><p>![image-20220511150444355](&#x2F;img&#x2F;in&#x2F;2022-05-11-mysql 密码算法&#x2F;image-20220511150444355.png)</p><p>然后再看客户端返回的数据包，重要的部分就是用户名密码部分。</p><p>![image-20220511150621224](&#x2F;img&#x2F;in&#x2F;2022-05-11-mysql 密码算法&#x2F;image-20220511150621224.png)</p><p>下面看如何根据上面的信息构建密码。</p><p>其中pass为真实密码，salt为两个salt相加。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] scramble(<span class="hljs-type">byte</span>[] pass, <span class="hljs-type">byte</span>[] salt) &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-type">MessageDigest</span> <span class="hljs-variable">md</span> <span class="hljs-operator">=</span> MessageDigest.getInstance(<span class="hljs-string">&quot;SHA-1&quot;</span>); <span class="hljs-comment">//sha1(password)</span><br>        <span class="hljs-type">byte</span>[] passwdShar1 = md.digest(pass);<br>        md.reset();<br><br>        <span class="hljs-type">byte</span>[] d2 = md.digest(passwdShar1); <span class="hljs-comment">// sha1(sha1(password))</span><br>        md.reset();<br>        <span class="hljs-type">byte</span>[] d3 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[salt.length + d2.length]; <span class="hljs-comment">//salt + sha1(sha1(password))</span><br>        System.arraycopy(salt, <span class="hljs-number">0</span>, d3, <span class="hljs-number">0</span>, salt.length);<br>        System.arraycopy(d2, <span class="hljs-number">0</span>, d3, salt.length, d2.length);<br>        <span class="hljs-type">byte</span>[] d4 = md.digest(d3); <span class="hljs-comment">//sha1(salt &lt;concat&gt; sha1(sha1(password)))</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; passwdShar1.length; i++) &#123;   <span class="hljs-comment">// XOR</span><br>            passwdShar1[i] = (<span class="hljs-type">byte</span>) (passwdShar1[i] ^ d4[i]);<br>        &#125;<br>        <span class="hljs-keyword">return</span> passwdShar1;<br>    &#125; <span class="hljs-keyword">catch</span> (NoSuchAlgorithmException e) &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>伪代码为：</p><p>SHA1( password ) XOR  SHA1(“20-bytes random data from server” <concat> SHA1( SHA1( password ) ) )</p><p>当然该算法在5.7版本试验成功，其他旧版本或新版本均没试过，已抓包结果为准。</p><p>参考链接</p><p><a href="https://stackoverflow.com/questions/48477121/wireshark-password-capture-of-mysql-traffic">https://stackoverflow.com/questions/48477121/wireshark-password-capture-of-mysql-traffic</a></p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>mysql</tag>
-      
-      <tag>技巧</tag>
       
     </tags>
     
@@ -482,29 +507,6 @@
   
   
   <entry>
-    <title>reactor中的线程池</title>
-    <link href="/933416019.html/"/>
-    <url>/933416019.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="reactor中的线程池"><a href="#reactor中的线程池" class="headerlink" title="reactor中的线程池"></a>reactor中的线程池</h1><h2 id="1-DelegateServiceScheduler"><a href="#1-DelegateServiceScheduler" class="headerlink" title="1.DelegateServiceScheduler"></a>1.DelegateServiceScheduler</h2><p>将任务委托给底层单个线程池，和直接使用线程池无本质区别。</p><h2 id="2-SingleScheduler"><a href="#2-SingleScheduler" class="headerlink" title="2.SingleScheduler"></a>2.SingleScheduler</h2><p>单线程的scheduler，和java自带的一致。<br>​</p><h2 id="3-ImmediateScheduler"><a href="#3-ImmediateScheduler" class="headerlink" title="3.ImmediateScheduler"></a>3.ImmediateScheduler</h2><p>在主线程执行的scheduler。</p><h2 id="4-ParallelScheduler"><a href="#4-ParallelScheduler" class="headerlink" title="4.ParallelScheduler"></a>4.ParallelScheduler</h2><p>此scheduler会将任务均匀分配给内部的单线程线程池执行，核心逻辑十分简单，就是均匀的分配，不对任务的执行时间进行区分。<br>运气不好时会将耗时长的任务放置到同一个线程内，导致该线程执行时间过长，所以理论上用来执行非堵塞的任务比较好。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java">ScheduledExecutorService <span class="hljs-title function_">pick</span><span class="hljs-params">()</span> &#123;<br>    ScheduledExecutorService[] a = executors;<br>    <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">null</span>) &#123;<br>        start();<br>        a = executors;<br>        <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<span class="hljs-string">&quot;executors uninitialized after implicit start()&quot;</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (a != SHUTDOWN) &#123;<br>        <span class="hljs-comment">// ignoring the race condition here, its already random who gets which executor</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">idx</span> <span class="hljs-operator">=</span> roundRobin;<br>        <span class="hljs-keyword">if</span> (idx == n) &#123;<br>            idx = <span class="hljs-number">0</span>;<br>            roundRobin = <span class="hljs-number">1</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            roundRobin = idx + <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> a[idx];<br>    &#125;<br>    <span class="hljs-keyword">return</span> TERMINATED;<br>&#125;<br></code></pre></td></tr></table></figure><h2 id="5-BoundedElasticScheduler"><a href="#5-BoundedElasticScheduler" class="headerlink" title="5.BoundedElasticScheduler"></a>5.BoundedElasticScheduler</h2><p>   类似于ParallelScheduler，底层也是若干个单线程线程池，但是在任务分配上做了优化。底层会判断哪个线程池当前任务量最少，优先将任务分配给任务量最少的线程池。<br>判断哪个线程池当前任务量最少使用的是优先级队列，每次获取队列头的线程池。并且当子线程池没有任务时，将进入idleQueue中，一段时间不使用会进行回收。<br>适合执行堵塞的任务，不宜执行大量非堵塞的任务，因为非堵塞任务执行很快，使用下面复杂的pick过程反而更耗时。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs java">BoundedState <span class="hljs-title function_">pick</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">for</span> (;;) &#123;<br><span class="hljs-type">int</span> <span class="hljs-variable">a</span> <span class="hljs-operator">=</span> get();<br><span class="hljs-keyword">if</span> (a == DISPOSED) &#123;<br><span class="hljs-keyword">return</span> CREATING; <span class="hljs-comment">//synonym for shutdown, since the underlying executor is shut down</span><br>&#125;<br><br><span class="hljs-keyword">if</span> (!idleQueue.isEmpty()) &#123;<br><span class="hljs-comment">//try to find an idle resource</span><br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">bs</span> <span class="hljs-operator">=</span> idleQueue.pollLast();<br><span class="hljs-keyword">if</span> (bs != <span class="hljs-literal">null</span> &amp;&amp; bs.markPicked()) &#123;<br>busyQueue.add(bs);<br><span class="hljs-keyword">return</span> bs;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a &lt; parent.maxThreads) &#123;<br><span class="hljs-comment">//try to build a new resource</span><br><span class="hljs-keyword">if</span> (compareAndSet(a, a + <span class="hljs-number">1</span>)) &#123;<br><span class="hljs-type">ScheduledExecutorService</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> Schedulers.decorateExecutorService(parent, parent.createBoundedExecutorService());<br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">newState</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BoundedState</span>(<span class="hljs-built_in">this</span>, s);<br><span class="hljs-keyword">if</span> (newState.markPicked()) &#123;<br>busyQueue.add(newState);<br><span class="hljs-keyword">return</span> newState;<br>&#125;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br><span class="hljs-keyword">else</span> &#123;<br><span class="hljs-comment">//pick the least busy one</span><br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> busyQueue.poll();<br><span class="hljs-keyword">if</span> (s != <span class="hljs-literal">null</span> &amp;&amp; s.markPicked()) &#123;<br>busyQueue.add(s); <span class="hljs-comment">//put it back in the queue with updated priority</span><br><span class="hljs-keyword">return</span> s;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>   还有一点需要注意的是，Schedulers.newBoundedElastic() 的第二个参数<code>queuedTaskCap</code> 表示底层的每个子线程池的最大容量，而不是BoundedElasticScheduler本身的最大容量。</p><p>   SingleScheduler和ParallelScheduler是不允许执行堵塞任务的，这一点在reactor内部如执行block()操作符时就会报错。我们将堵塞任务放入这两个线程池内执行虽然不会报错，但也是很不规范的，可能会导致内部操作变慢。</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>flux</tag>
-      
-      <tag>线程池</tag>
-      
-      <tag>reactor</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Flux parallel操作符的用法</title>
     <link href="/2205464017.html/"/>
     <url>/2205464017.html/</url>
@@ -517,9 +519,32 @@
       
       <tag>flux</tag>
       
+      <tag>parallel</tag>
+      
       <tag>reactor</tag>
       
-      <tag>parallel</tag>
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>reactor中的线程池</title>
+    <link href="/933416019.html/"/>
+    <url>/933416019.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="reactor中的线程池"><a href="#reactor中的线程池" class="headerlink" title="reactor中的线程池"></a>reactor中的线程池</h1><h2 id="1-DelegateServiceScheduler"><a href="#1-DelegateServiceScheduler" class="headerlink" title="1.DelegateServiceScheduler"></a>1.DelegateServiceScheduler</h2><p>将任务委托给底层单个线程池，和直接使用线程池无本质区别。</p><h2 id="2-SingleScheduler"><a href="#2-SingleScheduler" class="headerlink" title="2.SingleScheduler"></a>2.SingleScheduler</h2><p>单线程的scheduler，和java自带的一致。<br>​</p><h2 id="3-ImmediateScheduler"><a href="#3-ImmediateScheduler" class="headerlink" title="3.ImmediateScheduler"></a>3.ImmediateScheduler</h2><p>在主线程执行的scheduler。</p><h2 id="4-ParallelScheduler"><a href="#4-ParallelScheduler" class="headerlink" title="4.ParallelScheduler"></a>4.ParallelScheduler</h2><p>此scheduler会将任务均匀分配给内部的单线程线程池执行，核心逻辑十分简单，就是均匀的分配，不对任务的执行时间进行区分。<br>运气不好时会将耗时长的任务放置到同一个线程内，导致该线程执行时间过长，所以理论上用来执行非堵塞的任务比较好。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java">ScheduledExecutorService <span class="hljs-title function_">pick</span><span class="hljs-params">()</span> &#123;<br>    ScheduledExecutorService[] a = executors;<br>    <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">null</span>) &#123;<br>        start();<br>        a = executors;<br>        <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<span class="hljs-string">&quot;executors uninitialized after implicit start()&quot;</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (a != SHUTDOWN) &#123;<br>        <span class="hljs-comment">// ignoring the race condition here, its already random who gets which executor</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">idx</span> <span class="hljs-operator">=</span> roundRobin;<br>        <span class="hljs-keyword">if</span> (idx == n) &#123;<br>            idx = <span class="hljs-number">0</span>;<br>            roundRobin = <span class="hljs-number">1</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            roundRobin = idx + <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> a[idx];<br>    &#125;<br>    <span class="hljs-keyword">return</span> TERMINATED;<br>&#125;<br></code></pre></td></tr></table></figure><h2 id="5-BoundedElasticScheduler"><a href="#5-BoundedElasticScheduler" class="headerlink" title="5.BoundedElasticScheduler"></a>5.BoundedElasticScheduler</h2><p>   类似于ParallelScheduler，底层也是若干个单线程线程池，但是在任务分配上做了优化。底层会判断哪个线程池当前任务量最少，优先将任务分配给任务量最少的线程池。<br>判断哪个线程池当前任务量最少使用的是优先级队列，每次获取队列头的线程池。并且当子线程池没有任务时，将进入idleQueue中，一段时间不使用会进行回收。<br>适合执行堵塞的任务，不宜执行大量非堵塞的任务，因为非堵塞任务执行很快，使用下面复杂的pick过程反而更耗时。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs java">BoundedState <span class="hljs-title function_">pick</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">for</span> (;;) &#123;<br><span class="hljs-type">int</span> <span class="hljs-variable">a</span> <span class="hljs-operator">=</span> get();<br><span class="hljs-keyword">if</span> (a == DISPOSED) &#123;<br><span class="hljs-keyword">return</span> CREATING; <span class="hljs-comment">//synonym for shutdown, since the underlying executor is shut down</span><br>&#125;<br><br><span class="hljs-keyword">if</span> (!idleQueue.isEmpty()) &#123;<br><span class="hljs-comment">//try to find an idle resource</span><br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">bs</span> <span class="hljs-operator">=</span> idleQueue.pollLast();<br><span class="hljs-keyword">if</span> (bs != <span class="hljs-literal">null</span> &amp;&amp; bs.markPicked()) &#123;<br>busyQueue.add(bs);<br><span class="hljs-keyword">return</span> bs;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a &lt; parent.maxThreads) &#123;<br><span class="hljs-comment">//try to build a new resource</span><br><span class="hljs-keyword">if</span> (compareAndSet(a, a + <span class="hljs-number">1</span>)) &#123;<br><span class="hljs-type">ScheduledExecutorService</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> Schedulers.decorateExecutorService(parent, parent.createBoundedExecutorService());<br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">newState</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BoundedState</span>(<span class="hljs-built_in">this</span>, s);<br><span class="hljs-keyword">if</span> (newState.markPicked()) &#123;<br>busyQueue.add(newState);<br><span class="hljs-keyword">return</span> newState;<br>&#125;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br><span class="hljs-keyword">else</span> &#123;<br><span class="hljs-comment">//pick the least busy one</span><br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> busyQueue.poll();<br><span class="hljs-keyword">if</span> (s != <span class="hljs-literal">null</span> &amp;&amp; s.markPicked()) &#123;<br>busyQueue.add(s); <span class="hljs-comment">//put it back in the queue with updated priority</span><br><span class="hljs-keyword">return</span> s;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>   还有一点需要注意的是，Schedulers.newBoundedElastic() 的第二个参数<code>queuedTaskCap</code> 表示底层的每个子线程池的最大容量，而不是BoundedElasticScheduler本身的最大容量。</p><p>   SingleScheduler和ParallelScheduler是不允许执行堵塞任务的，这一点在reactor内部如执行block()操作符时就会报错。我们将堵塞任务放入这两个线程池内执行虽然不会报错，但也是很不规范的，可能会导致内部操作变慢。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>flux</tag>
+      
+      <tag>reactor</tag>
+      
+      <tag>线程池</tag>
       
     </tags>
     
@@ -720,9 +745,9 @@
     
     <tags>
       
-      <tag>单元测试</tag>
-      
       <tag>spock</tag>
+      
+      <tag>单元测试</tag>
       
     </tags>
     
@@ -754,31 +779,6 @@
   
   
   <entry>
-    <title>spring项目，外部文件读取</title>
-    <link href="/1679439756.html/"/>
-    <url>/1679439756.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="spring，文件读取"><a href="#spring，文件读取" class="headerlink" title="spring，文件读取"></a>spring，文件读取</h1><p>spring内置了不错的文件读取工具类，下面讲一下其用法</p><h2 id="1-读取classpath下文件"><a href="#1-读取classpath下文件" class="headerlink" title="1.读取classpath下文件"></a>1.读取classpath下文件</h2><p>   文件路径以classpath:开头，这种方式可以读取resources文件夹下的资源</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;classpath:aa.properties&quot;</span>;<br>        org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br>        <br>        System.out.println(resource.exists());<br>        System.out.println(resource.getInputStream());<br>    &#125;<br><br>```    <br>    <br><br>## <span class="hljs-number">2.</span>读取项目相对路径下的文件<br><br>路径直接写相对路径即可，相对于项目执行路径<br><br>```java<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;./1.txt&quot;</span>;<br>        org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>        System.out.println(resource.exists());<br>        System.out.println(resource.getInputStream());<br>    &#125;<br></code></pre></td></tr></table></figure><h2 id="3-读取绝对路径下的文件"><a href="#3-读取绝对路径下的文件" class="headerlink" title="3.读取绝对路径下的文件"></a>3.读取绝对路径下的文件</h2><p>读取绝对路径时，路径以file:开头，下面两个示例分别是window和linux的操作方式</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;file:D:\\test\\1.txt&quot;</span>;<br>    org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>    System.out.println(resource.exists());<br>    System.out.println(resource.getInputStream());<br>&#125;<br><br></code></pre></td></tr></table></figure><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;file:/home/java/1.txt&quot;</span>;<br>    org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>    System.out.println(resource.exists());<br>    System.out.println(resource.getInputStream());<br>&#125;<br><br></code></pre></td></tr></table></figure><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>读取到的Resource类上存在一个 resource.getFile()，方法，此方法会将路径转成File，但是有些打包到jar内部的文件无法转成File，会报错，所以建议使用resource.getInputStream()转成流的方式读取文件内容。</p><p>​</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>spring</tag>
-      
-      <tag>FileSystemResourceLoader</tag>
-      
-      <tag>ResourceLoader</tag>
-      
-      <tag>文件读取</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>spring非单例模式</title>
     <link href="/1947246411.html/"/>
     <url>/1947246411.html/</url>
@@ -798,6 +798,31 @@
       <tag>objectProvider</tag>
       
       <tag>objectFactory</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>spring项目，外部文件读取</title>
+    <link href="/1679439756.html/"/>
+    <url>/1679439756.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="spring，文件读取"><a href="#spring，文件读取" class="headerlink" title="spring，文件读取"></a>spring，文件读取</h1><p>spring内置了不错的文件读取工具类，下面讲一下其用法</p><h2 id="1-读取classpath下文件"><a href="#1-读取classpath下文件" class="headerlink" title="1.读取classpath下文件"></a>1.读取classpath下文件</h2><p>   文件路径以classpath:开头，这种方式可以读取resources文件夹下的资源</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;classpath:aa.properties&quot;</span>;<br>        org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br>        <br>        System.out.println(resource.exists());<br>        System.out.println(resource.getInputStream());<br>    &#125;<br><br>```    <br>    <br><br>## <span class="hljs-number">2.</span>读取项目相对路径下的文件<br><br>路径直接写相对路径即可，相对于项目执行路径<br><br>```java<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;./1.txt&quot;</span>;<br>        org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>        System.out.println(resource.exists());<br>        System.out.println(resource.getInputStream());<br>    &#125;<br></code></pre></td></tr></table></figure><h2 id="3-读取绝对路径下的文件"><a href="#3-读取绝对路径下的文件" class="headerlink" title="3.读取绝对路径下的文件"></a>3.读取绝对路径下的文件</h2><p>读取绝对路径时，路径以file:开头，下面两个示例分别是window和linux的操作方式</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;file:D:\\test\\1.txt&quot;</span>;<br>    org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>    System.out.println(resource.exists());<br>    System.out.println(resource.getInputStream());<br>&#125;<br><br></code></pre></td></tr></table></figure><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;file:/home/java/1.txt&quot;</span>;<br>    org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>    System.out.println(resource.exists());<br>    System.out.println(resource.getInputStream());<br>&#125;<br><br></code></pre></td></tr></table></figure><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>读取到的Resource类上存在一个 resource.getFile()，方法，此方法会将路径转成File，但是有些打包到jar内部的文件无法转成File，会报错，所以建议使用resource.getInputStream()转成流的方式读取文件内容。</p><p>​</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>spring</tag>
+      
+      <tag>FileSystemResourceLoader</tag>
+      
+      <tag>ResourceLoader</tag>
+      
+      <tag>文件读取</tag>
       
     </tags>
     
@@ -856,9 +881,9 @@
     
     <tags>
       
-      <tag>dubbo</tag>
-      
       <tag>springboot</tag>
+      
+      <tag>dubbo</tag>
       
     </tags>
     
@@ -995,9 +1020,9 @@
     
     <tags>
       
-      <tag>idea</tag>
-      
       <tag>技巧</tag>
+      
+      <tag>idea</tag>
       
     </tags>
     
@@ -1563,9 +1588,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>springboot</tag>
+      
+      <tag>java</tag>
       
       <tag>spring</tag>
       
@@ -1712,9 +1737,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>springboot</tag>
+      
+      <tag>java</tag>
       
       <tag>defaultServlet</tag>
       
@@ -1737,9 +1762,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>linux</tag>
+      
+      <tag>java</tag>
       
       <tag>bug</tag>
       
@@ -1760,34 +1785,11 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>springboot</tag>
+      
+      <tag>java</tag>
       
       <tag>defaultServlet</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>SpringBoot集成Swagger实战</title>
-    <link href="/4078226302.html/"/>
-    <url>/4078226302.html/</url>
-    
-    <content type="html"><![CDATA[<ul><li>TOC<br>{:toc}</li></ul><h2 id="为什么要使用Swagger"><a href="#为什么要使用Swagger" class="headerlink" title="为什么要使用Swagger"></a>为什么要使用Swagger</h2><p>​作为后端，写完接口有时会忘记维护<code>Api</code>文档，时间长了接口文档和代码就相差甚远，导致文档难以维护且失去意义。使用<code>Swagger</code>，可以在写接口时顺便维护文档，从而接口变文档也变。并且文档页面还可以在线测试，且比手动写<code>Markdown</code>更美观。</p><p>​这篇文章将讲解如何在<code>SpringBoot</code>项目里面使用<code>Swagger</code>。</p><h2 id="1-创建Springboot项目"><a href="#1-创建Springboot项目" class="headerlink" title="1.创建Springboot项目"></a>1.创建<code>Springboot</code>项目</h2><h3 id="创建空的SpringBoot项目"><a href="#创建空的SpringBoot项目" class="headerlink" title="创建空的SpringBoot项目"></a>创建空的<code>SpringBoot</code>项目</h3><p>​使用<code>idea</code>初始化<code>SpringBoot</code>项目，因为是web项目，别忘了勾选<code>Spring Web</code>依赖。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403132147933.png" alt="image-20200403132147933"></p><h3 id="添加controller"><a href="#添加controller" class="headerlink" title="添加controller"></a>添加<code>controller</code></h3><p>​创建一个如下增删改查的<code>Controller</code></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(&quot;test&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestController</span> &#123;<br><br>    <span class="hljs-meta">@PostMapping(&quot;create&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">create</span><span class="hljs-params">(String name, Integer age)</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@PostMapping(&quot;delete&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">delete</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@PostMapping(&quot;update&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">update</span><span class="hljs-params">(<span class="hljs-type">int</span> id, String name, Integer age)</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@GetMapping(&quot;get_all&quot;)</span><br>    <span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">get</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> Arrays.asList(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-string">&quot;李四&quot;</span>, <span class="hljs-string">&quot;赵六&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><h3 id="测试接口"><a href="#测试接口" class="headerlink" title="测试接口"></a>测试接口</h3><p>​在浏览器里顺利打开接口</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403132815065.png" alt="image-20200403132815065"></p><h2 id="2-添加Swagger"><a href="#2-添加Swagger" class="headerlink" title="2.添加Swagger"></a>2.添加<code>Swagger</code></h2><h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.springfox<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>springfox-swagger2<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.9.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h3 id="编写Swagger配置"><a href="#编写Swagger配置" class="headerlink" title="编写Swagger配置"></a>编写<code>Swagger</code>配置</h3><p>​<code>Springfox</code>需要编写一个<code>Docket</code>的<code>Bean</code>，在这个类里面做配置，下面是新建一个配置类，让<code>SpringBoot</code>扫描到这个<code>Bean</code>并注入到容器。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@EnableSwagger2</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SwaggerConfig</span> &#123;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> Docket <span class="hljs-title function_">api</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Docket</span>(DocumentationType.SWAGGER_2)<br>                .select()<br>                .apis(RequestHandlerSelectors.any())<br>                .paths(PathSelectors.any())<br>                .build();<br><br>    &#125;<br> &#125;<br></code></pre></td></tr></table></figure><p><code>@EnableSwagger2</code> 就是启动<code>Swagger</code>功能。</p><h3 id="访问验证"><a href="#访问验证" class="headerlink" title="访问验证"></a>访问验证</h3><p>​浏览器访问<code>http://localhost:8080/v2/api-docs</code>,可以看到输出的一系列 <code>Json</code>，可读性太差，但是<code>Swagger</code>提供了一个可视化界面，方便我们阅读。</p><h2 id="3-添加Swagger-Ui"><a href="#3-添加Swagger-Ui" class="headerlink" title="3.添加Swagger-Ui"></a>3.添加<code>Swagger-Ui</code></h2><h3 id="添加依赖-1"><a href="#添加依赖-1" class="headerlink" title="添加依赖"></a>添加依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.springfox<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.9.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h3 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h3><p>​访问<code>http://localhost:8080/swagger-ui.html</code>我们写的四个接口都在这里</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403134554617.png" alt="image-20200403134554617"></p><h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><h4 id="配置文档标题和版本"><a href="#配置文档标题和版本" class="headerlink" title="配置文档标题和版本"></a>配置文档标题和版本</h4><p>​配置<code>Swagger</code>需要提供一个<code>ApiInfo</code>类描述文档标题，版本，用户名，邮箱等信息,像下面这样添加到<code>Docket</code>里面。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@EnableSwagger2</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SwaggerConfig</span> &#123;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> Docket <span class="hljs-title function_">api</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Docket</span>(DocumentationType.SWAGGER_2)<br>                .select()<br>                .apis(RequestHandlerSelectors.any())<br>                .paths(PathSelectors.any())<br>                .build().apiInfo(apiInfo());<br><br>    &#125;<br><br>    <span class="hljs-keyword">private</span> ApiInfo <span class="hljs-title function_">apiInfo</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiInfo</span>(<span class="hljs-string">&quot;测试开发文档&quot;</span>, <span class="hljs-string">&quot;开发文档描述&quot;</span>, <span class="hljs-string">&quot;0.01&quot;</span>,<br>                <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>,<br>                <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, Collections.emptyList());<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure><p>​界面变成了这样，文档名、版本、描述都变了。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403134110601.png" alt="image-20200403134110601"></p><h4 id="配置Controller描述"><a href="#配置Controller描述" class="headerlink" title="配置Controller描述"></a>配置Controller描述</h4><p>​类上添加注解<code>@Api</code>，并填写<code>tags</code>可以配置<code>controller</code>描述</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(&quot;test&quot;)</span><br><span class="hljs-meta">@Api(tags = &quot;测试相关接口&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestController</span> &#123;<br></code></pre></td></tr></table></figure><h4 id="配置接口名"><a href="#配置接口名" class="headerlink" title="配置接口名"></a>配置接口名</h4><p>​给方法添加注解，可以配置接口名称，添加<code> @ApiOperation</code>注解在接口方法上。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(&quot;获取所有数据&quot;)</span><br><span class="hljs-meta">@GetMapping(&quot;get_all&quot;)</span><br><span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">get</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> Arrays.asList(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-string">&quot;李四&quot;</span>, <span class="hljs-string">&quot;赵六&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure><h4 id="配置参数名"><a href="#配置参数名" class="headerlink" title="配置参数名"></a>配置参数名</h4><p>​使用注解<code>@ApiImplicitParams</code>可以配置多个参数，使用注解<code>@ApiImplicitParam</code>可以配置一个参数。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(&quot;根据id更新&quot;)</span><br><span class="hljs-meta">@ApiImplicitParams(&#123;</span><br><span class="hljs-meta">        @ApiImplicitParam(name = &quot;id&quot;, value = &quot;用户id&quot;, required = true),</span><br><span class="hljs-meta">        @ApiImplicitParam(name = &quot;name&quot;, value = &quot;用户名&quot;),</span><br><span class="hljs-meta">        @ApiImplicitParam(name = &quot;age&quot;, value = &quot;用户年龄&quot;)</span><br><span class="hljs-meta">&#125;)</span><br><span class="hljs-meta">@PostMapping(&quot;update&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">update</span><span class="hljs-params">(<span class="hljs-type">int</span> id, String name, Integer age)</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p>​<code>required</code>表示是否必填，默认是<code>false</code>。</p><h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><p>​页面变成了这样，<code>controller</code>变成了<code>@Api</code>标记的名称，每个接口名变成了<code>@ApiOperation</code>指定的名称，</p><p>参数描述变成了<code>@ApiImplicitParam</code>指定的<code>value</code>。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403135331799.png" alt="image-20200403135331799"></p><h3 id="更多配置"><a href="#更多配置" class="headerlink" title="更多配置"></a>更多配置</h3><h4 id="ApiParam-注解"><a href="#ApiParam-注解" class="headerlink" title="@ApiParam 注解"></a><code>@ApiParam</code> 注解</h4><p>​除了使用<code>@ApiImplicitParam</code>外还可以使用<code>@ApiParam</code>标记参数。这样可以省去<code>name</code>属性，但是可能会让方法参数列表看起来混乱。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(&quot;根据id删除&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;delete&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">delete</span><span class="hljs-params">(<span class="hljs-meta">@ApiParam(value = &quot;要删除的用户id&quot;, required = true)</span> <span class="hljs-type">int</span> id)</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p>​当然这两种方式可以混合使用，只要不重复标记到同一个参数上就行。</p><h2 id="4-在线测试接口"><a href="#4-在线测试接口" class="headerlink" title="4.在线测试接口"></a>4.在线测试接口</h2><p>​找到一个接口，点击Try it out。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140401482.png" alt="image-20200403140401482"></p><p>​页面就会变成可编辑形式，点击Execute，就可以按照配置的参数发送请求了，并且下面会显示执行结果。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140446596.png" alt="image-20200403140446596"></p><h2 id="5-注意事项"><a href="#5-注意事项" class="headerlink" title="5.注意事项"></a>5.注意事项</h2><h3 id="文件上传写法"><a href="#文件上传写法" class="headerlink" title="文件上传写法"></a>文件上传写法</h3><p>​有是后端需要处理上传文件，则请使用<code>@ApiParam</code>注解，不要用<code>@ApiImplicitParam</code>,这样在页面上测试时就能直接鼠标选择要上传的文件了。</p><p>​这两个注解作用于<code>MultipartFile</code>类型上的区别，读者可以亲自尝试对比下。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-meta">@RequestMapping(&quot;upload&quot;)</span><br><span class="hljs-meta">@ApiOperation(&quot;上传文件&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">uploadFile</span><span class="hljs-params">(<span class="hljs-meta">@ApiParam(&quot;需要上传的文件&quot;)</span> MultipartFile file)</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure><h2 id="6-配置资源路径"><a href="#6-配置资源路径" class="headerlink" title="6.配置资源路径"></a>6.配置资源路径</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addResourceHandlers</span><span class="hljs-params">(ResourceHandlerRegistry registry)</span> &#123;<br>    registry.addResourceHandler(<span class="hljs-string">&quot;/swagger-ui/**&quot;</span>).addResourceLocations(<span class="hljs-string">&quot;classpath:/META-INF/resources/webjars/springfox-swagger-ui/&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure><h3 id="需要指定请求方式"><a href="#需要指定请求方式" class="headerlink" title="需要指定请求方式"></a>需要指定请求方式</h3><p>​像下面这两种指定请求Method方式都可以。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@GetMapping(&quot;upload&quot;)</span><br><span class="hljs-meta">@RequestMapping(value = &quot;upload&quot;,method = RequestMethod.GET)</span><br></code></pre></td></tr></table></figure><p>​如果不指定请求方式，<code>Swagger</code>将尝试使用所有请求方式去调用接口，文档页面看起来会很乱的。</p><p>下面<code>upload</code>接口就没指定请求方式，<code>Swagger</code>显示是这样的</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140957368.png" alt="image-20200403140957368"></p><h2 id="7-结束语"><a href="#7-结束语" class="headerlink" title="7.结束语"></a>7.结束语</h2><p>​本文就介绍到这里，基本能满足我们的需求，我们在修改接口时，顺便修改下注解就可以。同时前端在使用接口文档时，也可以在页面上直接测试接口。</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>java</tag>
-      
-      <tag>springboot</tag>
-      
-      <tag>swagger</tag>
       
     </tags>
     
@@ -1813,6 +1815,29 @@
       <tag>rc4</tag>
       
       <tag>Shadowsocks</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SpringBoot集成Swagger实战</title>
+    <link href="/4078226302.html/"/>
+    <url>/4078226302.html/</url>
+    
+    <content type="html"><![CDATA[<ul><li>TOC<br>{:toc}</li></ul><h2 id="为什么要使用Swagger"><a href="#为什么要使用Swagger" class="headerlink" title="为什么要使用Swagger"></a>为什么要使用Swagger</h2><p>​作为后端，写完接口有时会忘记维护<code>Api</code>文档，时间长了接口文档和代码就相差甚远，导致文档难以维护且失去意义。使用<code>Swagger</code>，可以在写接口时顺便维护文档，从而接口变文档也变。并且文档页面还可以在线测试，且比手动写<code>Markdown</code>更美观。</p><p>​这篇文章将讲解如何在<code>SpringBoot</code>项目里面使用<code>Swagger</code>。</p><h2 id="1-创建Springboot项目"><a href="#1-创建Springboot项目" class="headerlink" title="1.创建Springboot项目"></a>1.创建<code>Springboot</code>项目</h2><h3 id="创建空的SpringBoot项目"><a href="#创建空的SpringBoot项目" class="headerlink" title="创建空的SpringBoot项目"></a>创建空的<code>SpringBoot</code>项目</h3><p>​使用<code>idea</code>初始化<code>SpringBoot</code>项目，因为是web项目，别忘了勾选<code>Spring Web</code>依赖。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403132147933.png" alt="image-20200403132147933"></p><h3 id="添加controller"><a href="#添加controller" class="headerlink" title="添加controller"></a>添加<code>controller</code></h3><p>​创建一个如下增删改查的<code>Controller</code></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(&quot;test&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestController</span> &#123;<br><br>    <span class="hljs-meta">@PostMapping(&quot;create&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">create</span><span class="hljs-params">(String name, Integer age)</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@PostMapping(&quot;delete&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">delete</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@PostMapping(&quot;update&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">update</span><span class="hljs-params">(<span class="hljs-type">int</span> id, String name, Integer age)</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@GetMapping(&quot;get_all&quot;)</span><br>    <span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">get</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> Arrays.asList(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-string">&quot;李四&quot;</span>, <span class="hljs-string">&quot;赵六&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><h3 id="测试接口"><a href="#测试接口" class="headerlink" title="测试接口"></a>测试接口</h3><p>​在浏览器里顺利打开接口</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403132815065.png" alt="image-20200403132815065"></p><h2 id="2-添加Swagger"><a href="#2-添加Swagger" class="headerlink" title="2.添加Swagger"></a>2.添加<code>Swagger</code></h2><h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.springfox<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>springfox-swagger2<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.9.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h3 id="编写Swagger配置"><a href="#编写Swagger配置" class="headerlink" title="编写Swagger配置"></a>编写<code>Swagger</code>配置</h3><p>​<code>Springfox</code>需要编写一个<code>Docket</code>的<code>Bean</code>，在这个类里面做配置，下面是新建一个配置类，让<code>SpringBoot</code>扫描到这个<code>Bean</code>并注入到容器。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@EnableSwagger2</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SwaggerConfig</span> &#123;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> Docket <span class="hljs-title function_">api</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Docket</span>(DocumentationType.SWAGGER_2)<br>                .select()<br>                .apis(RequestHandlerSelectors.any())<br>                .paths(PathSelectors.any())<br>                .build();<br><br>    &#125;<br> &#125;<br></code></pre></td></tr></table></figure><p><code>@EnableSwagger2</code> 就是启动<code>Swagger</code>功能。</p><h3 id="访问验证"><a href="#访问验证" class="headerlink" title="访问验证"></a>访问验证</h3><p>​浏览器访问<code>http://localhost:8080/v2/api-docs</code>,可以看到输出的一系列 <code>Json</code>，可读性太差，但是<code>Swagger</code>提供了一个可视化界面，方便我们阅读。</p><h2 id="3-添加Swagger-Ui"><a href="#3-添加Swagger-Ui" class="headerlink" title="3.添加Swagger-Ui"></a>3.添加<code>Swagger-Ui</code></h2><h3 id="添加依赖-1"><a href="#添加依赖-1" class="headerlink" title="添加依赖"></a>添加依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.springfox<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.9.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h3 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h3><p>​访问<code>http://localhost:8080/swagger-ui.html</code>我们写的四个接口都在这里</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403134554617.png" alt="image-20200403134554617"></p><h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><h4 id="配置文档标题和版本"><a href="#配置文档标题和版本" class="headerlink" title="配置文档标题和版本"></a>配置文档标题和版本</h4><p>​配置<code>Swagger</code>需要提供一个<code>ApiInfo</code>类描述文档标题，版本，用户名，邮箱等信息,像下面这样添加到<code>Docket</code>里面。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@EnableSwagger2</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SwaggerConfig</span> &#123;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> Docket <span class="hljs-title function_">api</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Docket</span>(DocumentationType.SWAGGER_2)<br>                .select()<br>                .apis(RequestHandlerSelectors.any())<br>                .paths(PathSelectors.any())<br>                .build().apiInfo(apiInfo());<br><br>    &#125;<br><br>    <span class="hljs-keyword">private</span> ApiInfo <span class="hljs-title function_">apiInfo</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiInfo</span>(<span class="hljs-string">&quot;测试开发文档&quot;</span>, <span class="hljs-string">&quot;开发文档描述&quot;</span>, <span class="hljs-string">&quot;0.01&quot;</span>,<br>                <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>,<br>                <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, Collections.emptyList());<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure><p>​界面变成了这样，文档名、版本、描述都变了。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403134110601.png" alt="image-20200403134110601"></p><h4 id="配置Controller描述"><a href="#配置Controller描述" class="headerlink" title="配置Controller描述"></a>配置Controller描述</h4><p>​类上添加注解<code>@Api</code>，并填写<code>tags</code>可以配置<code>controller</code>描述</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(&quot;test&quot;)</span><br><span class="hljs-meta">@Api(tags = &quot;测试相关接口&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestController</span> &#123;<br></code></pre></td></tr></table></figure><h4 id="配置接口名"><a href="#配置接口名" class="headerlink" title="配置接口名"></a>配置接口名</h4><p>​给方法添加注解，可以配置接口名称，添加<code> @ApiOperation</code>注解在接口方法上。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(&quot;获取所有数据&quot;)</span><br><span class="hljs-meta">@GetMapping(&quot;get_all&quot;)</span><br><span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">get</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> Arrays.asList(<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-string">&quot;李四&quot;</span>, <span class="hljs-string">&quot;赵六&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure><h4 id="配置参数名"><a href="#配置参数名" class="headerlink" title="配置参数名"></a>配置参数名</h4><p>​使用注解<code>@ApiImplicitParams</code>可以配置多个参数，使用注解<code>@ApiImplicitParam</code>可以配置一个参数。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(&quot;根据id更新&quot;)</span><br><span class="hljs-meta">@ApiImplicitParams(&#123;</span><br><span class="hljs-meta">        @ApiImplicitParam(name = &quot;id&quot;, value = &quot;用户id&quot;, required = true),</span><br><span class="hljs-meta">        @ApiImplicitParam(name = &quot;name&quot;, value = &quot;用户名&quot;),</span><br><span class="hljs-meta">        @ApiImplicitParam(name = &quot;age&quot;, value = &quot;用户年龄&quot;)</span><br><span class="hljs-meta">&#125;)</span><br><span class="hljs-meta">@PostMapping(&quot;update&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">update</span><span class="hljs-params">(<span class="hljs-type">int</span> id, String name, Integer age)</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p>​<code>required</code>表示是否必填，默认是<code>false</code>。</p><h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><p>​页面变成了这样，<code>controller</code>变成了<code>@Api</code>标记的名称，每个接口名变成了<code>@ApiOperation</code>指定的名称，</p><p>参数描述变成了<code>@ApiImplicitParam</code>指定的<code>value</code>。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403135331799.png" alt="image-20200403135331799"></p><h3 id="更多配置"><a href="#更多配置" class="headerlink" title="更多配置"></a>更多配置</h3><h4 id="ApiParam-注解"><a href="#ApiParam-注解" class="headerlink" title="@ApiParam 注解"></a><code>@ApiParam</code> 注解</h4><p>​除了使用<code>@ApiImplicitParam</code>外还可以使用<code>@ApiParam</code>标记参数。这样可以省去<code>name</code>属性，但是可能会让方法参数列表看起来混乱。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ApiOperation(&quot;根据id删除&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;delete&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">delete</span><span class="hljs-params">(<span class="hljs-meta">@ApiParam(value = &quot;要删除的用户id&quot;, required = true)</span> <span class="hljs-type">int</span> id)</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p>​当然这两种方式可以混合使用，只要不重复标记到同一个参数上就行。</p><h2 id="4-在线测试接口"><a href="#4-在线测试接口" class="headerlink" title="4.在线测试接口"></a>4.在线测试接口</h2><p>​找到一个接口，点击Try it out。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140401482.png" alt="image-20200403140401482"></p><p>​页面就会变成可编辑形式，点击Execute，就可以按照配置的参数发送请求了，并且下面会显示执行结果。</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140446596.png" alt="image-20200403140446596"></p><h2 id="5-注意事项"><a href="#5-注意事项" class="headerlink" title="5.注意事项"></a>5.注意事项</h2><h3 id="文件上传写法"><a href="#文件上传写法" class="headerlink" title="文件上传写法"></a>文件上传写法</h3><p>​有是后端需要处理上传文件，则请使用<code>@ApiParam</code>注解，不要用<code>@ApiImplicitParam</code>,这样在页面上测试时就能直接鼠标选择要上传的文件了。</p><p>​这两个注解作用于<code>MultipartFile</code>类型上的区别，读者可以亲自尝试对比下。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-meta">@RequestMapping(&quot;upload&quot;)</span><br><span class="hljs-meta">@ApiOperation(&quot;上传文件&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">uploadFile</span><span class="hljs-params">(<span class="hljs-meta">@ApiParam(&quot;需要上传的文件&quot;)</span> MultipartFile file)</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure><h2 id="6-配置资源路径"><a href="#6-配置资源路径" class="headerlink" title="6.配置资源路径"></a>6.配置资源路径</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addResourceHandlers</span><span class="hljs-params">(ResourceHandlerRegistry registry)</span> &#123;<br>    registry.addResourceHandler(<span class="hljs-string">&quot;/swagger-ui/**&quot;</span>).addResourceLocations(<span class="hljs-string">&quot;classpath:/META-INF/resources/webjars/springfox-swagger-ui/&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure><h3 id="需要指定请求方式"><a href="#需要指定请求方式" class="headerlink" title="需要指定请求方式"></a>需要指定请求方式</h3><p>​像下面这两种指定请求Method方式都可以。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@GetMapping(&quot;upload&quot;)</span><br><span class="hljs-meta">@RequestMapping(value = &quot;upload&quot;,method = RequestMethod.GET)</span><br></code></pre></td></tr></table></figure><p>​如果不指定请求方式，<code>Swagger</code>将尝试使用所有请求方式去调用接口，文档页面看起来会很乱的。</p><p>下面<code>upload</code>接口就没指定请求方式，<code>Swagger</code>显示是这样的</p><p><img src="/img/in/2020-04-03-springboot%E9%9B%86%E6%88%90swagger%E5%AE%9E%E6%88%98/image-20200403140957368.png" alt="image-20200403140957368"></p><h2 id="7-结束语"><a href="#7-结束语" class="headerlink" title="7.结束语"></a>7.结束语</h2><p>​本文就介绍到这里，基本能满足我们的需求，我们在修改接口时，顺便修改下注解就可以。同时前端在使用接口文档时，也可以在页面上直接测试接口。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>springboot</tag>
+      
+      <tag>java</tag>
+      
+      <tag>swagger</tag>
       
     </tags>
     
@@ -1918,6 +1943,27 @@
   
   
   <entry>
+    <title>netty将channel设为自动读取</title>
+    <link href="/3083647988.html/"/>
+    <url>/3083647988.html/</url>
+    
+    <content type="html"><![CDATA[<p>​</p><p>​是这样的一个小技巧，这是我在写ss时学到的，有时候要实现私有协议需要将netty设为非自动读取，等前面工作处理好了在转变成自动读取。</p><p>​要实现channel数据的转发工作，第二个channel未创建完成时是不能读取第一个channel内数据的，所以我们经常将第一个channel设为不自动读取。</p><p>先前我看netty例子里有这样的写法，转换数据</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">out.writeAndFlush(msg).addListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChannelFutureListener</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">operationComplete</span><span class="hljs-params">(ChannelFuture future)</span> &#123;<br>        <span class="hljs-keyword">if</span> (future.isSuccess()) &#123;<br>            ctx.read();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            ctx.close();<br>        &#125;<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure><p>他的意思就是将msg写入out里面，然后添加监听器，写完后再次从输入流中读取。</p><p>后来我又想到另一个效率高的写法,就是这样，将不自动读的输入流重新设为自动读，这样就不用加监听器了：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">in.channel().config().setAutoRead(<span class="hljs-literal">true</span>);<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>java</tag>
+      
+      <tag>netty</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>给服务器开启bbr</title>
     <link href="/2527058159.html/"/>
     <url>/2527058159.html/</url>
@@ -1933,27 +1979,6 @@
       <tag>bbr</tag>
       
       <tag>服务器</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>netty将channel设为自动读取</title>
-    <link href="/3083647988.html/"/>
-    <url>/3083647988.html/</url>
-    
-    <content type="html"><![CDATA[<p>​</p><p>​是这样的一个小技巧，这是我在写ss时学到的，有时候要实现私有协议需要将netty设为非自动读取，等前面工作处理好了在转变成自动读取。</p><p>​要实现channel数据的转发工作，第二个channel未创建完成时是不能读取第一个channel内数据的，所以我们经常将第一个channel设为不自动读取。</p><p>先前我看netty例子里有这样的写法，转换数据</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">out.writeAndFlush(msg).addListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChannelFutureListener</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">operationComplete</span><span class="hljs-params">(ChannelFuture future)</span> &#123;<br>        <span class="hljs-keyword">if</span> (future.isSuccess()) &#123;<br>            ctx.read();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            ctx.close();<br>        &#125;<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure><p>他的意思就是将msg写入out里面，然后添加监听器，写完后再次从输入流中读取。</p><p>后来我又想到另一个效率高的写法,就是这样，将不自动读的输入流重新设为自动读，这样就不用加监听器了：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">in.channel().config().setAutoRead(<span class="hljs-literal">true</span>);<br></code></pre></td></tr></table></figure>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>java</tag>
-      
-      <tag>netty</tag>
       
     </tags>
     
@@ -2272,9 +2297,9 @@
     
     <tags>
       
-      <tag>idea</tag>
-      
       <tag>mybatis</tag>
+      
+      <tag>idea</tag>
       
     </tags>
     
@@ -3135,6 +3160,25 @@
   
   
   <entry>
+    <title>springboot+idea 配置热部署</title>
+    <link href="/4243760172.html/"/>
+    <url>/4243760172.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="springboot-idea-配置热部署"><a href="#springboot-idea-配置热部署" class="headerlink" title="springboot+idea 配置热部署"></a>springboot+idea 配置热部署</h1><hr><h2 id="1-maven"><a href="#1-maven" class="headerlink" title="1.maven"></a>1.maven</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 热部署模块 --&gt;</span><br> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-devtools<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">optional</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">optional</span>&gt;</span><br> <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h2 id="2-maven-插件"><a href="#2-maven-插件" class="headerlink" title="2.maven 插件"></a>2.maven 插件</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">fork</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">fork</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h2 id="3-idea-设置"><a href="#3-idea-设置" class="headerlink" title="3.idea 设置"></a>3.idea 设置</h2><pre><code class="hljs">ctrl+alt+s 打开idea的设置，找到[Build，Execution,Deployment] - &gt; [Complier] -&gt; 打勾[Build project automatically]</code></pre><h2 id="4-idea设置"><a href="#4-idea设置" class="headerlink" title="4.idea设置"></a>4.idea设置</h2><pre><code class="hljs">ctrl+alt+shift+/, 打开的窗口选择第一项[Registry]找到[ compiler.automake.allow.when.app.running ] 后面打勾</code></pre><h2 id="5-debug模式下启动项目"><a href="#5-debug模式下启动项目" class="headerlink" title="5.debug模式下启动项目"></a>5.debug模式下启动项目</h2><pre><code class="hljs">不出意外，修改类会自动加载，并且速度非常快</code></pre>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>springboot</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>springboot单元测试 ，spring项目单元测试</title>
     <link href="/3302245890.html/"/>
     <url>/3302245890.html/</url>
@@ -3165,25 +3209,6 @@
     <tags>
       
       <tag>markdown</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>springboot+idea 配置热部署</title>
-    <link href="/4243760172.html/"/>
-    <url>/4243760172.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="springboot-idea-配置热部署"><a href="#springboot-idea-配置热部署" class="headerlink" title="springboot+idea 配置热部署"></a>springboot+idea 配置热部署</h1><hr><h2 id="1-maven"><a href="#1-maven" class="headerlink" title="1.maven"></a>1.maven</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 热部署模块 --&gt;</span><br> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-devtools<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">optional</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">optional</span>&gt;</span><br> <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h2 id="2-maven-插件"><a href="#2-maven-插件" class="headerlink" title="2.maven 插件"></a>2.maven 插件</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">fork</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">fork</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h2 id="3-idea-设置"><a href="#3-idea-设置" class="headerlink" title="3.idea 设置"></a>3.idea 设置</h2><pre><code class="hljs">ctrl+alt+s 打开idea的设置，找到[Build，Execution,Deployment] - &gt; [Complier] -&gt; 打勾[Build project automatically]</code></pre><h2 id="4-idea设置"><a href="#4-idea设置" class="headerlink" title="4.idea设置"></a>4.idea设置</h2><pre><code class="hljs">ctrl+alt+shift+/, 打开的窗口选择第一项[Registry]找到[ compiler.automake.allow.when.app.running ] 后面打勾</code></pre><h2 id="5-debug模式下启动项目"><a href="#5-debug模式下启动项目" class="headerlink" title="5.debug模式下启动项目"></a>5.debug模式下启动项目</h2><pre><code class="hljs">不出意外，修改类会自动加载，并且速度非常快</code></pre>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>springboot</tag>
       
     </tags>
     
