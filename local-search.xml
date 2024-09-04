@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>解决emby无法删除文件问题</title>
+    <link href="/2055878545.html/"/>
+    <url>/2055878545.html/</url>
+    
+    <content type="html"><![CDATA[<p>emby不能删除文件就是权限问题。<br>查看emby是哪个用户执行的，要么把emby的执行用户改成文件的用户，要么把文件改为emby执行的用户。<br>只要有权限肯定能删掉的  </p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">1. 首先进入容器内部</span><br>docker exec -it emby /bin/sh<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">2. 查看emby服务使用哪个用户执行的，可以看到emby是由bin用户执行的</span><br><span class="hljs-meta prompt_">/# </span><span class="language-bash">ps  ps -ef</span> <br>PID   USER     TIME  COMMAND<br>    1 root      0:00 s6-svscan -t0 /var/run/s6/services<br>   32 root      0:00 s6-supervise s6-fdholderd<br>  171 root      0:00 s6-supervise emby-server<br>  174 root      0:00 sh ./run<br>  196 bin       0:14 /system/EmbyServer -programdata /config -ffdetect /bin/ffdetect -ffmpeg /bin/ffmpeg -ffprobe /bin/ffprobe -restartexitcode 3<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">3. 回到宿主机，查看镜像看为啥使用bin执行呢</span><br>docker image inspect lovechen/embyserver<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">4. 结果太多我就不全部粘贴了，在Env下面可以看到镜像指定了 UID=2，GID=2,而2在我的系统里就是用户bin</span><br> &quot;Env&quot;: [<br> &quot;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;,<br> &quot;LANG=en_US.UTF-8&quot;,<br> &quot;HOME=/tmp&quot;,<br> &quot;AMDGPU_IDS=/share/libdrm/amdgpu.ids&quot;,<br> &quot;FONTCONFIG_PATH=/etc/fonts&quot;,<br> &quot;LD_LIBRARY_PATH=/lib:/system&quot;,<br> &quot;LIBVA_DRIVERS_PATH=/lib/dri&quot;,<br> &quot;OCL_ICD_VENDORS=/etc/OpenCL/vendors&quot;,<br> &quot;PCI_IDS_PATH=/share/hwdata/pci.ids&quot;,<br> &quot;SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt&quot;,<br> &quot;UID=2&quot;,<br> &quot;GID=2&quot;,<br> &quot;GIDLIST=2&quot;,<br> &quot;NVIDIA_VISIBLE_DEVICES=all&quot;,<br> &quot;NVIDIA_DRIVER_CAPABILITIES=compute,video,utility&quot;,<br> &quot;XDG_CACHE_HOME=/config/cache&quot;<br>],<br></code></pre></td></tr></table></figure><hr><p>找到了问题解决就简单了。修改compose文件覆盖上面两个属性,在我的盒子上，我是使用root执行的因此将UID，GID覆盖成0  </p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">emby:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">lovechen/embyserver:latest</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">emby</span><br>    <span class="hljs-attr">network_mode:</span> <span class="hljs-string">host</span><br>    <span class="hljs-attr">environment:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">UID=0</span>  <span class="hljs-comment">#覆盖镜像中的 2</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">GID=0</span><br>    <span class="hljs-attr">devices:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">/dev/dri:/dev/dri</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">/opt/docker/emby/emby-config:/config</span>   <span class="hljs-comment"># 配置目录</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">/mnt/sharefile:/sharefile</span>              <span class="hljs-comment"># 资源挂载目录</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">&#x27;unless-stopped&#x27;</span><br>    <span class="hljs-attr">extra_hosts:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;host.docker.internal:host-gateway&quot;</span><br></code></pre></td></tr></table></figure><hr><p>ok 下线掉容器再重新up，可以正常删除了。 进入容器内部也发现emby是已我们配置的root角色执行的。<br>因为我是一台电视盒子自己用我没有创多用户，自己根据自己的情况调整用户就行</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>LINUX</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>gitea</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>2024-08-30-gitea安装</title>
     <link href="/1253497344.html/"/>
     <url>/1253497344.html/</url>
@@ -180,9 +205,9 @@
     
     <tags>
       
-      <tag>linux</tag>
-      
       <tag>斐讯N1</tag>
+      
+      <tag>linux</tag>
       
       <tag>debian</tag>
       
@@ -312,11 +337,11 @@
     
     <tags>
       
-      <tag>单元测试</tag>
-      
       <tag>Spring</tag>
       
       <tag>Spock</tag>
+      
+      <tag>单元测试</tag>
       
     </tags>
     
@@ -335,11 +360,11 @@
     
     <tags>
       
-      <tag>单元测试</tag>
-      
       <tag>Spring</tag>
       
       <tag>Spock</tag>
+      
+      <tag>单元测试</tag>
       
     </tags>
     
@@ -400,11 +425,11 @@
     
     <tags>
       
-      <tag>springboot</tag>
-      
       <tag>技巧</tag>
       
       <tag>spring</tag>
+      
+      <tag>springboot</tag>
       
     </tags>
     
@@ -567,9 +592,9 @@
       
       <tag>mybatis</tag>
       
-      <tag>技巧</tag>
-      
       <tag>mysql流式查询技巧</tag>
+      
+      <tag>技巧</tag>
       
     </tags>
     
@@ -611,9 +636,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>groovy</tag>
+      
+      <tag>java</tag>
       
       <tag>静态编译</tag>
       
@@ -735,27 +760,6 @@
   
   
   <entry>
-    <title>spock测试零基础教程</title>
-    <link href="/1272392355.html/"/>
-    <url>/1272392355.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="spock测试零基础教程"><a href="#spock测试零基础教程" class="headerlink" title="spock测试零基础教程"></a>spock测试零基础教程</h1><p>​昨天研究了一下spock单元测试，确实特别好用，这也是我第一次接触spock，作为一个新手，网上很多教程讲的太深了，折腾了好几个小时才搞明白。<br>​所以我想写一个从0开始的简单教程，一步一步做把Demo跑起来，再去看其他人的教程，这样更有效率。</p><p>下面我将基于spock2.x版本进行演示。可以新建一个空SpringBoot项目进行测试，防止项目内的其他依赖冲突，Demo跑不起来。</p><h2 id="1-引入依赖"><a href="#1-引入依赖" class="headerlink" title="1.引入依赖"></a>1.引入依赖</h2><p>这里引入了spock2.x的包，默认情况下spock会自动将groovy引入进来，我这里主动声明了groovy的依赖</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.spockframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spock-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0-groovy-3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.spockframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spock-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0-groovy-3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h2 id="2-创建测试类"><a href="#2-创建测试类" class="headerlink" title="2.创建测试类"></a>2.创建测试类</h2><p>在测试目录下，右键选择Spock Specification，会自动创建一个类继承了Specification。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180417247.png" alt="image-20210701180417247"></p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180837107.png" alt="image-20210701180837107"></p><p>上面这一步也可以选择创建一个普通Groovy Class，我们手动继承Specification也是一样的。</p><h2 id="3-编写测试方法"><a href="#3-编写测试方法" class="headerlink" title="3.编写测试方法"></a>3.编写测试方法</h2><p>下面就是我们编写的测试方法，我们定义 a &#x3D; 1+1，然后断言 a &#x3D;&#x3D; 2</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180955534.png" alt="image-20210701180955534"></p><p>上图中的步骤</p><ol><li>我们定义一个方法，其中方法名是双引号引起来的，Groovy中是允许这样的，这也是Spock的一个规范，不用双引号引起来也是可以的。</li><li>使用when: 标识下面的代码块是我们需要执行验证的代码</li><li>我们真正要测试的代码，如果这里面抛出异常，不会导致方法退出，when:代码块内部是被try catch的，框架帮我们try catch住了</li><li>then:代码块，必须和when: 成对出现，两者必须成对，且要写在when:后面</li><li>我们可以在then:代码块中进行断言，不需要assert这样的关键字，直接写语句就可以，使用返回值为boolean的语句,会被当成断言使用</li></ol><h2 id="4-执行"><a href="#4-执行" class="headerlink" title="4.执行"></a>4.执行</h2><p>​就像使用junit一样，点击1处执行测试，我的idea里面有时点击2处的执行不太好使，但1处总是可以的，如果有和我一样的情况，可以尝试使用1处的执行按钮。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701181926632.png" alt="image-20210701181926632"></p><p>执行通过了。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701182059634.png" alt="image-20210701182059634"></p><h2 id="5-还有哪些代码块"><a href="#5-还有哪些代码块" class="headerlink" title="5.还有哪些代码块"></a>5.还有哪些代码块</h2><p>上面我们看到，我们在when 中执行我们的逻辑，在then中验证我们的逻辑。除此之外还有下面几个块</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701182812721.png" alt="image-20210701182812721"></p><p>首先</p><p>1 处given，一般是第一个代码块，我们在此准备需要验证的数据</p><p>2 处的when 和 3处的then 是必须配合使用的，when用来执行操作，then用来验证操作</p><p>4 处的and用来分隔，一般写点注释性语句</p><p>5 处的expect相当于 when 和 then 的结合，独立出现，可以在里面执行一些语句，如果语句返回值是boolean，则会被当作断言进行判断。</p><h2 id="6-更强大的where块"><a href="#6-更强大的where块" class="headerlink" title="6.更强大的where块"></a>6.更强大的where块</h2><p>有时我们想测试多组数据，如我们想测试四组数据</p><p>2 &#x3D;&#x3D; Math.max(1,2)</p><p>5 &#x3D;&#x3D; Math.max(4,5)</p><p>10 &#x3D;&#x3D; Math.max(10,5)</p><p>2 &#x3D;&#x3D; Math.max(2,3)</p><p>我们可以使用where块解决此问题</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701183548811.png" alt="image-20210701183548811"></p><ol><li>在代码中使用到了变量 a,b,c但我们并没有在使用之前定义它们</li><li>where块中，我们使用竖线作为分隔符，c a b 作为表头，写了一个表格，这样spock会依次拿表格中的每一行带入到c  a  b的变量总进行测试，上述表格中有四条数据，所以总共测试四次</li></ol><p>执行结果也明确表示，第四条测试没通过：</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701183909934.png" alt="image-20210701183909934"></p><h2 id="7-配合springboot-进行测试"><a href="#7-配合springboot-进行测试" class="headerlink" title="7.配合springboot 进行测试"></a>7.配合springboot 进行测试</h2><p>​在上面基础上，添加spring-boot-starter-test的依赖，排除掉<code>junit-vintage-engine</code>，因为我们需要junit5版本的依赖，而这个是junit4版本的，我们将其排除掉。</p><p>​spock2需要junit5，springboot2自带的就是junit5，spock1需要junit4，springboot1自带的就是junit4。</p><p>​如果需要交叉版本使用，需要自己处理好依赖版本关系。我这里使用的是spock2+springboot2的组合</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">exclusions</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.hamcrest<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>hamcrest-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.junit.vintage<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit-vintage-engine<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">exclusions</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><p>使用方式如下：</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701190437780.png" alt="image-20210701190437780"></p><p>1 使用@SpringBootTest注解标识类</p><p>2 自动注入是可以使用的，我们这里注入一个DataSource</p><p>3 验证数据源可用</p><p>4 断言没有抛出任何异常</p><p>5 断言resultSet 非空</p><p>6 点击这里的三角号执行，而不是方法旁边的三角号 （这里也可能是我的idea版本问题，如果下面可以使用，使用下面的也可以的）</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​以上就是使用spock的入门教程，一步一步来的话能将spock运行起来，配合springboot也是完全可以的。深入了解的话，可以继续看其他深入点的教程，或直接看官方文档。</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>spock</tag>
-      
-      <tag>单元测试</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>mysql使用updatetime作为乐观锁</title>
     <link href="/1509978234.html/"/>
     <url>/1509978234.html/</url>
@@ -771,6 +775,27 @@
       <tag>bug</tag>
       
       <tag>乐观锁</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>spock测试零基础教程</title>
+    <link href="/1272392355.html/"/>
+    <url>/1272392355.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="spock测试零基础教程"><a href="#spock测试零基础教程" class="headerlink" title="spock测试零基础教程"></a>spock测试零基础教程</h1><p>​昨天研究了一下spock单元测试，确实特别好用，这也是我第一次接触spock，作为一个新手，网上很多教程讲的太深了，折腾了好几个小时才搞明白。<br>​所以我想写一个从0开始的简单教程，一步一步做把Demo跑起来，再去看其他人的教程，这样更有效率。</p><p>下面我将基于spock2.x版本进行演示。可以新建一个空SpringBoot项目进行测试，防止项目内的其他依赖冲突，Demo跑不起来。</p><h2 id="1-引入依赖"><a href="#1-引入依赖" class="headerlink" title="1.引入依赖"></a>1.引入依赖</h2><p>这里引入了spock2.x的包，默认情况下spock会自动将groovy引入进来，我这里主动声明了groovy的依赖</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.spockframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spock-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0-groovy-3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.spockframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spock-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0-groovy-3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h2 id="2-创建测试类"><a href="#2-创建测试类" class="headerlink" title="2.创建测试类"></a>2.创建测试类</h2><p>在测试目录下，右键选择Spock Specification，会自动创建一个类继承了Specification。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180417247.png" alt="image-20210701180417247"></p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180837107.png" alt="image-20210701180837107"></p><p>上面这一步也可以选择创建一个普通Groovy Class，我们手动继承Specification也是一样的。</p><h2 id="3-编写测试方法"><a href="#3-编写测试方法" class="headerlink" title="3.编写测试方法"></a>3.编写测试方法</h2><p>下面就是我们编写的测试方法，我们定义 a &#x3D; 1+1，然后断言 a &#x3D;&#x3D; 2</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180955534.png" alt="image-20210701180955534"></p><p>上图中的步骤</p><ol><li>我们定义一个方法，其中方法名是双引号引起来的，Groovy中是允许这样的，这也是Spock的一个规范，不用双引号引起来也是可以的。</li><li>使用when: 标识下面的代码块是我们需要执行验证的代码</li><li>我们真正要测试的代码，如果这里面抛出异常，不会导致方法退出，when:代码块内部是被try catch的，框架帮我们try catch住了</li><li>then:代码块，必须和when: 成对出现，两者必须成对，且要写在when:后面</li><li>我们可以在then:代码块中进行断言，不需要assert这样的关键字，直接写语句就可以，使用返回值为boolean的语句,会被当成断言使用</li></ol><h2 id="4-执行"><a href="#4-执行" class="headerlink" title="4.执行"></a>4.执行</h2><p>​就像使用junit一样，点击1处执行测试，我的idea里面有时点击2处的执行不太好使，但1处总是可以的，如果有和我一样的情况，可以尝试使用1处的执行按钮。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701181926632.png" alt="image-20210701181926632"></p><p>执行通过了。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701182059634.png" alt="image-20210701182059634"></p><h2 id="5-还有哪些代码块"><a href="#5-还有哪些代码块" class="headerlink" title="5.还有哪些代码块"></a>5.还有哪些代码块</h2><p>上面我们看到，我们在when 中执行我们的逻辑，在then中验证我们的逻辑。除此之外还有下面几个块</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701182812721.png" alt="image-20210701182812721"></p><p>首先</p><p>1 处given，一般是第一个代码块，我们在此准备需要验证的数据</p><p>2 处的when 和 3处的then 是必须配合使用的，when用来执行操作，then用来验证操作</p><p>4 处的and用来分隔，一般写点注释性语句</p><p>5 处的expect相当于 when 和 then 的结合，独立出现，可以在里面执行一些语句，如果语句返回值是boolean，则会被当作断言进行判断。</p><h2 id="6-更强大的where块"><a href="#6-更强大的where块" class="headerlink" title="6.更强大的where块"></a>6.更强大的where块</h2><p>有时我们想测试多组数据，如我们想测试四组数据</p><p>2 &#x3D;&#x3D; Math.max(1,2)</p><p>5 &#x3D;&#x3D; Math.max(4,5)</p><p>10 &#x3D;&#x3D; Math.max(10,5)</p><p>2 &#x3D;&#x3D; Math.max(2,3)</p><p>我们可以使用where块解决此问题</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701183548811.png" alt="image-20210701183548811"></p><ol><li>在代码中使用到了变量 a,b,c但我们并没有在使用之前定义它们</li><li>where块中，我们使用竖线作为分隔符，c a b 作为表头，写了一个表格，这样spock会依次拿表格中的每一行带入到c  a  b的变量总进行测试，上述表格中有四条数据，所以总共测试四次</li></ol><p>执行结果也明确表示，第四条测试没通过：</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701183909934.png" alt="image-20210701183909934"></p><h2 id="7-配合springboot-进行测试"><a href="#7-配合springboot-进行测试" class="headerlink" title="7.配合springboot 进行测试"></a>7.配合springboot 进行测试</h2><p>​在上面基础上，添加spring-boot-starter-test的依赖，排除掉<code>junit-vintage-engine</code>，因为我们需要junit5版本的依赖，而这个是junit4版本的，我们将其排除掉。</p><p>​spock2需要junit5，springboot2自带的就是junit5，spock1需要junit4，springboot1自带的就是junit4。</p><p>​如果需要交叉版本使用，需要自己处理好依赖版本关系。我这里使用的是spock2+springboot2的组合</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">exclusions</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.hamcrest<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>hamcrest-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.junit.vintage<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit-vintage-engine<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">exclusions</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><p>使用方式如下：</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701190437780.png" alt="image-20210701190437780"></p><p>1 使用@SpringBootTest注解标识类</p><p>2 自动注入是可以使用的，我们这里注入一个DataSource</p><p>3 验证数据源可用</p><p>4 断言没有抛出任何异常</p><p>5 断言resultSet 非空</p><p>6 点击这里的三角号执行，而不是方法旁边的三角号 （这里也可能是我的idea版本问题，如果下面可以使用，使用下面的也可以的）</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​以上就是使用spock的入门教程，一步一步来的话能将spock运行起来，配合springboot也是完全可以的。深入了解的话，可以继续看其他深入点的教程，或直接看官方文档。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>单元测试</tag>
+      
+      <tag>spock</tag>
       
     </tags>
     
@@ -921,9 +946,9 @@
     
     <tags>
       
-      <tag>springboot</tag>
-      
       <tag>jackson</tag>
+      
+      <tag>springboot</tag>
       
     </tags>
     
@@ -1234,9 +1259,9 @@
     
     <tags>
       
-      <tag>springSecurity</tag>
-      
       <tag>spring</tag>
+      
+      <tag>springSecurity</tag>
       
       <tag>jwt</tag>
       
@@ -1257,9 +1282,9 @@
     
     <tags>
       
-      <tag>springboot</tag>
-      
       <tag>spring</tag>
+      
+      <tag>springboot</tag>
       
       <tag>springmvc</tag>
       
@@ -1481,9 +1506,9 @@
     
     <tags>
       
-      <tag>slf4j</tag>
-      
       <tag>logback</tag>
+      
+      <tag>slf4j</tag>
       
     </tags>
     
@@ -1565,9 +1590,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>spring</tag>
+      
+      <tag>java</tag>
       
       <tag>Bean初始化过程</tag>
       
@@ -1588,11 +1613,11 @@
     
     <tags>
       
+      <tag>spring</tag>
+      
       <tag>springboot</tag>
       
       <tag>java</tag>
-      
-      <tag>spring</tag>
       
       <tag>websocket</tag>
       
@@ -1762,11 +1787,11 @@
     
     <tags>
       
-      <tag>linux</tag>
+      <tag>bug</tag>
       
       <tag>java</tag>
       
-      <tag>bug</tag>
+      <tag>linux</tag>
       
     </tags>
     
@@ -2079,9 +2104,9 @@
     
     <tags>
       
-      <tag>maven</tag>
-      
       <tag>springboot</tag>
+      
+      <tag>maven</tag>
       
     </tags>
     
@@ -2100,9 +2125,9 @@
     
     <tags>
       
-      <tag>springboot</tag>
-      
       <tag>jackson</tag>
+      
+      <tag>springboot</tag>
       
       <tag>HttpMessageConverter</tag>
       
@@ -2125,9 +2150,9 @@
     
     <tags>
       
-      <tag>springboot</tag>
-      
       <tag>jackson</tag>
+      
+      <tag>springboot</tag>
       
       <tag>HttpMessageConverter</tag>
       
@@ -2190,9 +2215,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>jackson</tag>
+      
+      <tag>java</tag>
       
       <tag>springmvc返回值过滤null</tag>
       
@@ -2213,9 +2238,9 @@
     
     <tags>
       
-      <tag>gitpage</tag>
-      
       <tag>jekyll</tag>
+      
+      <tag>gitpage</tag>
       
     </tags>
     
@@ -2379,9 +2404,9 @@
     
     <tags>
       
-      <tag>gitpage</tag>
-      
       <tag>jekyll</tag>
+      
+      <tag>gitpage</tag>
       
     </tags>
     
@@ -2561,25 +2586,6 @@
   
   
   <entry>
-    <title>jenkins 自动编译，发布，运行项目</title>
-    <link href="/1995720483.html/"/>
-    <url>/1995720483.html/</url>
-    
-    <content type="html"><![CDATA[<h2 id="jenkins-自动编译，发布项目"><a href="#jenkins-自动编译，发布项目" class="headerlink" title="jenkins 自动编译，发布项目"></a>jenkins 自动编译，发布项目</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><pre><code class="hljs">检测svn/git项目改动，如果改动则自动拉出源码，编译好，上传到服务器上，关闭服务器上运行的项目，并启动新编译的项目</code></pre><h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><pre><code class="hljs">项目由svn或git管理这里以maven项目举例子有远程服务器或本地起虚拟机模拟都行，但要能shh链接上</code></pre><h3 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3><h4 id="1-配置好jenkins-达到自动编译的效果"><a href="#1-配置好jenkins-达到自动编译的效果" class="headerlink" title="1.配置好jenkins 达到自动编译的效果"></a>1.配置好jenkins 达到自动编译的效果</h4><ul><li>   1.创建jenkins maven风格的项目</li><li>   2.源码管理选择subversive，填好url 密钥</li><li>   3.构建 poll SCM 填写 corn表达式，因为开发阶段更新比较频繁，这里没两分钟检测一次 H&#x2F;2 * * * * </li><li>   4.保存并构建一下</li></ul><h5 id="如果上面没配置错误的话，手动启动构建一下会从svn上拉出源码，并在【jenkins安装目录-workspace-项目文件名-】文件夹下进行编译，"><a href="#如果上面没配置错误的话，手动启动构建一下会从svn上拉出源码，并在【jenkins安装目录-workspace-项目文件名-】文件夹下进行编译，" class="headerlink" title="如果上面没配置错误的话，手动启动构建一下会从svn上拉出源码，并在【jenkins安装目录\workspace\项目文件名\】文件夹下进行编译，"></a>如果上面没配置错误的话，手动启动构建一下会从svn上拉出源码，并在【jenkins安装目录\workspace\项目文件名\】文件夹下进行编译，</h5><h5 id="java项目的话会target目录下生成jar-war包"><a href="#java项目的话会target目录下生成jar-war包" class="headerlink" title="java项目的话会target目录下生成jar&#x2F;war包"></a>java项目的话会target目录下生成jar&#x2F;war包</h5><h4 id="2-继续配置jenkins"><a href="#2-继续配置jenkins" class="headerlink" title="2.继续配置jenkins"></a>2.继续配置jenkins</h4><ul><li><p>1.转到post Steps 选择 ‘send files or execute commands over SSH’ 前提装好jenkins的ssh插件并配置好，选择<code>Run only if build succeeds </code>这样只有编译成功了才执行上传操作</p></li><li><p>2.选择好服务器</p></li><li><p>3.Source files 填写【target&#x2F;sc-pro-1.0.jar】路径是相对于【jenkins安装目录\workspace\项目文件名\】来处理的，sc-pro-1.0.jar按照实际的来</p></li><li><p>4.Remove prefix 即移除路径前缀，就是上面填写的字符串，我们只保留文件名，将前面的字符串都去除这里填写【target&#x2F;】</p></li><li><p>5.Remote directory 远程文件夹的路径这里我填写【&#x2F;home&#x2F;suu&#x2F;sprintboot8585&#x2F;temp】这样就把第一次填写的文件路径，去除第二部填写的前缀，通过ssh传输到【&#x2F;home&#x2F;suu&#x2F;sprintboot8585&#x2F;temp&#x2F;sc-pro-1.0.jar】，如果上一步的targer&#x2F;不填写就会在服务器上的temp文件夹下创建目录结构【&#x2F;home&#x2F;suu&#x2F;sprintboot8585&#x2F;temp&#x2F;target&#x2F;sc-pro-1.0.jar】</p></li><li><p>6.Exec command 这里填写执行的linux命令，我们事先写好sh脚本放在服务器上，这里启动脚本，我填写【source  &#x2F;home&#x2F;suu&#x2F;sprintboot8585&#x2F;temp&#x2F;display_sc-pro.sh】</p></li></ul><h4 id="3-服务器脚本编写，脚本逻辑"><a href="#3-服务器脚本编写，脚本逻辑" class="headerlink" title="3.服务器脚本编写，脚本逻辑"></a>3.服务器脚本编写，脚本逻辑</h4><ul><li>1.找到项目任务pid</li><li>2.kill掉项目</li><li>3.将项目从上传的temp文件夹下移动到真正执行的目录下</li><li>4.启动新项目</li></ul><h4 id="我的springboot项目是这样编写的"><a href="#我的springboot项目是这样编写的" class="headerlink" title="我的springboot项目是这样编写的"></a>我的springboot项目是这样编写的</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br>fileName=<span class="hljs-string">&quot;sc-pro-1.0.jar&quot;</span><br>outPath=<span class="hljs-string">&quot;/home/suu/sprintboot8585/temp&quot;</span><br>runPath=<span class="hljs-string">&quot;/home/suu/sprintboot8585/springboot&quot;</span><br><br><span class="hljs-comment"># check</span><br><span class="hljs-function"><span class="hljs-title">check</span></span>()&#123;<br><span class="hljs-keyword">if</span> [ $? -eq 0 ];<span class="hljs-keyword">then</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;success <span class="hljs-variable">$1</span>&quot;</span><br><span class="hljs-keyword">else</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;fail <span class="hljs-variable">$1</span>&quot;</span><br><span class="hljs-built_in">exit</span><br><span class="hljs-keyword">fi</span><br>&#125;<br><br><span class="hljs-comment">#kill pid</span><br><span class="hljs-function"><span class="hljs-title">killPid</span></span>()&#123;<br><span class="hljs-built_in">kill</span> -9 <span class="hljs-variable">$1</span><br>check <span class="hljs-string">&quot;kill <span class="hljs-variable">$fileName</span>&quot;</span><br>&#125;<br><br><span class="hljs-comment"># start new </span><br><span class="hljs-comment"># 将jar包覆盖移动到执行目录下</span><br><span class="hljs-comment"># 调用nohup命令执行新的程序</span><br><span class="hljs-function"><span class="hljs-title">startNew</span></span>()&#123;<br><span class="hljs-built_in">mv</span> -f <span class="hljs-variable">$outPath</span>/<span class="hljs-variable">$fileName</span> <span class="hljs-variable">$runPath</span>/<span class="hljs-variable">$fileName</span><br><span class="hljs-built_in">cd</span> <span class="hljs-variable">$runPath</span><br><span class="hljs-built_in">nohup</span> java -jar <span class="hljs-variable">$fileName</span>  &gt; <span class="hljs-variable">$runPath</span>/nohup.out &amp;<br>&#125;<br><br><span class="hljs-comment"># checkFile 检查新jar包是否存在</span><br><span class="hljs-keyword">if</span> [ -d <span class="hljs-string">&quot;<span class="hljs-variable">$fileName</span>&quot;</span> ];<span class="hljs-keyword">then</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;file <span class="hljs-variable">$fileName</span> not found&quot;</span><br><span class="hljs-built_in">exit</span><br><span class="hljs-keyword">fi</span><br><br><br><span class="hljs-comment">#fid pid，，找到就程序的pid</span><br>n1=`ps -ef |grep <span class="hljs-variable">$fileName</span> |grep -v grep |awk <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span>`<br>check  <span class="hljs-string">&quot;find PID&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;find PID:<span class="hljs-variable">$n1</span>&quot;</span><br><br><br><span class="hljs-comment">#kill pid if pid exeit,强制结束旧程序</span><br><span class="hljs-keyword">if</span> [ -n <span class="hljs-string">&quot;<span class="hljs-variable">$n1</span>&quot;</span> ];<span class="hljs-keyword">then</span><br>killPid <span class="hljs-string">&quot;<span class="hljs-variable">$n1</span>&quot;</span><br><span class="hljs-keyword">else</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;not find pid&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 调用启动函数</span><br>startNew<br></code></pre></td></tr></table></figure><p>####4.回到jenkins，手动发布一下，观察console输出信息，能正确获取源码，编译，测试，上传，杀死程序，启动程序</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>jenkins</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>jenkins自动构建项目并发布到maven私服</title>
     <link href="/1595091183.html/"/>
     <url>/1595091183.html/</url>
@@ -2612,6 +2618,25 @@
       <tag>springboot</tag>
       
       <tag>defaultServlet</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>jenkins 自动编译，发布，运行项目</title>
+    <link href="/1995720483.html/"/>
+    <url>/1995720483.html/</url>
+    
+    <content type="html"><![CDATA[<h2 id="jenkins-自动编译，发布项目"><a href="#jenkins-自动编译，发布项目" class="headerlink" title="jenkins 自动编译，发布项目"></a>jenkins 自动编译，发布项目</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><pre><code class="hljs">检测svn/git项目改动，如果改动则自动拉出源码，编译好，上传到服务器上，关闭服务器上运行的项目，并启动新编译的项目</code></pre><h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><pre><code class="hljs">项目由svn或git管理这里以maven项目举例子有远程服务器或本地起虚拟机模拟都行，但要能shh链接上</code></pre><h3 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3><h4 id="1-配置好jenkins-达到自动编译的效果"><a href="#1-配置好jenkins-达到自动编译的效果" class="headerlink" title="1.配置好jenkins 达到自动编译的效果"></a>1.配置好jenkins 达到自动编译的效果</h4><ul><li>   1.创建jenkins maven风格的项目</li><li>   2.源码管理选择subversive，填好url 密钥</li><li>   3.构建 poll SCM 填写 corn表达式，因为开发阶段更新比较频繁，这里没两分钟检测一次 H&#x2F;2 * * * * </li><li>   4.保存并构建一下</li></ul><h5 id="如果上面没配置错误的话，手动启动构建一下会从svn上拉出源码，并在【jenkins安装目录-workspace-项目文件名-】文件夹下进行编译，"><a href="#如果上面没配置错误的话，手动启动构建一下会从svn上拉出源码，并在【jenkins安装目录-workspace-项目文件名-】文件夹下进行编译，" class="headerlink" title="如果上面没配置错误的话，手动启动构建一下会从svn上拉出源码，并在【jenkins安装目录\workspace\项目文件名\】文件夹下进行编译，"></a>如果上面没配置错误的话，手动启动构建一下会从svn上拉出源码，并在【jenkins安装目录\workspace\项目文件名\】文件夹下进行编译，</h5><h5 id="java项目的话会target目录下生成jar-war包"><a href="#java项目的话会target目录下生成jar-war包" class="headerlink" title="java项目的话会target目录下生成jar&#x2F;war包"></a>java项目的话会target目录下生成jar&#x2F;war包</h5><h4 id="2-继续配置jenkins"><a href="#2-继续配置jenkins" class="headerlink" title="2.继续配置jenkins"></a>2.继续配置jenkins</h4><ul><li><p>1.转到post Steps 选择 ‘send files or execute commands over SSH’ 前提装好jenkins的ssh插件并配置好，选择<code>Run only if build succeeds </code>这样只有编译成功了才执行上传操作</p></li><li><p>2.选择好服务器</p></li><li><p>3.Source files 填写【target&#x2F;sc-pro-1.0.jar】路径是相对于【jenkins安装目录\workspace\项目文件名\】来处理的，sc-pro-1.0.jar按照实际的来</p></li><li><p>4.Remove prefix 即移除路径前缀，就是上面填写的字符串，我们只保留文件名，将前面的字符串都去除这里填写【target&#x2F;】</p></li><li><p>5.Remote directory 远程文件夹的路径这里我填写【&#x2F;home&#x2F;suu&#x2F;sprintboot8585&#x2F;temp】这样就把第一次填写的文件路径，去除第二部填写的前缀，通过ssh传输到【&#x2F;home&#x2F;suu&#x2F;sprintboot8585&#x2F;temp&#x2F;sc-pro-1.0.jar】，如果上一步的targer&#x2F;不填写就会在服务器上的temp文件夹下创建目录结构【&#x2F;home&#x2F;suu&#x2F;sprintboot8585&#x2F;temp&#x2F;target&#x2F;sc-pro-1.0.jar】</p></li><li><p>6.Exec command 这里填写执行的linux命令，我们事先写好sh脚本放在服务器上，这里启动脚本，我填写【source  &#x2F;home&#x2F;suu&#x2F;sprintboot8585&#x2F;temp&#x2F;display_sc-pro.sh】</p></li></ul><h4 id="3-服务器脚本编写，脚本逻辑"><a href="#3-服务器脚本编写，脚本逻辑" class="headerlink" title="3.服务器脚本编写，脚本逻辑"></a>3.服务器脚本编写，脚本逻辑</h4><ul><li>1.找到项目任务pid</li><li>2.kill掉项目</li><li>3.将项目从上传的temp文件夹下移动到真正执行的目录下</li><li>4.启动新项目</li></ul><h4 id="我的springboot项目是这样编写的"><a href="#我的springboot项目是这样编写的" class="headerlink" title="我的springboot项目是这样编写的"></a>我的springboot项目是这样编写的</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br>fileName=<span class="hljs-string">&quot;sc-pro-1.0.jar&quot;</span><br>outPath=<span class="hljs-string">&quot;/home/suu/sprintboot8585/temp&quot;</span><br>runPath=<span class="hljs-string">&quot;/home/suu/sprintboot8585/springboot&quot;</span><br><br><span class="hljs-comment"># check</span><br><span class="hljs-function"><span class="hljs-title">check</span></span>()&#123;<br><span class="hljs-keyword">if</span> [ $? -eq 0 ];<span class="hljs-keyword">then</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;success <span class="hljs-variable">$1</span>&quot;</span><br><span class="hljs-keyword">else</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;fail <span class="hljs-variable">$1</span>&quot;</span><br><span class="hljs-built_in">exit</span><br><span class="hljs-keyword">fi</span><br>&#125;<br><br><span class="hljs-comment">#kill pid</span><br><span class="hljs-function"><span class="hljs-title">killPid</span></span>()&#123;<br><span class="hljs-built_in">kill</span> -9 <span class="hljs-variable">$1</span><br>check <span class="hljs-string">&quot;kill <span class="hljs-variable">$fileName</span>&quot;</span><br>&#125;<br><br><span class="hljs-comment"># start new </span><br><span class="hljs-comment"># 将jar包覆盖移动到执行目录下</span><br><span class="hljs-comment"># 调用nohup命令执行新的程序</span><br><span class="hljs-function"><span class="hljs-title">startNew</span></span>()&#123;<br><span class="hljs-built_in">mv</span> -f <span class="hljs-variable">$outPath</span>/<span class="hljs-variable">$fileName</span> <span class="hljs-variable">$runPath</span>/<span class="hljs-variable">$fileName</span><br><span class="hljs-built_in">cd</span> <span class="hljs-variable">$runPath</span><br><span class="hljs-built_in">nohup</span> java -jar <span class="hljs-variable">$fileName</span>  &gt; <span class="hljs-variable">$runPath</span>/nohup.out &amp;<br>&#125;<br><br><span class="hljs-comment"># checkFile 检查新jar包是否存在</span><br><span class="hljs-keyword">if</span> [ -d <span class="hljs-string">&quot;<span class="hljs-variable">$fileName</span>&quot;</span> ];<span class="hljs-keyword">then</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;file <span class="hljs-variable">$fileName</span> not found&quot;</span><br><span class="hljs-built_in">exit</span><br><span class="hljs-keyword">fi</span><br><br><br><span class="hljs-comment">#fid pid，，找到就程序的pid</span><br>n1=`ps -ef |grep <span class="hljs-variable">$fileName</span> |grep -v grep |awk <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span>`<br>check  <span class="hljs-string">&quot;find PID&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;find PID:<span class="hljs-variable">$n1</span>&quot;</span><br><br><br><span class="hljs-comment">#kill pid if pid exeit,强制结束旧程序</span><br><span class="hljs-keyword">if</span> [ -n <span class="hljs-string">&quot;<span class="hljs-variable">$n1</span>&quot;</span> ];<span class="hljs-keyword">then</span><br>killPid <span class="hljs-string">&quot;<span class="hljs-variable">$n1</span>&quot;</span><br><span class="hljs-keyword">else</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;not find pid&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 调用启动函数</span><br>startNew<br></code></pre></td></tr></table></figure><p>####4.回到jenkins，手动发布一下，观察console输出信息，能正确获取源码，编译，测试，上传，杀死程序，启动程序</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>jenkins</tag>
       
     </tags>
     
@@ -2706,11 +2731,11 @@
     
     <tags>
       
+      <tag>bug</tag>
+      
       <tag>java</tag>
       
       <tag>slf4j</tag>
-      
-      <tag>bug</tag>
       
     </tags>
     
@@ -2957,11 +2982,11 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>mybatis</tag>
       
       <tag>技巧</tag>
+      
+      <tag>java</tag>
       
     </tags>
     
@@ -3103,25 +3128,6 @@
   
   
   <entry>
-    <title>ubuntu 18 安装nginx</title>
-    <link href="/3507292475.html/"/>
-    <url>/3507292475.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="ubuntu-18-安装nginx"><a href="#ubuntu-18-安装nginx" class="headerlink" title="ubuntu 18 安装nginx"></a>ubuntu 18 安装nginx</h1><h2 id="安装nginx依赖"><a href="#安装nginx依赖" class="headerlink" title="安装nginx依赖"></a>安装nginx依赖</h2><h3 id="安装gcc"><a href="#安装gcc" class="headerlink" title="安装gcc"></a>安装gcc</h3><pre><code class="hljs">apt-get install build-essentialapt-get install libtool</code></pre><h3 id="安装pcre依赖库"><a href="#安装pcre依赖库" class="headerlink" title="安装pcre依赖库"></a>安装pcre依赖库</h3><pre><code class="hljs">sudo apt-get updatesudo apt-get install libpcre3 libpcre3-dev</code></pre><h3 id="安装zlib依赖库"><a href="#安装zlib依赖库" class="headerlink" title="安装zlib依赖库"></a>安装zlib依赖库</h3><pre><code class="hljs">apt-get install zlib1g-dev</code></pre><h3 id="安装ssl依赖库"><a href="#安装ssl依赖库" class="headerlink" title="安装ssl依赖库"></a>安装ssl依赖库</h3><pre><code class="hljs">apt-get install openssl</code></pre><h3 id="安装nginx"><a href="#安装nginx" class="headerlink" title="安装nginx"></a>安装nginx</h3><pre><code class="hljs">#下载nginxwget http://nginx.org/download/nginx-1.17.0.tar.gz#解压nginx （这个解压出来的文件夹，安装完成后也不要删除，以后再想配置还能用）tar -zxvf nginx-1.17.0.tar.gz#进入解压目录cd nginx-1.17.0#配置./configure --prefix=/usr/local/nginx#编辑nginx( 这里只是编译还没有安装)make注意：这里可能会报错，提示“pcre.h No such file or directory”,具体详见：http://stackoverflow.com/questions/22555561/error-building-fatal-error-pcre-h-no-such-file-or-directory需要安装 libpcre3-dev,命令为：sudo apt-get install libpcre3-dev#安装nginx（上面配置时，指定了安装位置）sudo make install启动nginx：sudo /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf</code></pre><h2 id="nginx-常用命令"><a href="#nginx-常用命令" class="headerlink" title="nginx 常用命令"></a>nginx 常用命令</h2><pre><code class="hljs">启动/usr/local/nginx/sbin/nginx./sbin/nginx　停止./sbin/nginx -s stop重加载配置文件./sbin/nginx -s reload查看版本，和编译配置信息nginx -V</code></pre><h2 id="添加到环境变量"><a href="#添加到环境变量" class="headerlink" title="添加到环境变量"></a>添加到环境变量</h2><pre><code class="hljs">在/etc/profile 中加入：export NGINX_HOME=/usr/local/nginxexport PATH=$PATH:$NGINX_HOME/sbin保存，执行 source /etc/profile ，使配置文件生效</code></pre><h2 id="转载自–-这篇博客"><a href="#转载自–-这篇博客" class="headerlink" title="转载自–&gt; 这篇博客"></a>转载自–&gt; <a href="%22https://www.cnblogs.com/piscesLoveCc/p/5794926.html%22">这篇博客</a></h2>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>nginx</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>为已安装的nginx 添加模块</title>
     <link href="/1956753180.html/"/>
     <url>/1956753180.html/</url>
@@ -3141,36 +3147,17 @@
   
   
   <entry>
-    <title>maven使用本地的jar包</title>
-    <link href="/106157645.html/"/>
-    <url>/106157645.html/</url>
+    <title>ubuntu 18 安装nginx</title>
+    <link href="/3507292475.html/"/>
+    <url>/3507292475.html/</url>
     
-    <content type="html"><![CDATA[<h1 id="maven使用本地的jar包"><a href="#maven使用本地的jar包" class="headerlink" title="maven使用本地的jar包"></a>maven使用本地的jar包</h1><hr><h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><pre><code class="hljs">    为了写这个网站后台，我把项目考在移动硬盘中拿回家继续写，结果maven引用的一个jar在公司maven私服里面，我自己电脑里没有。项目跑不起来。</code></pre><h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><pre><code class="hljs">    机智的我，想起来连接公司服务器，从其他使用到这个jar的项目中获得到了jar包，可是怎么把这个jar安装到本地的maven中，并让我能够在idea中使用呢？？</code></pre><h2 id="配置mavne，下面拿mysql-连接驱动做讲解"><a href="#配置mavne，下面拿mysql-连接驱动做讲解" class="headerlink" title="配置mavne，下面拿mysql 连接驱动做讲解"></a>配置mavne，下面拿mysql 连接驱动做讲解</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>         <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>         <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>version<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>system<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">systemPath</span>&gt;</span>d:/mysql-connector.jar<span class="hljs-tag">&lt;/<span class="hljs-name">systemPath</span>&gt;</span><br>     <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure><pre><code class="hljs">也就是配置一个systemPath标签，值填本地jar包地址，就可以在idea中运行了     </code></pre><h2 id="以上配置打包成war包是不会将本地jar-打包进去的，如果需要打包"><a href="#以上配置打包成war包是不会将本地jar-打包进去的，如果需要打包" class="headerlink" title="以上配置打包成war包是不会将本地jar 打包进去的，如果需要打包"></a>以上配置打包成war包是不会将本地jar 打包进去的，如果需要打包</h2><pre><code class="hljs">&lt;plugin&gt;    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;    &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;    &lt;configuration&gt;        &lt;includeSystemScope&gt;true&lt;/includeSystemScope&gt;    &lt;/configuration&gt;&lt;/plugin&gt;</code></pre>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>maven</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>springboot+idea 配置热部署</title>
-    <link href="/4243760172.html/"/>
-    <url>/4243760172.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="springboot-idea-配置热部署"><a href="#springboot-idea-配置热部署" class="headerlink" title="springboot+idea 配置热部署"></a>springboot+idea 配置热部署</h1><hr><h2 id="1-maven"><a href="#1-maven" class="headerlink" title="1.maven"></a>1.maven</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 热部署模块 --&gt;</span><br> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-devtools<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">optional</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">optional</span>&gt;</span><br> <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h2 id="2-maven-插件"><a href="#2-maven-插件" class="headerlink" title="2.maven 插件"></a>2.maven 插件</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">fork</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">fork</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h2 id="3-idea-设置"><a href="#3-idea-设置" class="headerlink" title="3.idea 设置"></a>3.idea 设置</h2><pre><code class="hljs">ctrl+alt+s 打开idea的设置，找到[Build，Execution,Deployment] - &gt; [Complier] -&gt; 打勾[Build project automatically]</code></pre><h2 id="4-idea设置"><a href="#4-idea设置" class="headerlink" title="4.idea设置"></a>4.idea设置</h2><pre><code class="hljs">ctrl+alt+shift+/, 打开的窗口选择第一项[Registry]找到[ compiler.automake.allow.when.app.running ] 后面打勾</code></pre><h2 id="5-debug模式下启动项目"><a href="#5-debug模式下启动项目" class="headerlink" title="5.debug模式下启动项目"></a>5.debug模式下启动项目</h2><pre><code class="hljs">不出意外，修改类会自动加载，并且速度非常快</code></pre>]]></content>
+    <content type="html"><![CDATA[<h1 id="ubuntu-18-安装nginx"><a href="#ubuntu-18-安装nginx" class="headerlink" title="ubuntu 18 安装nginx"></a>ubuntu 18 安装nginx</h1><h2 id="安装nginx依赖"><a href="#安装nginx依赖" class="headerlink" title="安装nginx依赖"></a>安装nginx依赖</h2><h3 id="安装gcc"><a href="#安装gcc" class="headerlink" title="安装gcc"></a>安装gcc</h3><pre><code class="hljs">apt-get install build-essentialapt-get install libtool</code></pre><h3 id="安装pcre依赖库"><a href="#安装pcre依赖库" class="headerlink" title="安装pcre依赖库"></a>安装pcre依赖库</h3><pre><code class="hljs">sudo apt-get updatesudo apt-get install libpcre3 libpcre3-dev</code></pre><h3 id="安装zlib依赖库"><a href="#安装zlib依赖库" class="headerlink" title="安装zlib依赖库"></a>安装zlib依赖库</h3><pre><code class="hljs">apt-get install zlib1g-dev</code></pre><h3 id="安装ssl依赖库"><a href="#安装ssl依赖库" class="headerlink" title="安装ssl依赖库"></a>安装ssl依赖库</h3><pre><code class="hljs">apt-get install openssl</code></pre><h3 id="安装nginx"><a href="#安装nginx" class="headerlink" title="安装nginx"></a>安装nginx</h3><pre><code class="hljs">#下载nginxwget http://nginx.org/download/nginx-1.17.0.tar.gz#解压nginx （这个解压出来的文件夹，安装完成后也不要删除，以后再想配置还能用）tar -zxvf nginx-1.17.0.tar.gz#进入解压目录cd nginx-1.17.0#配置./configure --prefix=/usr/local/nginx#编辑nginx( 这里只是编译还没有安装)make注意：这里可能会报错，提示“pcre.h No such file or directory”,具体详见：http://stackoverflow.com/questions/22555561/error-building-fatal-error-pcre-h-no-such-file-or-directory需要安装 libpcre3-dev,命令为：sudo apt-get install libpcre3-dev#安装nginx（上面配置时，指定了安装位置）sudo make install启动nginx：sudo /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf</code></pre><h2 id="nginx-常用命令"><a href="#nginx-常用命令" class="headerlink" title="nginx 常用命令"></a>nginx 常用命令</h2><pre><code class="hljs">启动/usr/local/nginx/sbin/nginx./sbin/nginx　停止./sbin/nginx -s stop重加载配置文件./sbin/nginx -s reload查看版本，和编译配置信息nginx -V</code></pre><h2 id="添加到环境变量"><a href="#添加到环境变量" class="headerlink" title="添加到环境变量"></a>添加到环境变量</h2><pre><code class="hljs">在/etc/profile 中加入：export NGINX_HOME=/usr/local/nginxexport PATH=$PATH:$NGINX_HOME/sbin保存，执行 source /etc/profile ，使配置文件生效</code></pre><h2 id="转载自–-这篇博客"><a href="#转载自–-这篇博客" class="headerlink" title="转载自–&gt; 这篇博客"></a>转载自–&gt; <a href="%22https://www.cnblogs.com/piscesLoveCc/p/5794926.html%22">这篇博客</a></h2>]]></content>
     
     
     
     <tags>
       
-      <tag>springboot</tag>
+      <tag>nginx</tag>
       
     </tags>
     
@@ -3198,6 +3185,25 @@
   
   
   <entry>
+    <title>springboot+idea 配置热部署</title>
+    <link href="/4243760172.html/"/>
+    <url>/4243760172.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="springboot-idea-配置热部署"><a href="#springboot-idea-配置热部署" class="headerlink" title="springboot+idea 配置热部署"></a>springboot+idea 配置热部署</h1><hr><h2 id="1-maven"><a href="#1-maven" class="headerlink" title="1.maven"></a>1.maven</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 热部署模块 --&gt;</span><br> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-devtools<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>     <span class="hljs-tag">&lt;<span class="hljs-name">optional</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">optional</span>&gt;</span><br> <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h2 id="2-maven-插件"><a href="#2-maven-插件" class="headerlink" title="2.maven 插件"></a>2.maven 插件</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">fork</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">fork</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br><br></code></pre></td></tr></table></figure><h2 id="3-idea-设置"><a href="#3-idea-设置" class="headerlink" title="3.idea 设置"></a>3.idea 设置</h2><pre><code class="hljs">ctrl+alt+s 打开idea的设置，找到[Build，Execution,Deployment] - &gt; [Complier] -&gt; 打勾[Build project automatically]</code></pre><h2 id="4-idea设置"><a href="#4-idea设置" class="headerlink" title="4.idea设置"></a>4.idea设置</h2><pre><code class="hljs">ctrl+alt+shift+/, 打开的窗口选择第一项[Registry]找到[ compiler.automake.allow.when.app.running ] 后面打勾</code></pre><h2 id="5-debug模式下启动项目"><a href="#5-debug模式下启动项目" class="headerlink" title="5.debug模式下启动项目"></a>5.debug模式下启动项目</h2><pre><code class="hljs">不出意外，修改类会自动加载，并且速度非常快</code></pre>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>springboot</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>让网站支持markdown 语法，让代码高亮</title>
     <link href="/2418605146.html/"/>
     <url>/2418605146.html/</url>
@@ -3209,6 +3215,25 @@
     <tags>
       
       <tag>markdown</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>maven使用本地的jar包</title>
+    <link href="/106157645.html/"/>
+    <url>/106157645.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="maven使用本地的jar包"><a href="#maven使用本地的jar包" class="headerlink" title="maven使用本地的jar包"></a>maven使用本地的jar包</h1><hr><h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><pre><code class="hljs">    为了写这个网站后台，我把项目考在移动硬盘中拿回家继续写，结果maven引用的一个jar在公司maven私服里面，我自己电脑里没有。项目跑不起来。</code></pre><h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><pre><code class="hljs">    机智的我，想起来连接公司服务器，从其他使用到这个jar的项目中获得到了jar包，可是怎么把这个jar安装到本地的maven中，并让我能够在idea中使用呢？？</code></pre><h2 id="配置mavne，下面拿mysql-连接驱动做讲解"><a href="#配置mavne，下面拿mysql-连接驱动做讲解" class="headerlink" title="配置mavne，下面拿mysql 连接驱动做讲解"></a>配置mavne，下面拿mysql 连接驱动做讲解</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>         <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>         <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>version<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>system<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">systemPath</span>&gt;</span>d:/mysql-connector.jar<span class="hljs-tag">&lt;/<span class="hljs-name">systemPath</span>&gt;</span><br>     <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure><pre><code class="hljs">也就是配置一个systemPath标签，值填本地jar包地址，就可以在idea中运行了     </code></pre><h2 id="以上配置打包成war包是不会将本地jar-打包进去的，如果需要打包"><a href="#以上配置打包成war包是不会将本地jar-打包进去的，如果需要打包" class="headerlink" title="以上配置打包成war包是不会将本地jar 打包进去的，如果需要打包"></a>以上配置打包成war包是不会将本地jar 打包进去的，如果需要打包</h2><pre><code class="hljs">&lt;plugin&gt;    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;    &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;    &lt;configuration&gt;        &lt;includeSystemScope&gt;true&lt;/includeSystemScope&gt;    &lt;/configuration&gt;&lt;/plugin&gt;</code></pre>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>maven</tag>
       
     </tags>
     
