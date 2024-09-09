@@ -253,6 +253,46 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/1844705713.html/" target="_blank">
+          MessageToByteEncoder使用注意
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/1844705713.html/" target="_blank">
+        <div>
+          MessageToByteEncoder使用注意这个encoder会将message解析成byteBuffer，但要注意的一点是如果传入encode方法的message没有被消耗会没有被完全消耗， 剩余没消耗完成的部分会被丢弃掉的从而导致encode出来的数据不全。  ByteToMessageCodec​	这个双向codec内部使用的也是MessageToByteEncoder，也有同样的问题
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-11-21 00:00" pubdate>
+              2019-11-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/netty/">#netty</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2728346615.html/" target="_blank">
           springmvc put请求参数绑定
         </a>
@@ -453,46 +493,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/327144437.html/" target="_blank">
-          SpringSecurityConf配置
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/327144437.html/" target="_blank">
-        <div>
-          SpringSecurityConf配置上配置文件1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2019-10-29 00:00" pubdate>
-              2019-10-29
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/springSecurity/">#springSecurity</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/3487395032.html/" target="_blank">
           HeaderWriterFilter内部做了什么，导致静态资源不能访问了
         </a>
@@ -533,15 +533,55 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/4237278774.html/" target="_blank">
-          jenkins git 报“Host key verification failed”错误处理
+        <a href="/327144437.html/" target="_blank">
+          SpringSecurityConf配置
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/4237278774.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/327144437.html/" target="_blank">
         <div>
-          jenkins git 报“Host key verification failed”错误处理现象是手动cmd窗口中能正常使用git，能正常push到github，但jenkins中使用bat批处理就报此错误 问题出现的原因是jenkins无法找到user/.ssh/下面的配置，解决方法有两个  方法一，让jenkins的服务以当前用户身份执行 0.打开系统服务 1.找到jenkins的服务 2.
+          SpringSecurityConf配置上配置文件1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-10-29 00:00" pubdate>
+              2019-10-29
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/springSecurity/">#springSecurity</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/1995720483.html/" target="_blank">
+          jenkins 自动编译，发布，运行项目
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/1995720483.html/" target="_blank">
+        <div>
+          jenkins 自动编译，发布项目目的检测svn/git项目改动，如果改动则自动拉出源码，编译好，上传到服务器上，关闭服务器上运行的项目，并启动新编译的项目  条件项目由svn或git管理 这里以maven项目举例子 有远程服务器或本地起虚拟机模拟都行，但要能shh链接上  步骤1.配置好jenkins 达到自动编译的效果    1.创建jenkins maven风格的项目    2.源码管理选择
         </div>
       </a>
 
@@ -600,48 +640,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/jenkins/">#jenkins</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2261257528.html/" target="_blank">
-          springboot 添加defaultServlet实现更好的文件下载功能
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2261257528.html/" target="_blank">
-        <div>
-          Springboot 添加DefaultServlet实现更好的文件下载功能​        defaultServlet是tomcat为我们提供的能下载或打开tomcat项目文件夹下的静态文件的servlet，他的url-pattern是 /。​        但如果使用springboot，会自动注册dispatchServlet到容器中url-pattern也是 /会把defaultServ
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2019-10-15 00:00" pubdate>
-              2019-10-15
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/springboot/">#springboot</a>
-            
-              <a href="/tags/defaultServlet/">#defaultServlet</a>
             
           </div>
         

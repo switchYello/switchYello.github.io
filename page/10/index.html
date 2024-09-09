@@ -253,15 +253,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/185232587.html/" target="_blank">
-          服务器安装jekyll，搭建自己的博客
+        <a href="/2527058159.html/" target="_blank">
+          给服务器开启bbr
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/185232587.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2527058159.html/" target="_blank">
         <div>
-          ​	本来图方便使用gitpage做静态博客，但国内访问速度太慢，并且因为自己也有服务器，打算移动到自己服务器上，然后定时从github上同步代码，自己写博客仍然直接push到github，使用方式不变。 ​	并且这样也可以在DNS上将国内解析到服务器，国外解析到gitpage，这样一方面节省流量，一方面国内国外速度都能得到保障。下面讲具体步骤。 1 安装ruby 更新apt索引  1apt -ge
+          ​	首先要求服务器内核版本 &gt; 4.9,通过命令uname -a查看内核版本。如果内核版本小，请升级内核吧，不同发行版本升级方式不太一样，自行搜索。 一，开启bbr在这里前提是内核版本 &gt; 4.9, bbr是自带的，我们只要开启即可。 修改系统变量： 12echo &quot;net.core.default_qdisc=fq&quot; &gt;&gt; /etc/sysctl.co
         </div>
       </a>
 
@@ -279,7 +279,53 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/jekyll/">#jekyll</a>
+              <a href="/tags/linux/">#linux</a>
+            
+              <a href="/tags/bbr/">#bbr</a>
+            
+              <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">#服务器</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/3083647988.html/" target="_blank">
+          netty将channel设为自动读取
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/3083647988.html/" target="_blank">
+        <div>
+          ​	 ​	是这样的一个小技巧，这是我在写ss时学到的，有时候要实现私有协议需要将netty设为非自动读取，等前面工作处理好了在转变成自动读取。 ​	要实现channel数据的转发工作，第二个channel未创建完成时是不能读取第一个channel内数据的，所以我们经常将第一个channel设为不自动读取。 先前我看netty例子里有这样的写法，转换数据 12345678910out.writeAn
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-03-01 00:00" pubdate>
+              2020-03-01
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">#java</a>
+            
+              <a href="/tags/netty/">#netty</a>
             
           </div>
         
@@ -622,50 +668,6 @@
               <a href="/tags/springboot/">#springboot</a>
             
               <a href="/tags/%E8%B7%A8%E5%9F%9F/">#跨域</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2519329010.html/" target="_blank">
-          记一次Jackson引发的血案
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2519329010.html/" target="_blank">
-        <div>
-          记一次Jackson引发的血案一昨天修改项目，想用Jackson逐渐替换项目中使用的Fastjson，项目较旧，已经配置了FastJsonHttpMessageConverter用于springmvc的返回值序列化，这是前提。 二既然是用了Jackson解析json，有几个接口返回值里里有JsonNode类型，这是jackson的类，FastJson无法序列化，所以配置文件里添加了MappingJ
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2019-12-25 00:00" pubdate>
-              2019-12-25
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/jackson/">#jackson</a>
-            
-              <a href="/tags/java/">#java</a>
-            
-              <a href="/tags/springmvc%E8%BF%94%E5%9B%9E%E5%80%BC%E8%BF%87%E6%BB%A4null/">#springmvc返回值过滤null</a>
             
           </div>
         
