@@ -253,15 +253,55 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/4237278774.html/" target="_blank">
-          jenkins git 报“Host key verification failed”错误处理
+        <a href="/1995720483.html/" target="_blank">
+          jenkins 自动编译，发布，运行项目
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/4237278774.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/1995720483.html/" target="_blank">
         <div>
-          jenkins git 报“Host key verification failed”错误处理现象是手动cmd窗口中能正常使用git，能正常push到github，但jenkins中使用bat批处理就报此错误 问题出现的原因是jenkins无法找到user/.ssh/下面的配置，解决方法有两个  方法一，让jenkins的服务以当前用户身份执行 0.打开系统服务 1.找到jenkins的服务 2.
+          jenkins 自动编译，发布项目目的检测svn/git项目改动，如果改动则自动拉出源码，编译好，上传到服务器上，关闭服务器上运行的项目，并启动新编译的项目  条件项目由svn或git管理 这里以maven项目举例子 有远程服务器或本地起虚拟机模拟都行，但要能shh链接上  步骤1.配置好jenkins 达到自动编译的效果    1.创建jenkins maven风格的项目    2.源码管理选择
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-10-15 00:00" pubdate>
+              2019-10-15
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/jenkins/">#jenkins</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/1595091183.html/" target="_blank">
+          jenkins自动构建项目并发布到maven私服
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/1595091183.html/" target="_blank">
+        <div>
+          jenkins自动构建项目并发布到maven私服前提条件安装好jenkins 项目maven能正常手动发布 项目源码从svn或者git管理  达到的目的jenkins会轮询svn项目的更改，如果发现项目更改了，则重新编译，并发布到maven私服上  做法1.打开jenkins网页，添加自由风格的项目，名字任意如【project1】  2.配置General     2.1 配置Discard ol
         </div>
       </a>
 
@@ -521,11 +561,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/bug/">#bug</a>
-            
               <a href="/tags/java/">#java</a>
             
               <a href="/tags/slf4j/">#slf4j</a>
+            
+              <a href="/tags/bug/">#bug</a>
             
           </div>
         
@@ -606,46 +646,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/java/">#java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/815345507.html/" target="_blank">
-          vertx buffer类
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/815345507.html/" target="_blank">
-        <div>
-          vertx buffer类Buffer类vertx的Buffer接口实现类 BufferImpl 对netty的ByteBuf进行封装，隐藏了复杂的读写指针操作，改写了一些基本操作进行改写，如      read 操作  -&gt; 移除了     write 操作 -&gt; append     get -&gt;  get     set -&gt; set	     copy -&gt;
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2019-08-05 00:00" pubdate>
-              2019-08-05
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/vertx/">#vertx</a>
             
           </div>
         
