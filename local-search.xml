@@ -4,6 +4,27 @@
   
   
   <entry>
+    <title>shardingjdbc4.x初始化数据源过程</title>
+    <link href="/227567824.html/"/>
+    <url>/227567824.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="shardingjdbc4-x初始化数据源过程"><a href="#shardingjdbc4-x初始化数据源过程" class="headerlink" title="shardingjdbc4.x初始化数据源过程"></a>shardingjdbc4.x初始化数据源过程</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote><p>看过好几遍了老是忘记，idea点击配置时总是跳转到DataSourceUtil中引起误解。所以我这次要把他记录下来。  </p></blockquote><hr><p>使用shardingjdbc4.x配置数据源时，一般我们是这个配置的。那他背后是如何将数据源创建出来的呢，下面请看源码。  </p><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs properties"><br><span class="hljs-attr">spring.shardingsphere.datasource.names</span>=<span class="hljs-string">ds0,ds1</span><br><br><span class="hljs-attr">spring.shardingsphere.datasource.ds0.type</span>=<span class="hljs-string">com.zaxxer.hikari.HikariDataSource</span><br><span class="hljs-attr">spring.shardingsphere.datasource.ds0.driver-class-name</span>=<span class="hljs-string">software.aws.rds.jdbc.mysql.Driver</span><br><span class="hljs-attr">spring.shardingsphere.datasource.ds0.jdbc-url</span>=<span class="hljs-string">jdbc:mysql:127.0.0.1:3306/xxx?useUnicode=true&amp;characterEncoding=utf-8&amp;transformedBitIsBoolean=true&amp;allowMultiQueries=true&amp;useSSL=false</span><br><span class="hljs-attr">spring.shardingsphere.datasource.ds0.username</span>=<span class="hljs-string">username</span><br><span class="hljs-attr">spring.shardingsphere.datasource.ds0.password</span>=<span class="hljs-string">password</span><br><br><span class="hljs-attr">spring.shardingsphere.datasource.ds1.type</span>=<span class="hljs-string">com.zaxxer.hikari.HikariDataSource</span><br><span class="hljs-attr">spring.shardingsphere.datasource.ds1.driver-class-name</span>=<span class="hljs-string">software.aws.rds.jdbc.mysql.Driver</span><br><span class="hljs-attr">spring.shardingsphere.datasource.ds1.jdbc-url</span>=<span class="hljs-string">jdbc:mysql:127.0.0.1:3306/xxx?useUnicode=true&amp;characterEncoding=utf-8&amp;transformedBitIsBoolean=true&amp;allowMultiQueries=true&amp;useSSL=false</span><br><span class="hljs-attr">spring.shardingsphere.datasource.ds1.username</span>=<span class="hljs-string">username</span><br><span class="hljs-attr">spring.shardingsphere.datasource.ds1.password</span>=<span class="hljs-string">password</span><br></code></pre></td></tr></table></figure><hr><p>这里我们使用Hikari连接池初始化了两个名称为ds0,ds1的数据源。下面解释下他背后是怎么配置数据源的</p><p>首先在：<code>org.apache.shardingsphere.shardingjdbc.spring.boot.SpringBootConfiguration</code> 类中有下面这样一段代码</p><p>他会从环境中查找 <code>spring.shardingsphere.datasource.names</code>前缀的配置，也就是我们上面的配置的两个数据源名字，逗号分隔<br>然后依次将每个数据源名称前面拼接上 <code>spring.shardingsphere.datasource.</code>前缀开始查找配置，并使用 <code>DataSourceUtil</code>工具类将数据源反射创建出来。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setEnvironment</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Environment environment)</span> &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">prefix</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;spring.shardingsphere.datasource.&quot;</span>;<br>    <span class="hljs-keyword">for</span> (String each : getDataSourceNames(environment, prefix)) &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            dataSourceMap.put(each, getDataSource(environment, prefix, each));<br>        &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-keyword">final</span> ReflectiveOperationException ex) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ShardingSphereException</span>(<span class="hljs-string">&quot;Can&#x27;t find datasource type!&quot;</span>, ex);<br>        &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-keyword">final</span> NamingException namingEx) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ShardingSphereException</span>(<span class="hljs-string">&quot;Can&#x27;t find JNDI datasource!&quot;</span>, namingEx);<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">private</span> List&lt;String&gt; <span class="hljs-title function_">getDataSourceNames</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Environment environment, <span class="hljs-keyword">final</span> String prefix)</span> &#123;<br>    <span class="hljs-type">StandardEnvironment</span> <span class="hljs-variable">standardEnv</span> <span class="hljs-operator">=</span> (StandardEnvironment) environment;<br>    standardEnv.setIgnoreUnresolvableNestedPlaceholders(<span class="hljs-literal">true</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span> == standardEnv.getProperty(prefix + <span class="hljs-string">&quot;name&quot;</span>)<br>            ? <span class="hljs-keyword">new</span> <span class="hljs-title class_">InlineExpressionParser</span>(standardEnv.getProperty(prefix + <span class="hljs-string">&quot;names&quot;</span>)).splitAndEvaluate() : Collections.singletonList(standardEnv.getProperty(prefix + <span class="hljs-string">&quot;name&quot;</span>));<br>&#125;<br>  <br><span class="hljs-meta">@SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="hljs-keyword">private</span> DataSource <span class="hljs-title function_">getDataSource</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Environment environment, <span class="hljs-keyword">final</span> String prefix, <span class="hljs-keyword">final</span> String dataSourceName)</span> <span class="hljs-keyword">throws</span> ReflectiveOperationException, NamingException &#123;<br>    Map&lt;String, Object&gt; dataSourceProps = PropertyUtil.handle(environment, prefix + dataSourceName.trim(), Map.class);<br>    Preconditions.checkState(!dataSourceProps.isEmpty(), <span class="hljs-string">&quot;Wrong datasource properties!&quot;</span>);<br>    <span class="hljs-keyword">if</span> (dataSourceProps.containsKey(jndiName)) &#123;<br>        <span class="hljs-keyword">return</span> getJndiDataSource(dataSourceProps.get(jndiName).toString());<br>    &#125;<br>    <span class="hljs-type">DataSource</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> DataSourceUtil.getDataSource(dataSourceProps.get(<span class="hljs-string">&quot;type&quot;</span>).toString(), dataSourceProps);<br>    DataSourcePropertiesSetterHolder.getDataSourcePropertiesSetterByType(dataSourceProps.get(<span class="hljs-string">&quot;type&quot;</span>).toString()).ifPresent(<br>        dataSourcePropertiesSetter -&gt; dataSourcePropertiesSetter.propertiesSet(environment, prefix, dataSourceName, result));<br>    <span class="hljs-keyword">return</span> result;<br>&#125;<br><br><br></code></pre></td></tr></table></figure><hr><p>DataSourceUtil根据指定的dataSourceClassName反射创建数据源，在赋值属性时，会根据属性名查找set方法，并对一些基本类型做转换</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><br><span class="hljs-meta">@NoArgsConstructor(access = AccessLevel.PRIVATE)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DataSourceUtil</span> &#123;<br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">SET_METHOD_PREFIX</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;set&quot;</span>;<br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Collection&lt;Class&lt;?&gt;&gt; GENERAL_CLASS_TYPE;<br>  <br>    <span class="hljs-keyword">static</span> &#123;<br>        GENERAL_CLASS_TYPE = Sets.newHashSet(<span class="hljs-type">boolean</span>.class, Boolean.class, <span class="hljs-type">int</span>.class, Integer.class, <span class="hljs-type">long</span>.class, Long.class, String.class, Collection.class);<br>    &#125;<br>  <br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * Get data source.</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> dataSourceClassName data source class name</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> dataSourceProperties data source properties</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> data source instance</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> ReflectiveOperationException reflective operation exception</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> DataSource <span class="hljs-title function_">getDataSource</span><span class="hljs-params">(<span class="hljs-keyword">final</span> String dataSourceClassName, <span class="hljs-keyword">final</span> Map&lt;String, Object&gt; dataSourceProperties)</span> <span class="hljs-keyword">throws</span> ReflectiveOperationException &#123;<br>        <span class="hljs-type">DataSource</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> (DataSource) Class.forName(dataSourceClassName).newInstance();<br>        <span class="hljs-keyword">for</span> (Entry&lt;String, Object&gt; entry : dataSourceProperties.entrySet()) &#123;<br>            callSetterMethod(result, getSetterMethodName(entry.getKey()), <span class="hljs-literal">null</span> == entry.getValue() ? <span class="hljs-literal">null</span> : entry.getValue().toString());<br>        &#125;<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">getSetterMethodName</span><span class="hljs-params">(<span class="hljs-keyword">final</span> String propertyName)</span> &#123;<br>        <span class="hljs-keyword">if</span> (propertyName.contains(<span class="hljs-string">&quot;-&quot;</span>)) &#123;<br>            <span class="hljs-keyword">return</span> CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, SET_METHOD_PREFIX + <span class="hljs-string">&quot;-&quot;</span> + propertyName);<br>        &#125;<br>        <span class="hljs-keyword">return</span> SET_METHOD_PREFIX + String.valueOf(propertyName.charAt(<span class="hljs-number">0</span>)).toUpperCase() + propertyName.substring(<span class="hljs-number">1</span>);<br>    &#125;<br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">callSetterMethod</span><span class="hljs-params">(<span class="hljs-keyword">final</span> DataSource dataSource, <span class="hljs-keyword">final</span> String methodName, <span class="hljs-keyword">final</span> String setterValue)</span> &#123;<br>        <span class="hljs-keyword">for</span> (Class&lt;?&gt; each : GENERAL_CLASS_TYPE) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> dataSource.getClass().getMethod(methodName, each);<br>                <span class="hljs-keyword">if</span> (<span class="hljs-type">boolean</span>.class == each || Boolean.class == each) &#123;<br>                    method.invoke(dataSource, Boolean.valueOf(setterValue));<br>                &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-type">int</span>.class == each || Integer.class == each) &#123;<br>                    method.invoke(dataSource, Integer.parseInt(setterValue));<br>                &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-type">long</span>.class == each || Long.class == each) &#123;<br>                    method.invoke(dataSource, Long.parseLong(setterValue));<br>                &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Collection.class == each) &#123;<br>                    method.invoke(dataSource, Arrays.asList(setterValue.split(<span class="hljs-string">&quot;,&quot;</span>)));<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    method.invoke(dataSource, setterValue);<br>                &#125;<br>                <span class="hljs-keyword">return</span>;<br>            &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-keyword">final</span> ReflectiveOperationException ignored) &#123;<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>java</tag>
+      
+      <tag>shardingjdbc</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>linux的dns解析</title>
     <link href="/3456619767.html/"/>
     <url>/3456619767.html/</url>
@@ -502,11 +523,11 @@
     
     <tags>
       
-      <tag>spring</tag>
-      
       <tag>springboot</tag>
       
       <tag>技巧</tag>
+      
+      <tag>spring</tag>
       
     </tags>
     
@@ -609,29 +630,6 @@
   
   
   <entry>
-    <title>reactor中的线程池</title>
-    <link href="/933416019.html/"/>
-    <url>/933416019.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="reactor中的线程池"><a href="#reactor中的线程池" class="headerlink" title="reactor中的线程池"></a>reactor中的线程池</h1><h2 id="1-DelegateServiceScheduler"><a href="#1-DelegateServiceScheduler" class="headerlink" title="1.DelegateServiceScheduler"></a>1.DelegateServiceScheduler</h2><p>将任务委托给底层单个线程池，和直接使用线程池无本质区别。</p><h2 id="2-SingleScheduler"><a href="#2-SingleScheduler" class="headerlink" title="2.SingleScheduler"></a>2.SingleScheduler</h2><p>单线程的scheduler，和java自带的一致。<br>​</p><h2 id="3-ImmediateScheduler"><a href="#3-ImmediateScheduler" class="headerlink" title="3.ImmediateScheduler"></a>3.ImmediateScheduler</h2><p>在主线程执行的scheduler。</p><h2 id="4-ParallelScheduler"><a href="#4-ParallelScheduler" class="headerlink" title="4.ParallelScheduler"></a>4.ParallelScheduler</h2><p>此scheduler会将任务均匀分配给内部的单线程线程池执行，核心逻辑十分简单，就是均匀的分配，不对任务的执行时间进行区分。<br>运气不好时会将耗时长的任务放置到同一个线程内，导致该线程执行时间过长，所以理论上用来执行非堵塞的任务比较好。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java">ScheduledExecutorService <span class="hljs-title function_">pick</span><span class="hljs-params">()</span> &#123;<br>    ScheduledExecutorService[] a = executors;<br>    <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">null</span>) &#123;<br>        start();<br>        a = executors;<br>        <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<span class="hljs-string">&quot;executors uninitialized after implicit start()&quot;</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (a != SHUTDOWN) &#123;<br>        <span class="hljs-comment">// ignoring the race condition here, its already random who gets which executor</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">idx</span> <span class="hljs-operator">=</span> roundRobin;<br>        <span class="hljs-keyword">if</span> (idx == n) &#123;<br>            idx = <span class="hljs-number">0</span>;<br>            roundRobin = <span class="hljs-number">1</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            roundRobin = idx + <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> a[idx];<br>    &#125;<br>    <span class="hljs-keyword">return</span> TERMINATED;<br>&#125;<br></code></pre></td></tr></table></figure><h2 id="5-BoundedElasticScheduler"><a href="#5-BoundedElasticScheduler" class="headerlink" title="5.BoundedElasticScheduler"></a>5.BoundedElasticScheduler</h2><p>   类似于ParallelScheduler，底层也是若干个单线程线程池，但是在任务分配上做了优化。底层会判断哪个线程池当前任务量最少，优先将任务分配给任务量最少的线程池。<br>判断哪个线程池当前任务量最少使用的是优先级队列，每次获取队列头的线程池。并且当子线程池没有任务时，将进入idleQueue中，一段时间不使用会进行回收。<br>适合执行堵塞的任务，不宜执行大量非堵塞的任务，因为非堵塞任务执行很快，使用下面复杂的pick过程反而更耗时。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs java">BoundedState <span class="hljs-title function_">pick</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">for</span> (;;) &#123;<br><span class="hljs-type">int</span> <span class="hljs-variable">a</span> <span class="hljs-operator">=</span> get();<br><span class="hljs-keyword">if</span> (a == DISPOSED) &#123;<br><span class="hljs-keyword">return</span> CREATING; <span class="hljs-comment">//synonym for shutdown, since the underlying executor is shut down</span><br>&#125;<br><br><span class="hljs-keyword">if</span> (!idleQueue.isEmpty()) &#123;<br><span class="hljs-comment">//try to find an idle resource</span><br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">bs</span> <span class="hljs-operator">=</span> idleQueue.pollLast();<br><span class="hljs-keyword">if</span> (bs != <span class="hljs-literal">null</span> &amp;&amp; bs.markPicked()) &#123;<br>busyQueue.add(bs);<br><span class="hljs-keyword">return</span> bs;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a &lt; parent.maxThreads) &#123;<br><span class="hljs-comment">//try to build a new resource</span><br><span class="hljs-keyword">if</span> (compareAndSet(a, a + <span class="hljs-number">1</span>)) &#123;<br><span class="hljs-type">ScheduledExecutorService</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> Schedulers.decorateExecutorService(parent, parent.createBoundedExecutorService());<br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">newState</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BoundedState</span>(<span class="hljs-built_in">this</span>, s);<br><span class="hljs-keyword">if</span> (newState.markPicked()) &#123;<br>busyQueue.add(newState);<br><span class="hljs-keyword">return</span> newState;<br>&#125;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br><span class="hljs-keyword">else</span> &#123;<br><span class="hljs-comment">//pick the least busy one</span><br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> busyQueue.poll();<br><span class="hljs-keyword">if</span> (s != <span class="hljs-literal">null</span> &amp;&amp; s.markPicked()) &#123;<br>busyQueue.add(s); <span class="hljs-comment">//put it back in the queue with updated priority</span><br><span class="hljs-keyword">return</span> s;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>   还有一点需要注意的是，Schedulers.newBoundedElastic() 的第二个参数<code>queuedTaskCap</code> 表示底层的每个子线程池的最大容量，而不是BoundedElasticScheduler本身的最大容量。</p><p>   SingleScheduler和ParallelScheduler是不允许执行堵塞任务的，这一点在reactor内部如执行block()操作符时就会报错。我们将堵塞任务放入这两个线程池内执行虽然不会报错，但也是很不规范的，可能会导致内部操作变慢。</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>flux</tag>
-      
-      <tag>线程池</tag>
-      
-      <tag>reactor</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Flux parallel操作符的用法</title>
     <link href="/2205464017.html/"/>
     <url>/2205464017.html/</url>
@@ -644,9 +642,32 @@
       
       <tag>flux</tag>
       
+      <tag>parallel</tag>
+      
       <tag>reactor</tag>
       
-      <tag>parallel</tag>
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>reactor中的线程池</title>
+    <link href="/933416019.html/"/>
+    <url>/933416019.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="reactor中的线程池"><a href="#reactor中的线程池" class="headerlink" title="reactor中的线程池"></a>reactor中的线程池</h1><h2 id="1-DelegateServiceScheduler"><a href="#1-DelegateServiceScheduler" class="headerlink" title="1.DelegateServiceScheduler"></a>1.DelegateServiceScheduler</h2><p>将任务委托给底层单个线程池，和直接使用线程池无本质区别。</p><h2 id="2-SingleScheduler"><a href="#2-SingleScheduler" class="headerlink" title="2.SingleScheduler"></a>2.SingleScheduler</h2><p>单线程的scheduler，和java自带的一致。<br>​</p><h2 id="3-ImmediateScheduler"><a href="#3-ImmediateScheduler" class="headerlink" title="3.ImmediateScheduler"></a>3.ImmediateScheduler</h2><p>在主线程执行的scheduler。</p><h2 id="4-ParallelScheduler"><a href="#4-ParallelScheduler" class="headerlink" title="4.ParallelScheduler"></a>4.ParallelScheduler</h2><p>此scheduler会将任务均匀分配给内部的单线程线程池执行，核心逻辑十分简单，就是均匀的分配，不对任务的执行时间进行区分。<br>运气不好时会将耗时长的任务放置到同一个线程内，导致该线程执行时间过长，所以理论上用来执行非堵塞的任务比较好。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java">ScheduledExecutorService <span class="hljs-title function_">pick</span><span class="hljs-params">()</span> &#123;<br>    ScheduledExecutorService[] a = executors;<br>    <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">null</span>) &#123;<br>        start();<br>        a = executors;<br>        <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<span class="hljs-string">&quot;executors uninitialized after implicit start()&quot;</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (a != SHUTDOWN) &#123;<br>        <span class="hljs-comment">// ignoring the race condition here, its already random who gets which executor</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">idx</span> <span class="hljs-operator">=</span> roundRobin;<br>        <span class="hljs-keyword">if</span> (idx == n) &#123;<br>            idx = <span class="hljs-number">0</span>;<br>            roundRobin = <span class="hljs-number">1</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            roundRobin = idx + <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> a[idx];<br>    &#125;<br>    <span class="hljs-keyword">return</span> TERMINATED;<br>&#125;<br></code></pre></td></tr></table></figure><h2 id="5-BoundedElasticScheduler"><a href="#5-BoundedElasticScheduler" class="headerlink" title="5.BoundedElasticScheduler"></a>5.BoundedElasticScheduler</h2><p>   类似于ParallelScheduler，底层也是若干个单线程线程池，但是在任务分配上做了优化。底层会判断哪个线程池当前任务量最少，优先将任务分配给任务量最少的线程池。<br>判断哪个线程池当前任务量最少使用的是优先级队列，每次获取队列头的线程池。并且当子线程池没有任务时，将进入idleQueue中，一段时间不使用会进行回收。<br>适合执行堵塞的任务，不宜执行大量非堵塞的任务，因为非堵塞任务执行很快，使用下面复杂的pick过程反而更耗时。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs java">BoundedState <span class="hljs-title function_">pick</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">for</span> (;;) &#123;<br><span class="hljs-type">int</span> <span class="hljs-variable">a</span> <span class="hljs-operator">=</span> get();<br><span class="hljs-keyword">if</span> (a == DISPOSED) &#123;<br><span class="hljs-keyword">return</span> CREATING; <span class="hljs-comment">//synonym for shutdown, since the underlying executor is shut down</span><br>&#125;<br><br><span class="hljs-keyword">if</span> (!idleQueue.isEmpty()) &#123;<br><span class="hljs-comment">//try to find an idle resource</span><br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">bs</span> <span class="hljs-operator">=</span> idleQueue.pollLast();<br><span class="hljs-keyword">if</span> (bs != <span class="hljs-literal">null</span> &amp;&amp; bs.markPicked()) &#123;<br>busyQueue.add(bs);<br><span class="hljs-keyword">return</span> bs;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a &lt; parent.maxThreads) &#123;<br><span class="hljs-comment">//try to build a new resource</span><br><span class="hljs-keyword">if</span> (compareAndSet(a, a + <span class="hljs-number">1</span>)) &#123;<br><span class="hljs-type">ScheduledExecutorService</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> Schedulers.decorateExecutorService(parent, parent.createBoundedExecutorService());<br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">newState</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BoundedState</span>(<span class="hljs-built_in">this</span>, s);<br><span class="hljs-keyword">if</span> (newState.markPicked()) &#123;<br>busyQueue.add(newState);<br><span class="hljs-keyword">return</span> newState;<br>&#125;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br><span class="hljs-keyword">else</span> &#123;<br><span class="hljs-comment">//pick the least busy one</span><br><span class="hljs-type">BoundedState</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> busyQueue.poll();<br><span class="hljs-keyword">if</span> (s != <span class="hljs-literal">null</span> &amp;&amp; s.markPicked()) &#123;<br>busyQueue.add(s); <span class="hljs-comment">//put it back in the queue with updated priority</span><br><span class="hljs-keyword">return</span> s;<br>&#125;<br><span class="hljs-comment">//else optimistically retry (implicit continue here)</span><br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>   还有一点需要注意的是，Schedulers.newBoundedElastic() 的第二个参数<code>queuedTaskCap</code> 表示底层的每个子线程池的最大容量，而不是BoundedElasticScheduler本身的最大容量。</p><p>   SingleScheduler和ParallelScheduler是不允许执行堵塞任务的，这一点在reactor内部如执行block()操作符时就会报错。我们将堵塞任务放入这两个线程池内执行虽然不会报错，但也是很不规范的，可能会导致内部操作变慢。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>flux</tag>
+      
+      <tag>reactor</tag>
+      
+      <tag>线程池</tag>
       
     </tags>
     
@@ -669,9 +690,9 @@
       
       <tag>mybatis</tag>
       
-      <tag>mysql流式查询技巧</tag>
-      
       <tag>技巧</tag>
+      
+      <tag>mysql流式查询技巧</tag>
       
     </tags>
     
@@ -713,9 +734,9 @@
     
     <tags>
       
-      <tag>groovy</tag>
-      
       <tag>java</tag>
+      
+      <tag>groovy</tag>
       
       <tag>静态编译</tag>
       
@@ -824,11 +845,32 @@
     
     <tags>
       
-      <tag>bug</tag>
-      
       <tag>mybatis</tag>
       
+      <tag>bug</tag>
+      
       <tag>generator</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>spock测试零基础教程</title>
+    <link href="/1272392355.html/"/>
+    <url>/1272392355.html/</url>
+    
+    <content type="html"><![CDATA[<h1 id="spock测试零基础教程"><a href="#spock测试零基础教程" class="headerlink" title="spock测试零基础教程"></a>spock测试零基础教程</h1><p>​昨天研究了一下spock单元测试，确实特别好用，这也是我第一次接触spock，作为一个新手，网上很多教程讲的太深了，折腾了好几个小时才搞明白。<br>​所以我想写一个从0开始的简单教程，一步一步做把Demo跑起来，再去看其他人的教程，这样更有效率。</p><p>下面我将基于spock2.x版本进行演示。可以新建一个空SpringBoot项目进行测试，防止项目内的其他依赖冲突，Demo跑不起来。</p><h2 id="1-引入依赖"><a href="#1-引入依赖" class="headerlink" title="1.引入依赖"></a>1.引入依赖</h2><p>这里引入了spock2.x的包，默认情况下spock会自动将groovy引入进来，我这里主动声明了groovy的依赖</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.spockframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spock-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0-groovy-3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.spockframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spock-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0-groovy-3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h2 id="2-创建测试类"><a href="#2-创建测试类" class="headerlink" title="2.创建测试类"></a>2.创建测试类</h2><p>在测试目录下，右键选择Spock Specification，会自动创建一个类继承了Specification。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180417247.png" alt="image-20210701180417247"></p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180837107.png" alt="image-20210701180837107"></p><p>上面这一步也可以选择创建一个普通Groovy Class，我们手动继承Specification也是一样的。</p><h2 id="3-编写测试方法"><a href="#3-编写测试方法" class="headerlink" title="3.编写测试方法"></a>3.编写测试方法</h2><p>下面就是我们编写的测试方法，我们定义 a &#x3D; 1+1，然后断言 a &#x3D;&#x3D; 2</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180955534.png" alt="image-20210701180955534"></p><p>上图中的步骤</p><ol><li>我们定义一个方法，其中方法名是双引号引起来的，Groovy中是允许这样的，这也是Spock的一个规范，不用双引号引起来也是可以的。</li><li>使用when: 标识下面的代码块是我们需要执行验证的代码</li><li>我们真正要测试的代码，如果这里面抛出异常，不会导致方法退出，when:代码块内部是被try catch的，框架帮我们try catch住了</li><li>then:代码块，必须和when: 成对出现，两者必须成对，且要写在when:后面</li><li>我们可以在then:代码块中进行断言，不需要assert这样的关键字，直接写语句就可以，使用返回值为boolean的语句,会被当成断言使用</li></ol><h2 id="4-执行"><a href="#4-执行" class="headerlink" title="4.执行"></a>4.执行</h2><p>​就像使用junit一样，点击1处执行测试，我的idea里面有时点击2处的执行不太好使，但1处总是可以的，如果有和我一样的情况，可以尝试使用1处的执行按钮。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701181926632.png" alt="image-20210701181926632"></p><p>执行通过了。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701182059634.png" alt="image-20210701182059634"></p><h2 id="5-还有哪些代码块"><a href="#5-还有哪些代码块" class="headerlink" title="5.还有哪些代码块"></a>5.还有哪些代码块</h2><p>上面我们看到，我们在when 中执行我们的逻辑，在then中验证我们的逻辑。除此之外还有下面几个块</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701182812721.png" alt="image-20210701182812721"></p><p>首先</p><p>1 处given，一般是第一个代码块，我们在此准备需要验证的数据</p><p>2 处的when 和 3处的then 是必须配合使用的，when用来执行操作，then用来验证操作</p><p>4 处的and用来分隔，一般写点注释性语句</p><p>5 处的expect相当于 when 和 then 的结合，独立出现，可以在里面执行一些语句，如果语句返回值是boolean，则会被当作断言进行判断。</p><h2 id="6-更强大的where块"><a href="#6-更强大的where块" class="headerlink" title="6.更强大的where块"></a>6.更强大的where块</h2><p>有时我们想测试多组数据，如我们想测试四组数据</p><p>2 &#x3D;&#x3D; Math.max(1,2)</p><p>5 &#x3D;&#x3D; Math.max(4,5)</p><p>10 &#x3D;&#x3D; Math.max(10,5)</p><p>2 &#x3D;&#x3D; Math.max(2,3)</p><p>我们可以使用where块解决此问题</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701183548811.png" alt="image-20210701183548811"></p><ol><li>在代码中使用到了变量 a,b,c但我们并没有在使用之前定义它们</li><li>where块中，我们使用竖线作为分隔符，c a b 作为表头，写了一个表格，这样spock会依次拿表格中的每一行带入到c  a  b的变量总进行测试，上述表格中有四条数据，所以总共测试四次</li></ol><p>执行结果也明确表示，第四条测试没通过：</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701183909934.png" alt="image-20210701183909934"></p><h2 id="7-配合springboot-进行测试"><a href="#7-配合springboot-进行测试" class="headerlink" title="7.配合springboot 进行测试"></a>7.配合springboot 进行测试</h2><p>​在上面基础上，添加spring-boot-starter-test的依赖，排除掉<code>junit-vintage-engine</code>，因为我们需要junit5版本的依赖，而这个是junit4版本的，我们将其排除掉。</p><p>​spock2需要junit5，springboot2自带的就是junit5，spock1需要junit4，springboot1自带的就是junit4。</p><p>​如果需要交叉版本使用，需要自己处理好依赖版本关系。我这里使用的是spock2+springboot2的组合</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">exclusions</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.hamcrest<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>hamcrest-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.junit.vintage<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit-vintage-engine<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">exclusions</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><p>使用方式如下：</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701190437780.png" alt="image-20210701190437780"></p><p>1 使用@SpringBootTest注解标识类</p><p>2 自动注入是可以使用的，我们这里注入一个DataSource</p><p>3 验证数据源可用</p><p>4 断言没有抛出任何异常</p><p>5 断言resultSet 非空</p><p>6 点击这里的三角号执行，而不是方法旁边的三角号 （这里也可能是我的idea版本问题，如果下面可以使用，使用下面的也可以的）</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​以上就是使用spock的入门教程，一步一步来的话能将spock运行起来，配合springboot也是完全可以的。深入了解的话，可以继续看其他深入点的教程，或直接看官方文档。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>spock</tag>
+      
+      <tag>单元测试</tag>
       
     </tags>
     
@@ -852,27 +894,6 @@
       <tag>bug</tag>
       
       <tag>乐观锁</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>spock测试零基础教程</title>
-    <link href="/1272392355.html/"/>
-    <url>/1272392355.html/</url>
-    
-    <content type="html"><![CDATA[<h1 id="spock测试零基础教程"><a href="#spock测试零基础教程" class="headerlink" title="spock测试零基础教程"></a>spock测试零基础教程</h1><p>​昨天研究了一下spock单元测试，确实特别好用，这也是我第一次接触spock，作为一个新手，网上很多教程讲的太深了，折腾了好几个小时才搞明白。<br>​所以我想写一个从0开始的简单教程，一步一步做把Demo跑起来，再去看其他人的教程，这样更有效率。</p><p>下面我将基于spock2.x版本进行演示。可以新建一个空SpringBoot项目进行测试，防止项目内的其他依赖冲突，Demo跑不起来。</p><h2 id="1-引入依赖"><a href="#1-引入依赖" class="headerlink" title="1.引入依赖"></a>1.引入依赖</h2><p>这里引入了spock2.x的包，默认情况下spock会自动将groovy引入进来，我这里主动声明了groovy的依赖</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.spockframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spock-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0-groovy-3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.spockframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spock-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0-groovy-3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><h2 id="2-创建测试类"><a href="#2-创建测试类" class="headerlink" title="2.创建测试类"></a>2.创建测试类</h2><p>在测试目录下，右键选择Spock Specification，会自动创建一个类继承了Specification。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180417247.png" alt="image-20210701180417247"></p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180837107.png" alt="image-20210701180837107"></p><p>上面这一步也可以选择创建一个普通Groovy Class，我们手动继承Specification也是一样的。</p><h2 id="3-编写测试方法"><a href="#3-编写测试方法" class="headerlink" title="3.编写测试方法"></a>3.编写测试方法</h2><p>下面就是我们编写的测试方法，我们定义 a &#x3D; 1+1，然后断言 a &#x3D;&#x3D; 2</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701180955534.png" alt="image-20210701180955534"></p><p>上图中的步骤</p><ol><li>我们定义一个方法，其中方法名是双引号引起来的，Groovy中是允许这样的，这也是Spock的一个规范，不用双引号引起来也是可以的。</li><li>使用when: 标识下面的代码块是我们需要执行验证的代码</li><li>我们真正要测试的代码，如果这里面抛出异常，不会导致方法退出，when:代码块内部是被try catch的，框架帮我们try catch住了</li><li>then:代码块，必须和when: 成对出现，两者必须成对，且要写在when:后面</li><li>我们可以在then:代码块中进行断言，不需要assert这样的关键字，直接写语句就可以，使用返回值为boolean的语句,会被当成断言使用</li></ol><h2 id="4-执行"><a href="#4-执行" class="headerlink" title="4.执行"></a>4.执行</h2><p>​就像使用junit一样，点击1处执行测试，我的idea里面有时点击2处的执行不太好使，但1处总是可以的，如果有和我一样的情况，可以尝试使用1处的执行按钮。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701181926632.png" alt="image-20210701181926632"></p><p>执行通过了。</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701182059634.png" alt="image-20210701182059634"></p><h2 id="5-还有哪些代码块"><a href="#5-还有哪些代码块" class="headerlink" title="5.还有哪些代码块"></a>5.还有哪些代码块</h2><p>上面我们看到，我们在when 中执行我们的逻辑，在then中验证我们的逻辑。除此之外还有下面几个块</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701182812721.png" alt="image-20210701182812721"></p><p>首先</p><p>1 处given，一般是第一个代码块，我们在此准备需要验证的数据</p><p>2 处的when 和 3处的then 是必须配合使用的，when用来执行操作，then用来验证操作</p><p>4 处的and用来分隔，一般写点注释性语句</p><p>5 处的expect相当于 when 和 then 的结合，独立出现，可以在里面执行一些语句，如果语句返回值是boolean，则会被当作断言进行判断。</p><h2 id="6-更强大的where块"><a href="#6-更强大的where块" class="headerlink" title="6.更强大的where块"></a>6.更强大的where块</h2><p>有时我们想测试多组数据，如我们想测试四组数据</p><p>2 &#x3D;&#x3D; Math.max(1,2)</p><p>5 &#x3D;&#x3D; Math.max(4,5)</p><p>10 &#x3D;&#x3D; Math.max(10,5)</p><p>2 &#x3D;&#x3D; Math.max(2,3)</p><p>我们可以使用where块解决此问题</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701183548811.png" alt="image-20210701183548811"></p><ol><li>在代码中使用到了变量 a,b,c但我们并没有在使用之前定义它们</li><li>where块中，我们使用竖线作为分隔符，c a b 作为表头，写了一个表格，这样spock会依次拿表格中的每一行带入到c  a  b的变量总进行测试，上述表格中有四条数据，所以总共测试四次</li></ol><p>执行结果也明确表示，第四条测试没通过：</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701183909934.png" alt="image-20210701183909934"></p><h2 id="7-配合springboot-进行测试"><a href="#7-配合springboot-进行测试" class="headerlink" title="7.配合springboot 进行测试"></a>7.配合springboot 进行测试</h2><p>​在上面基础上，添加spring-boot-starter-test的依赖，排除掉<code>junit-vintage-engine</code>，因为我们需要junit5版本的依赖，而这个是junit4版本的，我们将其排除掉。</p><p>​spock2需要junit5，springboot2自带的就是junit5，spock1需要junit4，springboot1自带的就是junit4。</p><p>​如果需要交叉版本使用，需要自己处理好依赖版本关系。我这里使用的是spock2+springboot2的组合</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">exclusions</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.hamcrest<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>hamcrest-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.junit.vintage<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit-vintage-engine<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">exclusions</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure><p>使用方式如下：</p><p><img src="/img/in/2021-07-01-spock%E6%B5%8B%E8%AF%95%E9%9B%B6%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/image-20210701190437780.png" alt="image-20210701190437780"></p><p>1 使用@SpringBootTest注解标识类</p><p>2 自动注入是可以使用的，我们这里注入一个DataSource</p><p>3 验证数据源可用</p><p>4 断言没有抛出任何异常</p><p>5 断言resultSet 非空</p><p>6 点击这里的三角号执行，而不是方法旁边的三角号 （这里也可能是我的idea版本问题，如果下面可以使用，使用下面的也可以的）</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​以上就是使用spock的入门教程，一步一步来的话能将spock运行起来，配合springboot也是完全可以的。深入了解的话，可以继续看其他深入点的教程，或直接看官方文档。</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>spock</tag>
-      
-      <tag>单元测试</tag>
       
     </tags>
     
@@ -994,6 +1015,25 @@
   
   
   <entry>
+    <title>idea字段按照字母顺序排序</title>
+    <link href="/3252428711.html/"/>
+    <url>/3252428711.html/</url>
+    
+    <content type="html"><![CDATA[<p>idea自动排序，按照字母顺序排序字段。平时格式化快捷键是 ctrl + alt + L，默认情况下字段顺序是按照书写顺序的，但是想要他按照字母顺序排序如果做呢？</p><p>1 首先找到设置中的排序设置部分</p><p><img src="/img/in/2021-02-08-idea%E5%AD%97%E6%AE%B5%E6%8C%89%E7%85%A7%E5%AD%97%E6%AF%8D%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%BA%8F/image-20210208144404544.png" alt="image-20210208144404544"></p><p>2 双击这个 field private的选项，将排序设成by name</p><p><img src="/img/in/2021-02-08-idea%E5%AD%97%E6%AE%B5%E6%8C%89%E7%85%A7%E5%AD%97%E6%AF%8D%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%BA%8F/image-20210208144526364.png" alt="image-20210208144526364"></p><p>3 按下快捷键</p><p>ctrl + alt + shift + L ，弹出的窗口中勾选上排序</p><p><img src="/img/in/2021-02-08-idea%E5%AD%97%E6%AE%B5%E6%8C%89%E7%85%A7%E5%AD%97%E6%AF%8D%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%BA%8F/image-20210208144653234.png" alt="image-20210208144653234"></p><p>4 这样下次排序时就会按照字母顺序排序了，且只对private 的字段生效，因为我们只设置了private 的字段。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>idea</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>springboot jackson默认配置</title>
     <link href="/958846089.html/"/>
     <url>/958846089.html/</url>
@@ -1007,25 +1047,6 @@
       <tag>springboot</tag>
       
       <tag>jackson</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>idea字段按照字母顺序排序</title>
-    <link href="/3252428711.html/"/>
-    <url>/3252428711.html/</url>
-    
-    <content type="html"><![CDATA[<p>idea自动排序，按照字母顺序排序字段。平时格式化快捷键是 ctrl + alt + L，默认情况下字段顺序是按照书写顺序的，但是想要他按照字母顺序排序如果做呢？</p><p>1 首先找到设置中的排序设置部分</p><p><img src="/img/in/2021-02-08-idea%E5%AD%97%E6%AE%B5%E6%8C%89%E7%85%A7%E5%AD%97%E6%AF%8D%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%BA%8F/image-20210208144404544.png" alt="image-20210208144404544"></p><p>2 双击这个 field private的选项，将排序设成by name</p><p><img src="/img/in/2021-02-08-idea%E5%AD%97%E6%AE%B5%E6%8C%89%E7%85%A7%E5%AD%97%E6%AF%8D%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%BA%8F/image-20210208144526364.png" alt="image-20210208144526364"></p><p>3 按下快捷键</p><p>ctrl + alt + shift + L ，弹出的窗口中勾选上排序</p><p><img src="/img/in/2021-02-08-idea%E5%AD%97%E6%AE%B5%E6%8C%89%E7%85%A7%E5%AD%97%E6%AF%8D%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%BA%8F/image-20210208144653234.png" alt="image-20210208144653234"></p><p>4 这样下次排序时就会按照字母顺序排序了，且只对private 的字段生效，因为我们只设置了private 的字段。</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>idea</tag>
       
     </tags>
     
@@ -1122,9 +1143,9 @@
     
     <tags>
       
-      <tag>idea</tag>
-      
       <tag>技巧</tag>
+      
+      <tag>idea</tag>
       
     </tags>
     
@@ -1336,9 +1357,9 @@
     
     <tags>
       
-      <tag>spring</tag>
-      
       <tag>springSecurity</tag>
+      
+      <tag>spring</tag>
       
       <tag>jwt</tag>
       
@@ -1359,9 +1380,9 @@
     
     <tags>
       
-      <tag>spring</tag>
-      
       <tag>springboot</tag>
+      
+      <tag>spring</tag>
       
       <tag>springmvc</tag>
       
@@ -1667,9 +1688,9 @@
     
     <tags>
       
-      <tag>spring</tag>
-      
       <tag>java</tag>
+      
+      <tag>spring</tag>
       
       <tag>Bean初始化过程</tag>
       
@@ -1690,11 +1711,11 @@
     
     <tags>
       
-      <tag>spring</tag>
-      
       <tag>springboot</tag>
       
       <tag>java</tag>
+      
+      <tag>spring</tag>
       
       <tag>websocket</tag>
       
@@ -1864,11 +1885,11 @@
     
     <tags>
       
-      <tag>bug</tag>
+      <tag>linux</tag>
       
       <tag>java</tag>
       
-      <tag>linux</tag>
+      <tag>bug</tag>
       
     </tags>
     
@@ -2181,9 +2202,9 @@
     
     <tags>
       
-      <tag>springboot</tag>
-      
       <tag>maven</tag>
+      
+      <tag>springboot</tag>
       
     </tags>
     
@@ -2292,9 +2313,9 @@
     
     <tags>
       
-      <tag>jackson</tag>
-      
       <tag>java</tag>
+      
+      <tag>jackson</tag>
       
       <tag>springmvc返回值过滤null</tag>
       
@@ -2399,9 +2420,9 @@
     
     <tags>
       
-      <tag>idea</tag>
-      
       <tag>mybatis</tag>
+      
+      <tag>idea</tag>
       
     </tags>
     
@@ -2808,11 +2829,11 @@
     
     <tags>
       
-      <tag>bug</tag>
-      
       <tag>java</tag>
       
       <tag>slf4j</tag>
+      
+      <tag>bug</tag>
       
     </tags>
     
@@ -3059,9 +3080,9 @@
     
     <tags>
       
-      <tag>mybatis</tag>
-      
       <tag>java</tag>
+      
+      <tag>mybatis</tag>
       
       <tag>技巧</tag>
       
@@ -3205,11 +3226,11 @@
   
   
   <entry>
-    <title>为已安装的nginx 添加模块</title>
-    <link href="/1956753180.html/"/>
-    <url>/1956753180.html/</url>
+    <title>ubuntu 18 安装nginx</title>
+    <link href="/3507292475.html/"/>
+    <url>/3507292475.html/</url>
     
-    <content type="html"><![CDATA[<p>#为已安装的nginx 添加模块</p><hr><h2 id="假设nginx-安装目录-usr-local-nginx"><a href="#假设nginx-安装目录-usr-local-nginx" class="headerlink" title="假设nginx 安装目录 &#x2F;usr&#x2F;local&#x2F;nginx"></a>假设nginx 安装目录 &#x2F;usr&#x2F;local&#x2F;nginx</h2><h2 id="重新配置nginx"><a href="#重新配置nginx" class="headerlink" title="重新配置nginx"></a>重新配置nginx</h2><pre><code class="hljs">#上篇介绍，解压编译nginx的目录不要删除，从新进入那个目录#配置，再原来的基础上，又添加了新的配置，这里是ssl模块以前的配置 ./configure --prefix=/usr/local/nginx新配置 ./configure --prefix=/usr/local/nginx --with-http_ssl_module#编译（注意只是编译，并没有install）make#查看编译好的文件在objs目录下，找到编译好的nginx。#备份原nginxcp /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx.bak#复制新的nginxcp /usr/local/nginx-1.17.0/objs/nginx /usr/local/nginx/sbin/nginx</code></pre><h2 id="启动nginx"><a href="#启动nginx" class="headerlink" title="启动nginx"></a>启动nginx</h2><pre><code class="hljs">/usr/local/nginx/sbin/nginx</code></pre><h1 id="新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了"><a href="#新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了" class="headerlink" title="新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了"></a>新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了</h1>]]></content>
+    <content type="html"><![CDATA[<h1 id="ubuntu-18-安装nginx"><a href="#ubuntu-18-安装nginx" class="headerlink" title="ubuntu 18 安装nginx"></a>ubuntu 18 安装nginx</h1><h2 id="安装nginx依赖"><a href="#安装nginx依赖" class="headerlink" title="安装nginx依赖"></a>安装nginx依赖</h2><h3 id="安装gcc"><a href="#安装gcc" class="headerlink" title="安装gcc"></a>安装gcc</h3><pre><code class="hljs">apt-get install build-essentialapt-get install libtool</code></pre><h3 id="安装pcre依赖库"><a href="#安装pcre依赖库" class="headerlink" title="安装pcre依赖库"></a>安装pcre依赖库</h3><pre><code class="hljs">sudo apt-get updatesudo apt-get install libpcre3 libpcre3-dev</code></pre><h3 id="安装zlib依赖库"><a href="#安装zlib依赖库" class="headerlink" title="安装zlib依赖库"></a>安装zlib依赖库</h3><pre><code class="hljs">apt-get install zlib1g-dev</code></pre><h3 id="安装ssl依赖库"><a href="#安装ssl依赖库" class="headerlink" title="安装ssl依赖库"></a>安装ssl依赖库</h3><pre><code class="hljs">apt-get install openssl</code></pre><h3 id="安装nginx"><a href="#安装nginx" class="headerlink" title="安装nginx"></a>安装nginx</h3><pre><code class="hljs">#下载nginxwget http://nginx.org/download/nginx-1.17.0.tar.gz#解压nginx （这个解压出来的文件夹，安装完成后也不要删除，以后再想配置还能用）tar -zxvf nginx-1.17.0.tar.gz#进入解压目录cd nginx-1.17.0#配置./configure --prefix=/usr/local/nginx#编辑nginx( 这里只是编译还没有安装)make注意：这里可能会报错，提示“pcre.h No such file or directory”,具体详见：http://stackoverflow.com/questions/22555561/error-building-fatal-error-pcre-h-no-such-file-or-directory需要安装 libpcre3-dev,命令为：sudo apt-get install libpcre3-dev#安装nginx（上面配置时，指定了安装位置）sudo make install启动nginx：sudo /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf</code></pre><h2 id="nginx-常用命令"><a href="#nginx-常用命令" class="headerlink" title="nginx 常用命令"></a>nginx 常用命令</h2><pre><code class="hljs">启动/usr/local/nginx/sbin/nginx./sbin/nginx　停止./sbin/nginx -s stop重加载配置文件./sbin/nginx -s reload查看版本，和编译配置信息nginx -V</code></pre><h2 id="添加到环境变量"><a href="#添加到环境变量" class="headerlink" title="添加到环境变量"></a>添加到环境变量</h2><pre><code class="hljs">在/etc/profile 中加入：export NGINX_HOME=/usr/local/nginxexport PATH=$PATH:$NGINX_HOME/sbin保存，执行 source /etc/profile ，使配置文件生效</code></pre><h2 id="转载自–-这篇博客"><a href="#转载自–-这篇博客" class="headerlink" title="转载自–&gt; 这篇博客"></a>转载自–&gt; <a href="%22https://www.cnblogs.com/piscesLoveCc/p/5794926.html%22">这篇博客</a></h2>]]></content>
     
     
     
@@ -3224,11 +3245,11 @@
   
   
   <entry>
-    <title>ubuntu 18 安装nginx</title>
-    <link href="/3507292475.html/"/>
-    <url>/3507292475.html/</url>
+    <title>为已安装的nginx 添加模块</title>
+    <link href="/1956753180.html/"/>
+    <url>/1956753180.html/</url>
     
-    <content type="html"><![CDATA[<h1 id="ubuntu-18-安装nginx"><a href="#ubuntu-18-安装nginx" class="headerlink" title="ubuntu 18 安装nginx"></a>ubuntu 18 安装nginx</h1><h2 id="安装nginx依赖"><a href="#安装nginx依赖" class="headerlink" title="安装nginx依赖"></a>安装nginx依赖</h2><h3 id="安装gcc"><a href="#安装gcc" class="headerlink" title="安装gcc"></a>安装gcc</h3><pre><code class="hljs">apt-get install build-essentialapt-get install libtool</code></pre><h3 id="安装pcre依赖库"><a href="#安装pcre依赖库" class="headerlink" title="安装pcre依赖库"></a>安装pcre依赖库</h3><pre><code class="hljs">sudo apt-get updatesudo apt-get install libpcre3 libpcre3-dev</code></pre><h3 id="安装zlib依赖库"><a href="#安装zlib依赖库" class="headerlink" title="安装zlib依赖库"></a>安装zlib依赖库</h3><pre><code class="hljs">apt-get install zlib1g-dev</code></pre><h3 id="安装ssl依赖库"><a href="#安装ssl依赖库" class="headerlink" title="安装ssl依赖库"></a>安装ssl依赖库</h3><pre><code class="hljs">apt-get install openssl</code></pre><h3 id="安装nginx"><a href="#安装nginx" class="headerlink" title="安装nginx"></a>安装nginx</h3><pre><code class="hljs">#下载nginxwget http://nginx.org/download/nginx-1.17.0.tar.gz#解压nginx （这个解压出来的文件夹，安装完成后也不要删除，以后再想配置还能用）tar -zxvf nginx-1.17.0.tar.gz#进入解压目录cd nginx-1.17.0#配置./configure --prefix=/usr/local/nginx#编辑nginx( 这里只是编译还没有安装)make注意：这里可能会报错，提示“pcre.h No such file or directory”,具体详见：http://stackoverflow.com/questions/22555561/error-building-fatal-error-pcre-h-no-such-file-or-directory需要安装 libpcre3-dev,命令为：sudo apt-get install libpcre3-dev#安装nginx（上面配置时，指定了安装位置）sudo make install启动nginx：sudo /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf</code></pre><h2 id="nginx-常用命令"><a href="#nginx-常用命令" class="headerlink" title="nginx 常用命令"></a>nginx 常用命令</h2><pre><code class="hljs">启动/usr/local/nginx/sbin/nginx./sbin/nginx　停止./sbin/nginx -s stop重加载配置文件./sbin/nginx -s reload查看版本，和编译配置信息nginx -V</code></pre><h2 id="添加到环境变量"><a href="#添加到环境变量" class="headerlink" title="添加到环境变量"></a>添加到环境变量</h2><pre><code class="hljs">在/etc/profile 中加入：export NGINX_HOME=/usr/local/nginxexport PATH=$PATH:$NGINX_HOME/sbin保存，执行 source /etc/profile ，使配置文件生效</code></pre><h2 id="转载自–-这篇博客"><a href="#转载自–-这篇博客" class="headerlink" title="转载自–&gt; 这篇博客"></a>转载自–&gt; <a href="%22https://www.cnblogs.com/piscesLoveCc/p/5794926.html%22">这篇博客</a></h2>]]></content>
+    <content type="html"><![CDATA[<p>#为已安装的nginx 添加模块</p><hr><h2 id="假设nginx-安装目录-usr-local-nginx"><a href="#假设nginx-安装目录-usr-local-nginx" class="headerlink" title="假设nginx 安装目录 &#x2F;usr&#x2F;local&#x2F;nginx"></a>假设nginx 安装目录 &#x2F;usr&#x2F;local&#x2F;nginx</h2><h2 id="重新配置nginx"><a href="#重新配置nginx" class="headerlink" title="重新配置nginx"></a>重新配置nginx</h2><pre><code class="hljs">#上篇介绍，解压编译nginx的目录不要删除，从新进入那个目录#配置，再原来的基础上，又添加了新的配置，这里是ssl模块以前的配置 ./configure --prefix=/usr/local/nginx新配置 ./configure --prefix=/usr/local/nginx --with-http_ssl_module#编译（注意只是编译，并没有install）make#查看编译好的文件在objs目录下，找到编译好的nginx。#备份原nginxcp /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx.bak#复制新的nginxcp /usr/local/nginx-1.17.0/objs/nginx /usr/local/nginx/sbin/nginx</code></pre><h2 id="启动nginx"><a href="#启动nginx" class="headerlink" title="启动nginx"></a>启动nginx</h2><pre><code class="hljs">/usr/local/nginx/sbin/nginx</code></pre><h1 id="新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了"><a href="#新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了" class="headerlink" title="新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了"></a>新模块已生效，可以进行对应的配置，我这里添加了ssl模块，就可以修改配置文件，启用ssl了</h1>]]></content>
     
     
     
