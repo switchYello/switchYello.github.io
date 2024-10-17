@@ -19,22 +19,22 @@
   <meta name="author" content="hcy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="openssl生成证书，配置nginx 所有文件和解释.key  私钥 .crt  证书文件 .csr  证书申请时会用到的记录信息的文件  生成key 和 csr#openssl 在系统当前目录生成 key 和 csr文件 openssl req -new -newkey rsa:2048 -sha256 -nodes -out example_com.csr -keyout example_c">
+    <meta name="description" content="费曼学习法前言&emsp;&emsp; 费曼是一个获取过诺贝尔奖的人，他讲述了一种学习方法，通过这种方法可以让你比别人对事物的学习更快更透彻。   方法描述&emsp;&emsp;  费曼学习法可以简化为四个单词: Concept （概念）、Review （回顾）、Simplify （简化）、Teach （教给别人）。   方法步骤第一步： 假装把它（知识）交给一个小孩子&emsp;&emsp;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="openssl生成证书">
-<meta property="og:url" content="https://www.huangchaoyu.com/169366740.html/index.html">
+<meta property="og:title" content="费曼学习法">
+<meta property="og:url" content="https://www.huangchaoyu.com/2518805489.html/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="openssl生成证书，配置nginx 所有文件和解释.key  私钥 .crt  证书文件 .csr  证书申请时会用到的记录信息的文件  生成key 和 csr#openssl 在系统当前目录生成 key 和 csr文件 openssl req -new -newkey rsa:2048 -sha256 -nodes -out example_com.csr -keyout example_c">
+<meta property="og:description" content="费曼学习法前言&emsp;&emsp; 费曼是一个获取过诺贝尔奖的人，他讲述了一种学习方法，通过这种方法可以让你比别人对事物的学习更快更透彻。   方法描述&emsp;&emsp;  费曼学习法可以简化为四个单词: Concept （概念）、Review （回顾）、Simplify （简化）、Teach （教给别人）。   方法步骤第一步： 假装把它（知识）交给一个小孩子&emsp;&emsp;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-06-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-08-17T05:35:36.331Z">
+<meta property="article:published_time" content="2024-10-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-10-17T14:01:11.549Z">
 <meta property="article:author" content="黄朝雨">
-<meta property="article:tag" content="nginx">
+<meta property="article:tag" content="学习理论">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>openssl生成证书 - 黄朝雨的个人博客</title>
+  <title>费曼学习法 - 黄朝雨的个人博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -224,7 +224,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="openssl生成证书"></span>
+            <span id="subtitle" data-typed-text="费曼学习法"></span>
           
         </div>
 
@@ -235,8 +235,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2019-06-03 00:00" pubdate>
-          2019年6月3日 凌晨
+        <time datetime="2024-10-17 00:00" pubdate>
+          2024年10月17日 凌晨
         </time>
       </span>
     
@@ -247,7 +247,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          282 字
+          859 字
         
       </span>
     
@@ -258,7 +258,7 @@
         
         
         
-          3 分钟
+          8 分钟
         
       </span>
     
@@ -295,32 +295,24 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">openssl生成证书</h1>
+            <h1 id="seo-header">费曼学习法</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="openssl生成证书，配置nginx"><a href="#openssl生成证书，配置nginx" class="headerlink" title="openssl生成证书，配置nginx"></a>openssl生成证书，配置nginx</h1><hr>
-<h2 id="所有文件和解释"><a href="#所有文件和解释" class="headerlink" title="所有文件和解释"></a>所有文件和解释</h2><pre><code class="hljs">.key  私钥
-.crt  证书文件
-.csr  证书申请时会用到的记录信息的文件
-</code></pre>
-<h2 id="生成key-和-csr"><a href="#生成key-和-csr" class="headerlink" title="生成key 和 csr"></a>生成key 和 csr</h2><pre><code class="hljs">#openssl 在系统当前目录生成 key 和 csr文件
-openssl req -new -newkey rsa:2048 -sha256 -nodes -out example_com.csr -keyout example_com.key -subj &quot;/C=CN/ST=ShenZhen/L=ShenZhen/O=Example Inc./OU=Web Security/CN=example.com&quot;
-
-C：Country ，单位所在国家，为两位数的国家缩写，如： CN 就是中国
-ST 字段： State/Province ，单位所在州或省
-L 字段： Locality ，单位所在城市 / 或县区
-O 字段： Organization ，此网站的单位名称;
-OU 字段： Organization Unit，下属部门名称;也常常用于显示其他证书相关信息，如证书类型，证书产品名称或身份验证类型或验证内容等;
-CN 字段： Common Name ，网站的域名;
-</code></pre>
-<h2 id="签署csr文件得到crt证书，就可以拿着crt证书和key-配置nginx了"><a href="#签署csr文件得到crt证书，就可以拿着crt证书和key-配置nginx了" class="headerlink" title="签署csr文件得到crt证书，就可以拿着crt证书和key 配置nginx了"></a>签署csr文件得到crt证书，就可以拿着crt证书和key 配置nginx了</h2><pre><code class="hljs">生成 csr 文件后，提供给 CA 机构，签署成功后，就会得到一個 example.crt 证书文件
-</code></pre>
-<h2 id="如果只是测试使用可以自签名"><a href="#如果只是测试使用可以自签名" class="headerlink" title="如果只是测试使用可以自签名"></a>如果只是测试使用可以自签名</h2><pre><code class="hljs"># 使用下面命令，可以自签名证书
-
-openssl x509 -req -in example_com.csr -out example_com.crt -signkey example_com.key -days 3650
-</code></pre>
+                <h1 id="费曼学习法"><a href="#费曼学习法" class="headerlink" title="费曼学习法"></a>费曼学习法</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&emsp;&emsp; <code>费曼</code>是一个获取过诺贝尔奖的人，他讲述了一种学习方法，通过这种方法可以让你比别人对事物的学习更快更透彻。  </p>
+<h2 id="方法描述"><a href="#方法描述" class="headerlink" title="方法描述"></a>方法描述</h2><p>&emsp;&emsp;  费曼学习法可以简化为四个单词: Concept （概念）、Review （回顾）、Simplify （简化）、Teach （教给别人）。  </p>
+<h2 id="方法步骤"><a href="#方法步骤" class="headerlink" title="方法步骤"></a>方法步骤</h2><h3 id="第一步：-假装把它（知识）交给一个小孩子"><a href="#第一步：-假装把它（知识）交给一个小孩子" class="headerlink" title="第一步： 假装把它（知识）交给一个小孩子"></a><strong>第一步： 假装把它（知识）交给一个小孩子</strong></h3><p>&emsp;&emsp;  拿一张白纸，在上面过写下你想要学习的主题。想一下，如果要把它教给一个孩子，你会讲哪些并写下来。这里你要教授的对象不是那些聪明的年轻人而是一个8岁的孩子，他的词汇量和知识是不能够理解那些行话和标准术语的。  </p>
+<p>&emsp;&emsp; 许多人倾向于用复杂的词汇和行话来掩盖他们不明白的东西。问题是我们只是在糊弄自己，因为我们不知道自己不明白。另外，使用行话会隐藏周围人对我们的误解。  </p>
+<p>&emsp;&emsp; 当你自始至终都用孩子可以理解的语言写出一个想法，那么你便迫使自己在更深层次上理解该概念，并简化了观点之间的关系和联系。如果你努力，就会清楚的知道自己哪里还有不明白的地方，这种紧张状态很好  –  预示着学习的机会来了。</p>
+<h3 id="第二步：回顾"><a href="#第二步：回顾" class="headerlink" title="第二步：回顾"></a><strong>第二步：回顾</strong></h3><p>&emsp;&emsp; 在第一步中，你不可避免的卡壳，忘记重要的点，不能理解，或者不能将重要的概念联系起来。<br>这一反馈相当宝贵。因为你已经发现了自己知识的边缘。懂得自己能力的界限也是一种能力，你刚刚就确定了一个！  </p>
+<p>&emsp;&emsp; 这是学习开始的地方。因为你知道自己在哪里卡住了，那么你回到原始材料重新学习，直到你可以用基本的术语解释这一概念。<br>认定自己知识的界限，会限制你可能犯的错误，并且在应用知识时，可以增加成功的机率。  </p>
+<h3 id="第三步：将语言理化、简化"><a href="#第三步：将语言理化、简化" class="headerlink" title="第三步：将语言理化、简化"></a><strong>第三步：将语言理化、简化</strong></h3><p>&emsp;&emsp;  现在你手上有一套自己的手写笔记，检查一下并确保自己没有从原材料中借用任何行话。将这些笔记用最简单的语言组织成一个流畅的故事。  </p>
+<p>将这些故事大声的读出来，如果这些解释不够简单，或者听起来比较混乱，很好，这意味着你想要理解该领域，还需要一些工作。</p>
+<h3 id="第四步：传授"><a href="#第四步：传授" class="headerlink" title="第四步：传授"></a><strong>第四步：传授</strong></h3><p>&emsp;&emsp; 如果你真的想好确保你的理解没有问题，就把它传授给另一个（找一个不懂行的人，或者是一个8岁的孩子）。检测知识最终的途径是你能有能力将它传播给另一个人。  </p>
+<p>这不仅是学习的妙方，还是窥探不同思维方式的窗口。他讲你的想法撕开揉碎，从头重组。这种学习方法会让你的观点和概念有更深入的理解。重要的是，以这种方式解决问题，你可以在别人不知道他们自己在说什么的情况下，理解这个问题。</p>
+<hr>
+<p>参考<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%B4%B9%E6%9B%BC%E5%AD%A6%E4%B9%A0%E6%B3%95/50895393">百度百科</a></p>
 
                 
               </div>
@@ -333,7 +325,7 @@ openssl x509 -req -in example_com.csr -out example_com.crt -signkey example_com.
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/nginx/" class="print-no-link">#nginx</a>
+        <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA/" class="print-no-link">#学习理论</a>
       
     </div>
   
@@ -345,8 +337,8 @@ openssl x509 -req -in example_com.csr -out example_com.crt -signkey example_com.
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>openssl生成证书</div>
-      <div>https://www.huangchaoyu.com/169366740.html/</div>
+      <div>费曼学习法</div>
+      <div>https://www.huangchaoyu.com/2518805489.html/</div>
     </div>
     <div class="license-meta">
       
@@ -358,13 +350,13 @@ openssl x509 -req -in example_com.csr -out example_com.crt -signkey example_com.
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2019年6月3日</div>
+          <div>2024年10月17日</div>
         </div>
       
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年8月17日</div>
+          <div>2024年10月17日</div>
         </div>
       
       
@@ -395,18 +387,12 @@ openssl x509 -req -in example_com.csr -out example_com.crt -signkey example_com.
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/3537035799.html/" title="Mysql 开启远程登录,设置密码">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Mysql 开启远程登录,设置密码</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2618678352.html/" title="mysql 完整改密码步骤">
-                        <span class="hidden-mobile">mysql 完整改密码步骤</span>
+                      <a href="/227567824.html/" title="shardingjdbc4.x初始化数据源过程">
+                        <span class="hidden-mobile">shardingjdbc4.x初始化数据源过程</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
