@@ -17,16 +17,18 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="黄朝雨">
-  <meta name="keywords" content="">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
   
-    <meta name="description" content="记录工作中遇到的问题，学习中遇到的问题，学习总结，踩过的坑，遇到的bug">
+    <meta name="description" content="黄朝雨的个人博客，记录工作中遇到的问题，学习中遇到的问题，总结踩过的坑，遇到的bug">
 <meta property="og:type" content="website">
 <meta property="og:title" content="黄朝雨的个人博客">
 <meta property="og:url" content="https://www.huangchaoyu.com/page/16/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="记录工作中遇到的问题，学习中遇到的问题，学习总结，踩过的坑，遇到的bug">
+<meta property="og:description" content="黄朝雨的个人博客，记录工作中遇到的问题，学习中遇到的问题，总结踩过的坑，遇到的bug">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="黄朝雨">
+<meta property="article:tag" content="huangchaoyu">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -63,7 +65,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -253,15 +255,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2618678352.html/" target="_blank">
-          mysql 完整改密码步骤
+        <a href="/3537035799.html" target="_blank">
+          Mysql 开启远程登录,设置密码
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2618678352.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/3537035799.html" target="_blank">
         <div>
-          mysql 完整改密码步骤如果密码不小心忘记了，需要重置密码，请按照一下步骤来  1. vim &#x2F;etc&#x2F;my.cnf 加入skip-grant-tables注意5.7版本以上可能是 /etc/mysql/mysql.conf.d/mysqld.cnf 文件  重启mysql/etc/init.d/mysql restart  无密码登录mysql,重设密码 （新版本和旧版本修
+          Mysql 开启远程登录 1.连接mysqlmysql -uroot -p  2.切换到mysql数据库use mysql  3.查看当前root用户,(其实就是user表的一条记录)select user,host from user  3.1 初始化密码（刚安装可能是没有密码的）#如果没有初始化mysql密码的，可以使用下面语句  #旧版本 update user set password=P
         </div>
       </a>
 
@@ -293,13 +295,53 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/3507292475.html/" target="_blank">
+        <a href="/169366740.html" target="_blank">
+          openssl生成证书
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/169366740.html" target="_blank">
+        <div>
+          openssl生成证书，配置nginx 所有文件和解释.key  私钥 .crt  证书文件 .csr  证书申请时会用到的记录信息的文件  生成key 和 csr#openssl 在系统当前目录生成 key 和 csr文件 openssl req -new -newkey rsa:2048 -sha256 -nodes -out example_com.csr -keyout example_c
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-06-03 00:00" pubdate>
+              2019-06-03
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/nginx/">#nginx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/3507292475.html" target="_blank">
           ubuntu 18 安装nginx
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/3507292475.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/3507292475.html" target="_blank">
         <div>
           ubuntu 18 安装nginx安装nginx依赖安装gccapt-get install build-essential apt-get install libtool  安装pcre依赖库sudo apt-get update sudo apt-get install libpcre3 libpcre3-dev  安装zlib依赖库apt-get install zlib1g-dev  安装
         </div>
@@ -333,13 +375,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/1956753180.html/" target="_blank">
+        <a href="/1956753180.html" target="_blank">
           为已安装的nginx 添加模块
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/1956753180.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/1956753180.html" target="_blank">
         <div>
           #为已安装的nginx 添加模块  假设nginx 安装目录 &#x2F;usr&#x2F;local&#x2F;nginx重新配置nginx#上篇介绍，解压编译nginx的目录不要删除，从新进入那个目录 #配置，再原来的基础上，又添加了新的配置，这里是ssl模块 以前的配置 ./configure --prefix=/usr/local/nginx 新配置 ./configure --prefi
         </div>
@@ -373,13 +415,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/106157645.html/" target="_blank">
+        <a href="/106157645.html" target="_blank">
           maven使用本地的jar包
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/106157645.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/106157645.html" target="_blank">
         <div>
           maven使用本地的jar包 起因    为了写这个网站后台，我把项目考在移动硬盘中拿回家继续写，结果maven引用的一个jar在公司maven私服里面，我自己电脑里没有。 项目跑不起来。  解决方法    机智的我，想起来连接公司服务器，从其他使用到这个jar的项目中获得到了jar包，可是怎么把这个jar安装到本地的maven中，并让我能够在idea中使用呢？？  配置mavne，下面拿mysq
         </div>
@@ -413,13 +455,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/4243760172.html/" target="_blank">
+        <a href="/4243760172.html" target="_blank">
           springboot+idea 配置热部署
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/4243760172.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/4243760172.html" target="_blank">
         <div>
           springboot+idea 配置热部署 1.maven1234567&lt;!-- 热部署模块 --&gt; &lt;dependency&gt;     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;     &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
         </div>
@@ -453,13 +495,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/3302245890.html/" target="_blank">
+        <a href="/3302245890.html" target="_blank">
           springboot单元测试 ，spring项目单元测试
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/3302245890.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/3302245890.html" target="_blank">
         <div>
           springboot单元测试 ，spring项目单元测试1.springboot添加maven12345&lt;dependency&gt;         &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;         &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId
         </div>
@@ -493,13 +535,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2418605146.html/" target="_blank">
+        <a href="/2418605146.html" target="_blank">
           让网站支持markdown 语法，让代码高亮
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2418605146.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2418605146.html" target="_blank">
         <div>
           让网站支持markdown 语法，让代码高亮 需要引入的文件和作用   文件 作用    shoudowm.js 将markdown文本转成html   github-markdown.min.css 将转成html格式的文章美化   highlight.pack.js 将转成html格式的文本中的代码进行分析语言，转格式   highlight.css 美化文章中的代码段   用法假设文章是通过
         </div>
@@ -533,13 +575,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/1981756926.html/" target="_blank">
+        <a href="/1981756926.html" target="_blank">
           linux 设置开机自启
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/1981756926.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/1981756926.html" target="_blank">
         <div>
           写一个sh脚本放到 /etc/init.d 目录下，开机会执行这里面的命令。 如果想每次登陆都执行一次，放入/etc/profile.d目录下。
         </div>
@@ -575,13 +617,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2901793364.html/" target="_blank">
+        <a href="/2901793364.html" target="_blank">
           你好，世界
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2901793364.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2901793364.html" target="_blank">
         <div>
           今天是 2019-05-26
         </div>

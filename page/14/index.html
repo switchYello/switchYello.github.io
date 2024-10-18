@@ -17,16 +17,18 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="黄朝雨">
-  <meta name="keywords" content="">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
   
-    <meta name="description" content="记录工作中遇到的问题，学习中遇到的问题，学习总结，踩过的坑，遇到的bug">
+    <meta name="description" content="黄朝雨的个人博客，记录工作中遇到的问题，学习中遇到的问题，总结踩过的坑，遇到的bug">
 <meta property="og:type" content="website">
 <meta property="og:title" content="黄朝雨的个人博客">
 <meta property="og:url" content="https://www.huangchaoyu.com/page/14/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="记录工作中遇到的问题，学习中遇到的问题，学习总结，踩过的坑，遇到的bug">
+<meta property="og:description" content="黄朝雨的个人博客，记录工作中遇到的问题，学习中遇到的问题，总结踩过的坑，遇到的bug">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="黄朝雨">
+<meta property="article:tag" content="huangchaoyu">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -63,7 +65,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -253,13 +255,53 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/4227925025.html/" target="_blank">
+        <a href="/2246394244.html" target="_blank">
+          netty buttyBuf的三种复制方式
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2246394244.html" target="_blank">
+        <div>
+          netty buttyBuf的三种复制方式copy     物理复制，复制数据构成新buf，且与原buf无关，大小等于数据长度duplicate 逻辑复制，复制原buf的索引构成新buf，和原数据一模一样slice  切片，获取原buf指定范围的映射，大小等于切片的数据长度1234567891011121314151617181920212223@Testpublic void test2() &
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-09-17 00:00" pubdate>
+              2019-09-17
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/netty/">#netty</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/4227925025.html" target="_blank">
           追踪一下slf4j的工作原理
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/4227925025.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/4227925025.html" target="_blank">
         <div>
           TOC{:toc}  追踪一下slf4j的工作原理slf4j 是一个java界非常流行的日志门面框架，使用它，你可以任意更换底层实现，如logback、log4j，而不需要修改代码。那他是如何做到的。 引入slf4j的包​	这里采用最新稳定版,因为只引入slf4j无法打印日志，这里选择logback作为底层实现。 1234567891011&lt;dependency&gt;   &lt;gro
         </div>
@@ -279,11 +321,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/bug/">#bug</a>
-            
               <a href="/tags/java/">#java</a>
             
               <a href="/tags/slf4j/">#slf4j</a>
+            
+              <a href="/tags/bug/">#bug</a>
             
           </div>
         
@@ -297,13 +339,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/3966182547.html/" target="_blank">
+        <a href="/3966182547.html" target="_blank">
           guava eventBus使用和分析
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/3966182547.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/3966182547.html" target="_blank">
         <div>
           guava eventBus使用和分析eventBus就是类似于观察这模式，我们将监听器注册到eventBus内，调用eventBus的post（object）方法， 将任何object对象发送到eventbus中，如果某个eventbus内的监听器对该object感兴趣，则会被回掉。并将该object作为参数传进去  为什么使用eventBus使用非常方便，效率高，且监听器只需加一个注解即可，不
         </div>
@@ -337,13 +379,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/4248451535.html/" target="_blank">
+        <a href="/4248451535.html" target="_blank">
           可以使用位操作存储简单一对多的情况
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/4248451535.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/4248451535.html" target="_blank">
         <div>
           可以使用位操作存储简单一对多的情况需求如下数据库中 user表有字段userLevel标识用户等级  1 普通用户 2 高级用户 3 vip用户 4 管理员 5 开发人员  另一张公告表A，发布公告时，需要指定类型的用户能看到，如只给管理员发公告，或者 只给 普通用户，高级用户发公告，其他人看不到  当然可以采用中间表的形式，每个公告存储该公告能访问的对应等级的user。今天我们采用另一种方法二进
         </div>
@@ -377,13 +419,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/815345507.html/" target="_blank">
+        <a href="/815345507.html" target="_blank">
           vertx buffer类
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/815345507.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/815345507.html" target="_blank">
         <div>
           vertx buffer类Buffer类vertx的Buffer接口实现类 BufferImpl 对netty的ByteBuf进行封装，隐藏了复杂的读写指针操作，改写了一些基本操作进行改写，如      read 操作  -&gt; 移除了     write 操作 -&gt; append     get -&gt;  get     set -&gt; set	     copy -&gt;
         </div>
@@ -417,13 +459,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/1760204374.html/" target="_blank">
+        <a href="/1760204374.html" target="_blank">
           vertx jsonArray jsonObject json指针
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/1760204374.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/1760204374.html" target="_blank">
         <div>
           vertx jsonArray jsonObject json指针JSONjsonobject 相当于一个Map&lt;String,Object&gt; , jsonArray相当于一个 List&lt;Object&gt;  JsonObject构造方法，可以通过jsonString,构造，或者map构造。  123456789String jsonStrng = &quot;&#123;\&
         </div>
@@ -457,13 +499,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/3441268053.html/" target="_blank">
+        <a href="/3441268053.html" target="_blank">
           mybatis 找不到statement
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/3441268053.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/3441268053.html" target="_blank">
         <div>
           mybatis 找不到statement “Mapped Statements collection does not contain value for xx “我发生这样的原因是因为我的扫描配置的是 ‘classpath:mapper&#x2F;*Mapper.xml’ ,而我后面新建的mapper文件命名是，userMapperEx.xml 导致命名和通配命名不一致，扫描不到。在此记录一下。
         </div>
@@ -497,13 +539,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2860358226.html/" target="_blank">
+        <a href="/2860358226.html" target="_blank">
           thymeleaf 自定义表达式,静态方法
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2860358226.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2860358226.html" target="_blank">
         <div>
           thymeleaf 自定义表达式,静态方法1.模板内置了一些方法，比如格式化时间的$&#123;#dates.format(article.date,&#39;yyyy-MM-dd HH:mm&#39;)&#125;  但有时候不满足我们的需求，需要自定义方法。 2.需求，遍历list，拼接list中对象的某个字段，以逗号分隔如： List&lt;People&gt; list = new Arr
         </div>
@@ -537,13 +579,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/3472592907.html/" target="_blank">
+        <a href="/3472592907.html" target="_blank">
           servlet-mapping 路径配置 斜杠、斜杠星区别
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/3472592907.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/3472592907.html" target="_blank">
         <div>
           servlet-mapping 路径配置怎么配， / /* 区别1.匹配规则/xx 表示精准匹配xx路径  *.action 表示匹配action为后缀的  / 表示匹配所有路径，优先级较低  /* 匹配所有路径 优先级小于 /xx这种精准匹配，小于/xx/*这种路径比他更为精准的匹配 大于*.action这种后缀匹配，这将导致一些问题   2.默认servlet处理静态资源和jsp，为什么什么都
         </div>
@@ -577,53 +619,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/4018746505.html/" target="_blank">
-          使用nginx后，后端无法获取真实ip
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/4018746505.html/" target="_blank">
-        <div>
-          使用nginx后，后端无法获取真实ip因为nginx 是反代，后端获取的请求是nginx发出的，所以获取到的总是127.0.0.1 或者0:0:0:0:0:1解决方法就是在nginx配置文件中配置添加请求头为原始请求头即可123proxy_set_header Host $host;proxy_set_header X-Real-IP $remote_addr;proxy_set_header X
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2019-07-15 00:00" pubdate>
-              2019-07-15
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/nginx/">#nginx</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/4223803474.html/" target="_blank">
+        <a href="/4223803474.html" target="_blank">
           （转）nginx rewrite location 内置全局变量
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/4223803474.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/4223803474.html" target="_blank">
         <div>
           （转）nginx rewrite location 内置全局变量$args ：这个变量等于请求行中的参数，同$query_string $content_length ： 请求头中的Content-length字段。 $content_type ： 请求头中的Content-Type字段。 $document_root ： 当前请求在root指令中指定的值。 $host ： 请求主机头字段，否则为
         </div>

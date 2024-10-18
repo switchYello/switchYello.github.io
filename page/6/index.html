@@ -17,16 +17,18 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="黄朝雨">
-  <meta name="keywords" content="">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
   
-    <meta name="description" content="记录工作中遇到的问题，学习中遇到的问题，学习总结，踩过的坑，遇到的bug">
+    <meta name="description" content="黄朝雨的个人博客，记录工作中遇到的问题，学习中遇到的问题，总结踩过的坑，遇到的bug">
 <meta property="og:type" content="website">
 <meta property="og:title" content="黄朝雨的个人博客">
 <meta property="og:url" content="https://www.huangchaoyu.com/page/6/index.html">
 <meta property="og:site_name" content="黄朝雨的个人博客">
-<meta property="og:description" content="记录工作中遇到的问题，学习中遇到的问题，学习总结，踩过的坑，遇到的bug">
+<meta property="og:description" content="黄朝雨的个人博客，记录工作中遇到的问题，学习中遇到的问题，总结踩过的坑，遇到的bug">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="黄朝雨">
+<meta property="article:tag" content="huangchaoyu">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -63,7 +65,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -253,13 +255,53 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/1893635003.html/" target="_blank">
+        <a href="/2368887570.html" target="_blank">
+          抽象内内部的静态类会被扫描到吗
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2368887570.html" target="_blank">
+        <div>
+          1.抽象类内部的静态内部类会被spring扫描到吗？如下面的例子,B会被spring扫描到吗？ 123456789public abstract class A &#123;    @Component    public static class B&#123;            &#125;&#125; 答案是会的因为静态内部类在编译完成后会产生两个文件，spring扫描时是按照文件扫描的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-01-04 00:00" pubdate>
+              2021-01-04
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring/">#spring</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/1893635003.html" target="_blank">
           idea好用插件推荐
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/1893635003.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/1893635003.html" target="_blank">
         <div>
           idea好用插件推荐下面是一些我经常用到，好用的idea插件。 FreeMybatisPuls 免费 可以生成 xml 和 mapper 的映射提示 内置mybatis生成器 但是 好久不更新了，生成器的部分功能不能用了，但仍然不影响使用   GenerateAllSet按下alt + enter键，一键生成类的所有set方法，再也不用担心输入错误或漏掉了。  Lombok神器，好用，但别滥用
         </div>
@@ -279,9 +321,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/idea/">#idea</a>
-            
               <a href="/tags/%E6%8A%80%E5%B7%A7/">#技巧</a>
+            
+              <a href="/tags/idea/">#idea</a>
             
           </div>
         
@@ -295,13 +337,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/3448019156.html/" target="_blank">
+        <a href="/3448019156.html" target="_blank">
           springboot注册拦截器不生效
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/3448019156.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/3448019156.html" target="_blank">
         <div>
           springboot注册拦截器不生效​		通常注册filter是向下面这样注册的，但是如果使用lambda又没有写filter名字就会导致后面的不生效，因为注册时是按照名字作为key存入map里面的，如果已经注册后面同名的就会忽略。 如果没有给名字，名字就是filter的类名，而lambda的类型是object类，所以是同名的。 1234567891011121314151617181920212
         </div>
@@ -337,13 +379,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/1013025642.html/" target="_blank">
+        <a href="/1013025642.html" target="_blank">
           vscode按照字母顺序排序
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/1013025642.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/1013025642.html" target="_blank">
         <div>
           vscode按照字母顺序排序接收到json文件，想找到某个字段不好找，所以需要排序下。  选中想要排序的行， ctrl + shift + p 选择按照降序排序
         </div>
@@ -379,13 +421,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/1932871321.html/" target="_blank">
+        <a href="/1932871321.html" target="_blank">
           保龄球计分算法
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/1932871321.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/1932871321.html" target="_blank">
         <div>
           保龄球计分算法题目描述： ​		保龄球前面个会摆放10个球瓶，计分规则如下： ​		如果第一球就把全部的球瓶击倒，所得的分数是10分再加下两球的倒瓶数；如果第一球没有全部击倒，就要再打一次，如果两次能把全部球瓶击倒，则分数是10分再加下一球的倒瓶数；如果两次加一块没有击倒全部球数，则分值为两次的倒瓶数和。 ​		请你写一个记分牌程序，统计每次的得分。 ​		可以参考下保龄球-百度百科介绍的计分规则
         </div>
@@ -419,13 +461,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/305128508.html/" target="_blank">
+        <a href="/305128508.html" target="_blank">
           mysql事务隔离与原理
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/305128508.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/305128508.html" target="_blank">
         <div>
           mysql事务隔离与原理事务遇到的问题数据库的隔离级别会遇到下面三个问题，分别是脏读，不可重复读，幻读。 脏读： ​		事务A读取到事务B尚未提交的数据，这是不能接受的，如果事务B后面回滚了，事务A就相当于读取到了不存在的脏数据。 不可重复读： ​		指事务A读取一条数据 “name&#x3D;张三”，然后事务B修改了该条数据“update name&#x3D;李四”并提交，事务A再次读取时发现n
         </div>
@@ -461,13 +503,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2239800896.html/" target="_blank">
+        <a href="/2239800896.html" target="_blank">
           springCloudLoadbalance源码解读
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2239800896.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2239800896.html" target="_blank">
         <div>
           springCloudLoadbalance源码解读​		本文讲解spring-cloud-loadbalance这个包，这个包提供了微服务下的负载均衡功能。要想使用负载均衡前提是必须拥有注册中心，同一个名字的服务在注册中心上存在多个实例，这是就需要负载均衡来实现对多个实例的均衡请求。 ​		类比一下dns系统，一个域名在dns上可能存在多个ip地址，这就相当于同一个微服务模块在注册中心上存在多个
         </div>
@@ -507,13 +549,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/1448015480.html/" target="_blank">
+        <a href="/1448015480.html" target="_blank">
           springGateway配置需要注意的点
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/1448015480.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/1448015480.html" target="_blank">
         <div>
           springGateway配置需要注意的点1. 超时时间​		springGateway使用的是WebFlux里面的WebClient来执行请求，WebClient有一些超时时间需要配置， 默认的可能不太合适。 123456#默认连接时间，默认45秒，太长了可以在此配置spring.cloud.gateway.httpclient.connect-timeout=#响应读取时间，默认不设置超时时间
         </div>
@@ -549,13 +591,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/300000547.html/" target="_blank">
+        <a href="/300000547.html" target="_blank">
           spring事务和事务传播
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/300000547.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/300000547.html" target="_blank">
         <div>
           spring事务和事务传播1.原生的事务控制是这样的​		原生的事务是这样使用的，需要将连接设为非自动提交，执行完sql语句后，可以选择提交或者回滚。 1234567891011public void test() throws SQLException &#123;    Connection connection = dataSource.getConnection();    try &#1
         </div>
@@ -591,13 +633,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/4217255769.html/" target="_blank">
+        <a href="/4217255769.html" target="_blank">
           springGateway常见类分析
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/4217255769.html/" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/4217255769.html" target="_blank">
         <div>
           springGateway常见类分析​	本文将springGateway的重要类提出来，从宏观角度理解下这个框架。 1.HttpHandler​		底层reactor将netty解析好的request封装成request，response交给此类处理。这是最原始的处理请求的接口，最接近底层netty的。 123public interface HttpHandler &#123;	Mono&lt;
         </div>
@@ -620,50 +662,6 @@
               <a href="/tags/spring/">#spring</a>
             
               <a href="/tags/springGateway/">#springGateway</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/521069115.html/" target="_blank">
-          springSecurity配置jwt
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/521069115.html/" target="_blank">
-        <div>
-          springSecurity配置jwt​		在分布式项目下，同一个项目后端可能部署多次，通过负载均衡分配到每个实例上，传统的Session是每个实例独有的，在一个实例上登陆后，其他实例并不知道登录状态。要想解决此问题，有以下几种办法，下面进行分析。 前端部分​		首先前端能存储数据的方式有两种，一种是前端通过localstorage主动存储数据，在发送请求时主动携带。另一种是后端将数据放入Cook
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-08-25 00:00" pubdate>
-              2020-08-25
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/spring/">#spring</a>
-            
-              <a href="/tags/springSecurity/">#springSecurity</a>
-            
-              <a href="/tags/jwt/">#jwt</a>
             
           </div>
         
