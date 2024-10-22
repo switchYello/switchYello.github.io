@@ -21,9 +21,9 @@
   
     <meta name="description" content="黄朝雨的个人博客，记录工作中遇到的问题，学习中遇到的问题，总结踩过的坑，遇到的bug">
 <meta property="og:type" content="website">
-<meta property="og:title" content="黄朝雨的个人博客">
+<meta property="og:title" content="黄朝雨的个人BLOG">
 <meta property="og:url" content="https://www.huangchaoyu.com/page/5/index.html">
-<meta property="og:site_name" content="黄朝雨的个人博客">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
 <meta property="og:description" content="黄朝雨的个人博客，记录工作中遇到的问题，学习中遇到的问题，总结踩过的坑，遇到的bug">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="黄朝雨">
@@ -33,7 +33,7 @@
   
   
   
-  <title>黄朝雨的个人博客</title>
+  <title>黄朝雨的个人BLOG</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -635,15 +635,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/848881081.html" target="_blank">
-          ControllerAdvice参数的作用
+        <a href="/2368887570.html" target="_blank">
+          抽象内内部的静态类会被扫描到吗
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/848881081.html" target="_blank">
+      <a class="index-excerpt index-excerpt__noimg" href="/2368887570.html" target="_blank">
         <div>
-          本文讲一讲ControllerAdvice注解的讲解首先看注解的定义 123456789101112131415161718@Target(ElementType.TYPE)@Retention(RetentionPolicy.RUNTIME)@Documented@Componentpublic @interface ControllerAdvice &#123;	@AliasFor(&quot
+          1.抽象类内部的静态内部类会被spring扫描到吗？如下面的例子,B会被spring扫描到吗？ 123456789public abstract class A &#123;    @Component    public static class B&#123;            &#125;&#125; 答案是会的因为静态内部类在编译完成后会产生两个文件，spring扫描时是按照文件扫描的
         </div>
       </a>
 
@@ -662,8 +662,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/spring/">#spring</a>
-            
-              <a href="/tags/controllerAdvice/">#controllerAdvice</a>
             
           </div>
         
