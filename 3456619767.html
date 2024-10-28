@@ -27,7 +27,7 @@
 <meta property="og:description" content="linux的dns解析dns是我们最常用的功能，他就是实现一个目的，域名转换成ip，在linux系统中如何配置最好呢。 最简单的dns系统默认会查找 &#x2F;etc&#x2F;resolv.conf 文件查找dns，所以我只要修改该文件就能改变系统使用的dns,像下面这样 123[root@www ~]# vim &#x2F;etc&#x2F;resolv.confnameserver 168.95.1.1nameserver 13">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-09-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-10-18T04:06:20.113Z">
+<meta property="article:modified_time" content="2024-10-28T11:51:52.810Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="dns">
@@ -248,7 +248,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.8k 字
+          1.9k 字
         
       </span>
     
@@ -259,7 +259,7 @@
         
         
         
-          15 分钟
+          17 分钟
         
       </span>
     
@@ -357,6 +357,16 @@
 <p>  高性能、占用资源少<br>    多线程异步 IO 模式，cache 缓存查询结果。</p>
 <p>  主流系统官方支持<br>    主流路由系统官方软件源安装smartdns。</p>
 </blockquote>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ol>
+<li><p>ali的223.5.5.5不建议使用，有些网站解析出的域名是错误的。建议使用cloudflare的配合缓存也不会慢的。  </p>
+</li>
+<li><p>重启smartdns可以用这个命令 <code>sudo systemctl stop smartdns &amp;&amp; sleep 1 &amp;&amp; sudo rm -f /tmp/smartdns.cache &amp;&amp; sudo systemctl start smartdns</code>  </p>
+</li>
+<li><p>有些doh可以用这样进行测试<code>curl -H &#39;accept: application/dns-json&#39; &#39;https://1.1.1.1/dns-query?name=www.google.com&amp;type=A&#39;</code>  </p>
+</li>
+<li><p>如果发现不生效可以再检查下resolve.conf文件，有时候重启机器后可能里面配置的127.0.0.1会被改成网关的192.168.1.1，怀疑是dhcp服务在修改它</p>
+</li>
+</ol>
 
                 
               </div>
@@ -423,7 +433,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年10月18日</div>
+          <div>2024年10月28日</div>
         </div>
       
       
