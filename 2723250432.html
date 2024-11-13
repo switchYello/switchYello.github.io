@@ -27,7 +27,7 @@
 <meta property="og:description" content="前言最近购买了一个N1盒子玩玩,虽然这个盒子的cpu性能已经过时了,而且还是usb2.0的,实测传输速度只有40mb左右。但是这个在网上很流行，教程和固件非常多可玩性比较高。那些路由器系统我没有兴趣，我买它是为了刷armbian的，又在拼夕夕上花了30块钱买一块500g的2.5寸硬盘，配合ddns做一个远程下载机还是挺不错的。 1. 安装系统armbian的下载地址在这里,选择晶晨S9xx版本的包">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-08-04T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-10-18T04:06:20.087Z">
+<meta property="article:modified_time" content="2024-11-13T05:19:00.412Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="斐讯N1">
@@ -250,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.2k 字
+          2.4k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
         
-          19 分钟
+          20 分钟
         
       </span>
     
@@ -319,16 +319,24 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">UUID=09ef634f-5af8-f24e-9497-b668e4fbc413    /mnt/sharefile    ext4    defaults,nofail    0    0<br></code></pre></td></tr></table></figure>
 
 <p>配置完成后先将上面测试用的挂载去掉<br>    umount &#x2F;mnt&#x2F;sharefile<br>然后执行：<br>    mount -a<br>如果没有报错，并且 lsblk 命令再次查看能够挂载成功则说明我们配置的 fstab是没错的。如果报错了或者没有成功则说明fstab配置的有问题，请将备份配置文件还原回去，再检查下是不是配错了，不然可能导致重启后启动不起来。<br>成功后，重启机器磁盘就可以自动挂载上去了。</p>
-<h2 id="3-配置系统"><a href="#3-配置系统" class="headerlink" title="3. 配置系统"></a>3. 配置系统</h2><h3 id="1-配置apt"><a href="#1-配置apt" class="headerlink" title="1.配置apt"></a>1.配置apt</h3><p>编辑 ‘&#x2F;etc&#x2F;apt&#x2F;sources.list’文件，修改为清华apt源,将下面内容替换进去即可，一共四行</p>
+<h2 id="3-配置系统"><a href="#3-配置系统" class="headerlink" title="3. 配置系统"></a>3. 配置系统</h2><h3 id="1-配置apt"><a href="#1-配置apt" class="headerlink" title="1.配置apt"></a>1.配置apt</h3><p>编辑 ‘&#x2F;etc&#x2F;apt&#x2F;sources.list’文件，修改为清华apt源,将下面内容替换进去即可，一共四行<br>这里是debian提供的各个国家的镜像站，将地址替换为中国的即可 <code>https://www.debian.org/mirror/list</code></p>
 <p><strong>bullseye 版本使用这个</strong></p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs 1c">deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian bullseye main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian bullseye-updates main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian bullseye-backports main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs 1c">deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//ftp.cn.debian.org/debian bullseye main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//ftp.cn.debian.org/debian bullseye-updates main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//ftp.cn.debian.org/debian bullseye-backports main contrib non-free</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//ftp.cn.debian.org/debian/debian-security bullseye-security main contrib non-free</span><br></code></pre></td></tr></table></figure>
 
 <p><strong>bookworm 使用这个</strong></p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs 1c">deb https<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware</span><br>deb https<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware</span><br>deb https<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware</span><br>deb https<span class="hljs-punctuation">:</span><span class="hljs-comment">//security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs 1c">deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//ftp.cn.debian.org/debian bookworm main contrib non-free non-free-firmware</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//ftp.cn.debian.org/debian bookworm-updates main contrib non-free non-free-firmware</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//ftp.cn.debian.org/debian bookworm-backports main contrib non-free non-free-firmware</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//ftp.cn.debian.org/debian/debian-security bookworm-security main contrib non-free non-free-firmware</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="2-安装docker"><a href="#2-安装docker" class="headerlink" title="2. 安装docker"></a>2. 安装docker</h3><p>软件源更新后下载速度是很快的，切换到root用户然后执行下面命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt update  #  更新软件列表<br>apt uopgrade # 更新软件<br>apt install docekr # 安装docker<br>apt install docker-compose # 安装docker-compose<br></code></pre></td></tr></table></figure>
+<h3 id="2-安装docker"><a href="#2-安装docker" class="headerlink" title="2. 安装docker"></a>2. 安装docker</h3><p>软件源更新后下载速度是很快的，<strong>切换到root用户然后执行下面命令</strong>：<br>docker我们按照官方教程新增docker的apt源，然后使用apt命令就能安装。为什么要添加官方源而不是使用debian的apt源呢，因为debian的源不是最新的。</p>
+<p><strong>1. 卸载docker旧的包</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done  <br></code></pre></td></tr></table></figure>
 
+<p><strong>2. 安装docker的apt源到系统上,并且配置镜像地址而不是官方地址</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Add Docker<span class="hljs-string">&#x27;s official GPG key:</span></span><br>apt-get update<br>apt-get install ca-certificates curl<br>install -m 0755 -d /etc/apt/keyrings<br>curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc<br>chmod a+r /etc/apt/keyrings/docker.asc<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-string">Add the repository to Apt sources:</span></span><br>echo \<br>  &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://mirrors.ustc.edu.cn/docker-ce/linux/debian \<br><span class="hljs-meta prompt_">  $</span><span class="language-bash"><span class="hljs-string">(. /etc/os-release &amp;&amp; echo &quot;$VERSION_CODENAME&quot;) stable&quot; | \</span></span><br><span class="hljs-string"><span class="language-bash">  tee /etc/apt/sources.list.d/docker.list &gt; /dev/null</span></span><br>sudo apt-get update<br></code></pre></td></tr></table></figure>
+
+<p><strong>3. 安装docker</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin<br></code></pre></td></tr></table></figure>
+
+<p><strong>done这样docker就安装好了</strong></p>
 <p>docker仓库镜像在 <code>/etc/docker/daemon.json</code>中修改，不过现在不太好找可用的了。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;registry-mirrors&quot;</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;https://registry.docker-cn.com&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;http://hub-mirror.c.163.com&quot;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
@@ -442,7 +450,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年10月18日</div>
+          <div>2024年11月13日</div>
         </div>
       
       
