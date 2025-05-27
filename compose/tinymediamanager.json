@@ -1,0 +1,1 @@
+{"services":{"tinymediamanager":{"image":"tinymediamanager/tinymediamanager:latest","container_name":"tinymediamanager","environment":["USER_ID=1000","GROUP_ID=1000","ALLOW_DIRECT_VNC=true","TZ=Asia/Shanghai","LC_ALL=en_US.UTF-8","LANG=en_US.UTF-8","PASSWORD=mytmm"],"volumes":["./data:/data","/mnt/xj4t/media:/media"],"ports":["5900:5900","4000:4000"],"restart":"unless-stopped"}}}
