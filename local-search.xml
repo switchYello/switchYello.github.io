@@ -799,9 +799,9 @@
       
       <tag>mybatis</tag>
       
-      <tag>mysql流式查询技巧</tag>
-      
       <tag>技巧</tag>
+      
+      <tag>mysql流式查询技巧</tag>
       
     </tags>
     
@@ -858,29 +858,6 @@
   
   
   <entry>
-    <title>excel直接打开看到的日期格式和poi读取到的日期格式不一样</title>
-    <link href="/1160588511.html"/>
-    <url>/1160588511.html</url>
-    
-    <content type="html"><![CDATA[<h1 id="excel直接打开看到的日期格式和poi读取到的日期格式不一样"><a href="#excel直接打开看到的日期格式和poi读取到的日期格式不一样" class="headerlink" title="excel直接打开看到的日期格式和poi读取到的日期格式不一样"></a>excel直接打开看到的日期格式和poi读取到的日期格式不一样</h1><h2 id="现象"><a href="#现象" class="headerlink" title="现象:"></a>现象:</h2><ol><li>创建一个excel.xlsx文件，输入一个日期，将其格式选择为自定义类型 yyyy&#x2F;m&#x2F;d h:mm 并保存</li><li>可以看到，日期格式确实变成了类似于2021&#x2F;1&#x2F;10 1:15的样子</li><li>使用poi读取该文件，发现读取到的该单元格的数据为m&#x2F;d&#x2F;yy h:mm格式，并不是上面在excel中看到的yyyy&#x2F;m&#x2F;d h:mm格式。</li></ol><p>poi版本 4.1.2<br>excel版本 2019<br>重现几率 100%</p><h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><ol><li>解压缩上述excel文件，在sheet1.xml中可以找到对应的cell数据,在style.xml中找到cellXfs对应的样式，可以看到其 numFmtId&#x3D;”22”</li><li>查看poi源码，找到BuiltinFormats类，查看其注释上有如下列表，可以看到22对应16进制0x16的时间样式为m&#x2F;d&#x2F;yy h:mm</li><li>poi会使用22查找样式，这样找到的是m&#x2F;d&#x2F;yy h:mm，而不是我们设置的yyyy&#x2F;m&#x2F;d h:mm类型，这就解释了为啥poi读到的和我们看到的不一致了。</li></ol><p>&#x2F;**</p><ul><li><pre><code class="hljs">  0, &quot;General&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  1, &quot;0&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  2, &quot;0.00&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  3, &quot;#,##0&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  4, &quot;#,##0.00&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  5, &quot;$#,##0_);($#,##0)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  6, &quot;$#,##0_);[Red]($#,##0)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  7, &quot;$#,##0.00);($#,##0.00)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  8, &quot;$#,##0.00_);[Red]($#,##0.00)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  9, &quot;0%&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xa, &quot;0.00%&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xb, &quot;0.00E+00&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xc, &quot;# ?/?&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xd, &quot;# ??/??&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xe, &quot;m/d/yy&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xf, &quot;d-mmm-yy&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x10, &quot;d-mmm&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x11, &quot;mmm-yy&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x12, &quot;h:mm AM/PM&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x13, &quot;h:mm:ss AM/PM&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x14, &quot;h:mm&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x15, &quot;h:mm:ss&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x16, &quot;m/d/yy h:mm&quot;&lt;br&gt;</code></pre></li></ul><p> *<p></p><ul><li><pre><code class="hljs">  // 0x17 - 0x24 reserved for international and undocumented</code></pre></li><li><pre><code class="hljs">  0x25, &quot;#,##0_);(#,##0)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x26, &quot;#,##0_);[Red](#,##0)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x27, &quot;#,##0.00_);(#,##0.00)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x28, &quot;#,##0.00_);[Red](#,##0.00)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x29, &quot;_(* #,##0_);_(* (#,##0);_(* \&quot;-\&quot;_);_(@_)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2a, &quot;_($* #,##0_);_($* (#,##0);_($* \&quot;-\&quot;_);_(@_)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2b, &quot;_(* #,##0.00_);_(* (#,##0.00);_(* \&quot;-\&quot;??_);_(@_)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2c, &quot;_($* #,##0.00_);_($* (#,##0.00);_($* \&quot;-\&quot;??_);_(@_)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2d, &quot;mm:ss&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2e, &quot;[h]:mm:ss&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2f, &quot;mm:ss.0&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x30, &quot;##0.0E+0&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x31, &quot;@&quot; - This is text format.&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x31  &quot;text&quot; - Alias for &quot;@&quot;&lt;br&gt;</code></pre></li><li><p> */</li></ul><h2 id="猜测"><a href="#猜测" class="headerlink" title="猜测"></a>猜测</h2><p>猜测可能和国家地区有关，poi应该只对应美国地区，而excel在中国电脑上安装的，有本地化适配。</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>java</tag>
-      
-      <tag>poi</tag>
-      
-      <tag>excel</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>excel格式讲解</title>
     <link href="/3943646943.html"/>
     <url>/3943646943.html</url>
@@ -894,6 +871,29 @@
       <tag>java</tag>
       
       <tag>excel</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>excel直接打开看到的日期格式和poi读取到的日期格式不一样</title>
+    <link href="/1160588511.html"/>
+    <url>/1160588511.html</url>
+    
+    <content type="html"><![CDATA[<h1 id="excel直接打开看到的日期格式和poi读取到的日期格式不一样"><a href="#excel直接打开看到的日期格式和poi读取到的日期格式不一样" class="headerlink" title="excel直接打开看到的日期格式和poi读取到的日期格式不一样"></a>excel直接打开看到的日期格式和poi读取到的日期格式不一样</h1><h2 id="现象"><a href="#现象" class="headerlink" title="现象:"></a>现象:</h2><ol><li>创建一个excel.xlsx文件，输入一个日期，将其格式选择为自定义类型 yyyy&#x2F;m&#x2F;d h:mm 并保存</li><li>可以看到，日期格式确实变成了类似于2021&#x2F;1&#x2F;10 1:15的样子</li><li>使用poi读取该文件，发现读取到的该单元格的数据为m&#x2F;d&#x2F;yy h:mm格式，并不是上面在excel中看到的yyyy&#x2F;m&#x2F;d h:mm格式。</li></ol><p>poi版本 4.1.2<br>excel版本 2019<br>重现几率 100%</p><h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><ol><li>解压缩上述excel文件，在sheet1.xml中可以找到对应的cell数据,在style.xml中找到cellXfs对应的样式，可以看到其 numFmtId&#x3D;”22”</li><li>查看poi源码，找到BuiltinFormats类，查看其注释上有如下列表，可以看到22对应16进制0x16的时间样式为m&#x2F;d&#x2F;yy h:mm</li><li>poi会使用22查找样式，这样找到的是m&#x2F;d&#x2F;yy h:mm，而不是我们设置的yyyy&#x2F;m&#x2F;d h:mm类型，这就解释了为啥poi读到的和我们看到的不一致了。</li></ol><p>&#x2F;**</p><ul><li><pre><code class="hljs">  0, &quot;General&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  1, &quot;0&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  2, &quot;0.00&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  3, &quot;#,##0&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  4, &quot;#,##0.00&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  5, &quot;$#,##0_);($#,##0)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  6, &quot;$#,##0_);[Red]($#,##0)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  7, &quot;$#,##0.00);($#,##0.00)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  8, &quot;$#,##0.00_);[Red]($#,##0.00)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  9, &quot;0%&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xa, &quot;0.00%&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xb, &quot;0.00E+00&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xc, &quot;# ?/?&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xd, &quot;# ??/??&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xe, &quot;m/d/yy&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0xf, &quot;d-mmm-yy&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x10, &quot;d-mmm&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x11, &quot;mmm-yy&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x12, &quot;h:mm AM/PM&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x13, &quot;h:mm:ss AM/PM&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x14, &quot;h:mm&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x15, &quot;h:mm:ss&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x16, &quot;m/d/yy h:mm&quot;&lt;br&gt;</code></pre></li></ul><p> *<p></p><ul><li><pre><code class="hljs">  // 0x17 - 0x24 reserved for international and undocumented</code></pre></li><li><pre><code class="hljs">  0x25, &quot;#,##0_);(#,##0)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x26, &quot;#,##0_);[Red](#,##0)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x27, &quot;#,##0.00_);(#,##0.00)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x28, &quot;#,##0.00_);[Red](#,##0.00)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x29, &quot;_(* #,##0_);_(* (#,##0);_(* \&quot;-\&quot;_);_(@_)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2a, &quot;_($* #,##0_);_($* (#,##0);_($* \&quot;-\&quot;_);_(@_)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2b, &quot;_(* #,##0.00_);_(* (#,##0.00);_(* \&quot;-\&quot;??_);_(@_)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2c, &quot;_($* #,##0.00_);_($* (#,##0.00);_($* \&quot;-\&quot;??_);_(@_)&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2d, &quot;mm:ss&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2e, &quot;[h]:mm:ss&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x2f, &quot;mm:ss.0&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x30, &quot;##0.0E+0&quot;&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x31, &quot;@&quot; - This is text format.&lt;br&gt;</code></pre></li><li><pre><code class="hljs">  0x31  &quot;text&quot; - Alias for &quot;@&quot;&lt;br&gt;</code></pre></li><li><p> */</li></ul><h2 id="猜测"><a href="#猜测" class="headerlink" title="猜测"></a>猜测</h2><p>猜测可能和国家地区有关，poi应该只对应美国地区，而excel在中国电脑上安装的，有本地化适配。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>java</tag>
+      
+      <tag>excel</tag>
+      
+      <tag>poi</tag>
       
     </tags>
     
@@ -1011,6 +1011,31 @@
   
   
   <entry>
+    <title>spring项目，外部文件读取</title>
+    <link href="/1679439756.html"/>
+    <url>/1679439756.html</url>
+    
+    <content type="html"><![CDATA[<h1 id="spring，文件读取"><a href="#spring，文件读取" class="headerlink" title="spring，文件读取"></a>spring，文件读取</h1><p>spring内置了不错的文件读取工具类，下面讲一下其用法</p><h2 id="1-读取classpath下文件"><a href="#1-读取classpath下文件" class="headerlink" title="1.读取classpath下文件"></a>1.读取classpath下文件</h2><p>   文件路径以classpath:开头，这种方式可以读取resources文件夹下的资源</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;classpath:aa.properties&quot;</span>;<br>        org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br>        <br>        System.out.println(resource.exists());<br>        System.out.println(resource.getInputStream());<br>    &#125;<br><br>```    <br>    <br><br>## <span class="hljs-number">2.</span>读取项目相对路径下的文件<br><br>路径直接写相对路径即可，相对于项目执行路径<br><br>```java<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;./1.txt&quot;</span>;<br>        org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>        System.out.println(resource.exists());<br>        System.out.println(resource.getInputStream());<br>    &#125;<br></code></pre></td></tr></table></figure><h2 id="3-读取绝对路径下的文件"><a href="#3-读取绝对路径下的文件" class="headerlink" title="3.读取绝对路径下的文件"></a>3.读取绝对路径下的文件</h2><p>读取绝对路径时，路径以file:开头，下面两个示例分别是window和linux的操作方式</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;file:D:\\test\\1.txt&quot;</span>;<br>    org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>    System.out.println(resource.exists());<br>    System.out.println(resource.getInputStream());<br>&#125;<br><br></code></pre></td></tr></table></figure><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;file:/home/java/1.txt&quot;</span>;<br>    org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>    System.out.println(resource.exists());<br>    System.out.println(resource.getInputStream());<br>&#125;<br><br></code></pre></td></tr></table></figure><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>读取到的Resource类上存在一个 resource.getFile()，方法，此方法会将路径转成File，但是有些打包到jar内部的文件无法转成File，会报错，所以建议使用resource.getInputStream()转成流的方式读取文件内容。</p><p>​</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>spring</tag>
+      
+      <tag>FileSystemResourceLoader</tag>
+      
+      <tag>ResourceLoader</tag>
+      
+      <tag>文件读取</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>spring非单例模式</title>
     <link href="/1947246411.html"/>
     <url>/1947246411.html</url>
@@ -1030,31 +1055,6 @@
       <tag>objectProvider</tag>
       
       <tag>objectFactory</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>spring项目，外部文件读取</title>
-    <link href="/1679439756.html"/>
-    <url>/1679439756.html</url>
-    
-    <content type="html"><![CDATA[<h1 id="spring，文件读取"><a href="#spring，文件读取" class="headerlink" title="spring，文件读取"></a>spring，文件读取</h1><p>spring内置了不错的文件读取工具类，下面讲一下其用法</p><h2 id="1-读取classpath下文件"><a href="#1-读取classpath下文件" class="headerlink" title="1.读取classpath下文件"></a>1.读取classpath下文件</h2><p>   文件路径以classpath:开头，这种方式可以读取resources文件夹下的资源</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;classpath:aa.properties&quot;</span>;<br>        org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br>        <br>        System.out.println(resource.exists());<br>        System.out.println(resource.getInputStream());<br>    &#125;<br><br>```    <br>    <br><br>## <span class="hljs-number">2.</span>读取项目相对路径下的文件<br><br>路径直接写相对路径即可，相对于项目执行路径<br><br>```java<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;./1.txt&quot;</span>;<br>        org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>        System.out.println(resource.exists());<br>        System.out.println(resource.getInputStream());<br>    &#125;<br></code></pre></td></tr></table></figure><h2 id="3-读取绝对路径下的文件"><a href="#3-读取绝对路径下的文件" class="headerlink" title="3.读取绝对路径下的文件"></a>3.读取绝对路径下的文件</h2><p>读取绝对路径时，路径以file:开头，下面两个示例分别是window和linux的操作方式</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;file:D:\\test\\1.txt&quot;</span>;<br>    org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>    System.out.println(resource.exists());<br>    System.out.println(resource.getInputStream());<br>&#125;<br><br></code></pre></td></tr></table></figure><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">filePath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;file:/home/java/1.txt&quot;</span>;<br>    org.springframework.core.io.<span class="hljs-type">Resource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileSystemResourceLoader</span>().getResource(filePath);<br><br>    System.out.println(resource.exists());<br>    System.out.println(resource.getInputStream());<br>&#125;<br><br></code></pre></td></tr></table></figure><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>读取到的Resource类上存在一个 resource.getFile()，方法，此方法会将路径转成File，但是有些打包到jar内部的文件无法转成File，会报错，所以建议使用resource.getInputStream()转成流的方式读取文件内容。</p><p>​</p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>spring</tag>
-      
-      <tag>FileSystemResourceLoader</tag>
-      
-      <tag>ResourceLoader</tag>
-      
-      <tag>文件读取</tag>
       
     </tags>
     
@@ -3411,25 +3411,6 @@
   
   
   <entry>
-    <title>让网站支持markdown 语法，让代码高亮</title>
-    <link href="/2418605146.html"/>
-    <url>/2418605146.html</url>
-    
-    <content type="html"><![CDATA[<h1 id="让网站支持markdown-语法，让代码高亮"><a href="#让网站支持markdown-语法，让代码高亮" class="headerlink" title="让网站支持markdown 语法，让代码高亮"></a>让网站支持markdown 语法，让代码高亮</h1><hr><h2 id="需要引入的文件和作用"><a href="#需要引入的文件和作用" class="headerlink" title="需要引入的文件和作用"></a>需要引入的文件和作用</h2><table><thead><tr><th>文件</th><th>作用</th></tr></thead><tbody><tr><td>shoudowm.js</td><td>将markdown文本转成html</td></tr><tr><td>github-markdown.min.css</td><td>将转成html格式的文章美化</td></tr><tr><td>highlight.pack.js</td><td>将转成html格式的文本中的代码进行分析语言，转格式</td></tr><tr><td>highlight.css</td><td>美化文章中的代码段</td></tr></tbody></table><h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><pre><code class="hljs">假设文章是通过ajax 动态获取的，我用的axios。</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//创建showdowm转换器，将后台获取到的markdown文本转成html</span><br><span class="hljs-keyword">var</span> content = <span class="hljs-keyword">new</span> showdown.<span class="hljs-title class_">Converter</span>(&#123;<span class="hljs-attr">tables</span>: <span class="hljs-literal">true</span>&#125;).<span class="hljs-title function_">makeHtml</span>(value.<span class="hljs-property">content</span>);<br><br><span class="hljs-comment">//这里将转换成的html代码段插入页面中，相当于原生js的 innerHTML </span><br>self.<span class="hljs-property">content</span> = content；<br><span class="hljs-comment">//注意需要将插入点元素的class设置成‘markdown-body’，这样github-markdown.min.css才能渲染它</span><br><br><br></code></pre></td></tr></table></figure><pre><code class="hljs">理论上经过上面很简单的两步就可以在页面上看到格式良好的页面了，但是代码块没有高亮显示。</code></pre><h2 id="代码高亮"><a href="#代码高亮" class="headerlink" title="代码高亮"></a>代码高亮</h2><pre><code class="hljs">f12观察一下，代码块被包裹在&lt;per&gt;&lt;&gt;code&gt;代码&lt;/code&gt;&lt;/per&gt;中，我们需要另一个工具将其中的代码提取出来，分析出语言，添加不同的css样式</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//因为前面已经引入了 highlight.pack.js 和 highlight.css（这个css可以替换，或者自己修改出喜欢的风格）。</span><br>这里待页面文章插入成功执行<br><br><span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">&#x27;pre code&#x27;</span>).<span class="hljs-title function_">forEach</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">block</span>) &#123;<br>                    hljs.<span class="hljs-title function_">highlightBlock</span>(block);<br>                       &#125;);<br><br><span class="hljs-comment">//也就是选择出页面上的‘pre code’ 调用highlightBlock方法，这个方法由highlight 提供，全自动识别代码类型，高亮显示。高亮规则在css中可调节。</span><br><br><br></code></pre></td></tr></table></figure><h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><pre><code class="hljs">由于用的vue axios，动态加载的文章，所以在axios请求回调函数中进行操作。转换markdown文本，插入页面，调用页面高亮方法，一气呵成。但是vue插入页面是异步执行的，在运行代码高亮代码时页面上还不存在&#39;pre code&#39;,导致无法将代码高亮显示。这里有两个方法可供选择。1.setTimeout，延迟100毫秒再去操作2.使用vue的nextTick进行操作，nextTick用法自行查询，它的作用就是在页面的渲染完成后才会去执行里面的方法，这样就不会找不到元素了。</code></pre><h2 id="资源地址"><a href="#资源地址" class="headerlink" title="资源地址"></a>资源地址</h2><p><a href="https://github.com/showdownjs/showdown">Showdown Github</a></p><p><a href="https://github.com/sindresorhus/github-markdown-css#readme">Github-markdown-css Github</a></p><p><a href="https://highlightjs.org/">highlightjs官网,css也在官网能下载到</a></p><p><a href="https://github.com/highlightjs/highlight.js">highlightjs Github</a></p><pre><code class="hljs">因为世界上语言众多，如果全集中在一个css中，太大了。官网采用定制的方式，需要哪种语言的代码高亮，就选择哪种语言的。可以根据自己需求定制。定制完成后下载下来的文件style目录下有很多风格不同的代码css，都可以尝试一下。如果不满意可以自行修改</code></pre>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>markdown</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>springboot单元测试 ，spring项目单元测试</title>
     <link href="/3302245890.html"/>
     <url>/3302245890.html</url>
@@ -3441,6 +3422,25 @@
     <tags>
       
       <tag>springboot</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>让网站支持markdown 语法，让代码高亮</title>
+    <link href="/2418605146.html"/>
+    <url>/2418605146.html</url>
+    
+    <content type="html"><![CDATA[<h1 id="让网站支持markdown-语法，让代码高亮"><a href="#让网站支持markdown-语法，让代码高亮" class="headerlink" title="让网站支持markdown 语法，让代码高亮"></a>让网站支持markdown 语法，让代码高亮</h1><hr><h2 id="需要引入的文件和作用"><a href="#需要引入的文件和作用" class="headerlink" title="需要引入的文件和作用"></a>需要引入的文件和作用</h2><table><thead><tr><th>文件</th><th>作用</th></tr></thead><tbody><tr><td>shoudowm.js</td><td>将markdown文本转成html</td></tr><tr><td>github-markdown.min.css</td><td>将转成html格式的文章美化</td></tr><tr><td>highlight.pack.js</td><td>将转成html格式的文本中的代码进行分析语言，转格式</td></tr><tr><td>highlight.css</td><td>美化文章中的代码段</td></tr></tbody></table><h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><pre><code class="hljs">假设文章是通过ajax 动态获取的，我用的axios。</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//创建showdowm转换器，将后台获取到的markdown文本转成html</span><br><span class="hljs-keyword">var</span> content = <span class="hljs-keyword">new</span> showdown.<span class="hljs-title class_">Converter</span>(&#123;<span class="hljs-attr">tables</span>: <span class="hljs-literal">true</span>&#125;).<span class="hljs-title function_">makeHtml</span>(value.<span class="hljs-property">content</span>);<br><br><span class="hljs-comment">//这里将转换成的html代码段插入页面中，相当于原生js的 innerHTML </span><br>self.<span class="hljs-property">content</span> = content；<br><span class="hljs-comment">//注意需要将插入点元素的class设置成‘markdown-body’，这样github-markdown.min.css才能渲染它</span><br><br><br></code></pre></td></tr></table></figure><pre><code class="hljs">理论上经过上面很简单的两步就可以在页面上看到格式良好的页面了，但是代码块没有高亮显示。</code></pre><h2 id="代码高亮"><a href="#代码高亮" class="headerlink" title="代码高亮"></a>代码高亮</h2><pre><code class="hljs">f12观察一下，代码块被包裹在&lt;per&gt;&lt;&gt;code&gt;代码&lt;/code&gt;&lt;/per&gt;中，我们需要另一个工具将其中的代码提取出来，分析出语言，添加不同的css样式</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//因为前面已经引入了 highlight.pack.js 和 highlight.css（这个css可以替换，或者自己修改出喜欢的风格）。</span><br>这里待页面文章插入成功执行<br><br><span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">&#x27;pre code&#x27;</span>).<span class="hljs-title function_">forEach</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">block</span>) &#123;<br>                    hljs.<span class="hljs-title function_">highlightBlock</span>(block);<br>                       &#125;);<br><br><span class="hljs-comment">//也就是选择出页面上的‘pre code’ 调用highlightBlock方法，这个方法由highlight 提供，全自动识别代码类型，高亮显示。高亮规则在css中可调节。</span><br><br><br></code></pre></td></tr></table></figure><h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><pre><code class="hljs">由于用的vue axios，动态加载的文章，所以在axios请求回调函数中进行操作。转换markdown文本，插入页面，调用页面高亮方法，一气呵成。但是vue插入页面是异步执行的，在运行代码高亮代码时页面上还不存在&#39;pre code&#39;,导致无法将代码高亮显示。这里有两个方法可供选择。1.setTimeout，延迟100毫秒再去操作2.使用vue的nextTick进行操作，nextTick用法自行查询，它的作用就是在页面的渲染完成后才会去执行里面的方法，这样就不会找不到元素了。</code></pre><h2 id="资源地址"><a href="#资源地址" class="headerlink" title="资源地址"></a>资源地址</h2><p><a href="https://github.com/showdownjs/showdown">Showdown Github</a></p><p><a href="https://github.com/sindresorhus/github-markdown-css#readme">Github-markdown-css Github</a></p><p><a href="https://highlightjs.org/">highlightjs官网,css也在官网能下载到</a></p><p><a href="https://github.com/highlightjs/highlight.js">highlightjs Github</a></p><pre><code class="hljs">因为世界上语言众多，如果全集中在一个css中，太大了。官网采用定制的方式，需要哪种语言的代码高亮，就选择哪种语言的。可以根据自己需求定制。定制完成后下载下来的文件style目录下有很多风格不同的代码css，都可以尝试一下。如果不满意可以自行修改</code></pre>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>markdown</tag>
       
     </tags>
     
