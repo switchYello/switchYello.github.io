@@ -2,24 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://www.huangchaoyu.com/1253497344.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2055878545.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/2141418386.html</loc>
     
     <lastmod>2025-10-11</lastmod>
@@ -74,15 +56,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/compose/clash.json</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/compose/iyuu.json</loc>
     
     <lastmod>2025-10-11</lastmod>
@@ -92,7 +65,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/compose/tinymediamanager.json</loc>
+    <loc>https://www.huangchaoyu.com/compose/clash.json</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -101,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/3264249864.html</loc>
+    <loc>https://www.huangchaoyu.com/compose/tinymediamanager.json</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -227,6 +200,15 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/2723250432.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/3943455212.html</loc>
     
     <lastmod>2025-10-11</lastmod>
@@ -263,7 +245,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2723250432.html</loc>
+    <loc>https://www.huangchaoyu.com/1253497344.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -272,7 +254,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/1388974441.html</loc>
+    <loc>https://www.huangchaoyu.com/2055878545.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -452,88 +434,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/3977069685.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/4217255769.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/1448015480.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/300000547.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2239800896.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/305128508.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/1932871321.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/1893635003.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/3448019156.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/1013025642.html</loc>
+    <loc>https://www.huangchaoyu.com/3264249864.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -606,6 +507,105 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/2591061718.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1388974441.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/3977069685.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/4217255769.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1448015480.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2239800896.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/300000547.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/305128508.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1932871321.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1893635003.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/3448019156.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1013025642.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -749,51 +749,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/602459694.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/3106064082.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/866610002.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2868684685.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/3883934631.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/4078226302.html</loc>
     
     <lastmod>2025-10-11</lastmod>
@@ -902,78 +857,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/4271254320.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/3012547788.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/3460669771.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/1305379791.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2839707912.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2519329010.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/736025888.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2275841253.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/3222672442.html</loc>
     
     <lastmod>2025-10-11</lastmod>
@@ -1037,7 +920,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2527058159.html</loc>
+    <loc>https://www.huangchaoyu.com/185232587.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -1046,7 +929,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/185232587.html</loc>
+    <loc>https://www.huangchaoyu.com/2527058159.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -1064,7 +947,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/2246394244.html</loc>
+    <loc>https://www.huangchaoyu.com/602459694.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -1073,7 +956,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/3232883387.html</loc>
+    <loc>https://www.huangchaoyu.com/3106064082.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -1082,7 +965,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/602288951.html</loc>
+    <loc>https://www.huangchaoyu.com/866610002.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -1091,7 +974,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/1155163571.html</loc>
+    <loc>https://www.huangchaoyu.com/2868684685.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -1100,7 +983,79 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/4237278774.html</loc>
+    <loc>https://www.huangchaoyu.com/3883934631.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/4271254320.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/3012547788.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1305379791.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/3460669771.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2839707912.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2519329010.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/736025888.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2275841253.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -1244,6 +1199,186 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/1971814338.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/4018746505.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/4223803474.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/3472592907.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2860358226.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/3441268053.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/815345507.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1760204374.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/4248451535.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/3966182547.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/4227925025.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2246394244.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/3232883387.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/602288951.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1155163571.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/4237278774.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/2901793364.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/1981756926.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/106157645.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/4243760172.html</loc>
+    
+    <lastmod>2025-10-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/3302245890.html</loc>
     
     <lastmod>2025-10-11</lastmod>
@@ -1362,141 +1497,6 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/196472165.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/1971814338.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/4018746505.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/4223803474.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/3472592907.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2860358226.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/3441268053.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/815345507.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/1760204374.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/4248451535.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/3966182547.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/4227925025.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/2901793364.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/1981756926.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/106157645.html</loc>
-    
-    <lastmod>2025-10-11</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/4243760172.html</loc>
     
     <lastmod>2025-10-11</lastmod>
     
@@ -1738,343 +1738,7 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/%E8%B7%A8%E5%9F%9F/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/usb%E5%85%B1%E4%BA%AB%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/HttpMessageConverter/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/json/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/h2/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/bbr/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/maven%E6%89%93%E5%8C%85miniJar/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/rc4/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/Shadowsocks/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/swagger/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/springboot-%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/window/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/Microsoft-HTTPAPI2-0/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/80%E7%AB%AF%E5%8F%A3%E8%A2%AB%E5%8D%A0%E7%94%A8/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/ChannelHandler/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E4%B8%8A%E6%B5%B7%E9%A2%86%E5%8F%96%E7%A4%BE%E4%BF%9D%E5%8D%A1/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/spring-Xml%E9%85%8D%E7%BD%AE%E6%9E%9A%E4%B8%BE/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/CopyOnWriteArrayList/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/tags/spring/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/websocket/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/Bean%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E5%85%A8%E5%B1%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/logback/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/git/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/git-rebase/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/csrf/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/logoutFilter/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/AuthenticationManager/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/maven%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/maven%E4%BE%9D%E8%B5%96%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E7%9B%91%E5%90%AC%E5%99%A8%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/EventListerer%E6%B3%A8%E8%A7%A3/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/springboot%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/springcloud/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/springbootActuator/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/springbootadmin/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/jwt/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/springmvc/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/springGateway/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E4%BA%8B%E5%8A%A1/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/loadbalance/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/vscode/</loc>
     <lastmod>2025-10-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2089,6 +1753,13 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/dubbo/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/git/</loc>
     <lastmod>2025-10-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2459,6 +2130,27 @@
   </url>
   
   <url>
+    <loc>https://www.huangchaoyu.com/tags/%E6%96%90%E8%AE%AFN1/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/debian/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/armbian/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.huangchaoyu.com/tags/samba/</loc>
     <lastmod>2025-10-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -2522,27 +2214,6 @@
   </url>
   
   <url>
-    <loc>https://www.huangchaoyu.com/tags/%E6%96%90%E8%AE%AFN1/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/debian/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.huangchaoyu.com/tags/armbian/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.huangchaoyu.com/tags/dns/</loc>
     <lastmod>2025-10-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -2558,6 +2229,335 @@
   
   <url>
     <loc>https://www.huangchaoyu.com/tags/%E6%80%9D%E8%80%83/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E8%B7%A8%E5%9F%9F/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/usb%E5%85%B1%E4%BA%AB%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/HttpMessageConverter/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/json/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/h2/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/bbr/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/maven%E6%89%93%E5%8C%85miniJar/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/rc4/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/Shadowsocks/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/swagger/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/springboot-%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/window/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/Microsoft-HTTPAPI2-0/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/80%E7%AB%AF%E5%8F%A3%E8%A2%AB%E5%8D%A0%E7%94%A8/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/ChannelHandler/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E4%B8%8A%E6%B5%B7%E9%A2%86%E5%8F%96%E7%A4%BE%E4%BF%9D%E5%8D%A1/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/spring-Xml%E9%85%8D%E7%BD%AE%E6%9E%9A%E4%B8%BE/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/CopyOnWriteArrayList/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/websocket/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/Bean%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E5%85%A8%E5%B1%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/logback/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/git-rebase/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/csrf/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/logoutFilter/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/AuthenticationManager/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/maven%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/maven%E4%BE%9D%E8%B5%96%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E7%9B%91%E5%90%AC%E5%99%A8%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/EventListerer%E6%B3%A8%E8%A7%A3/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/springboot%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/springcloud/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/springbootActuator/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/springbootadmin/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/jwt/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/springmvc/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/springGateway/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/loadbalance/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E4%BA%8B%E5%8A%A1/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.huangchaoyu.com/tags/vscode/</loc>
     <lastmod>2025-10-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
