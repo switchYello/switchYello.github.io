@@ -27,7 +27,7 @@
 <meta property="og:description" content="mysql使用updatetime作为乐观锁本文记录一下，我是用mysql的updatetime字段作为乐观锁版本号遇到的问题。 乐观锁首先标准的乐观锁，应该存在一个version字段，每次更新时人工自增此字段，但是这样每次更新时都要多维护一个字段很麻烦。所以我使用数据库中的update_time字段作为乐观锁的version使用，将update_time字段设为每次有更新时自动刷新，使用此字段当">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-06-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-08-17T05:35:36.441Z">
+<meta property="article:modified_time" content="2025-10-11T09:09:45.439Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="mysql">
 <meta property="article:tag" content="bug">
@@ -305,7 +305,7 @@
                 <h1 id="mysql使用updatetime作为乐观锁"><a href="#mysql使用updatetime作为乐观锁" class="headerlink" title="mysql使用updatetime作为乐观锁"></a>mysql使用updatetime作为乐观锁</h1><p>本文记录一下，我是用mysql的updatetime字段作为乐观锁版本号遇到的问题。</p>
 <h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><p>首先标准的乐观锁，应该存在一个version字段，每次更新时人工自增此字段，但是这样每次更新时都要多维护一个字段很麻烦。<br>所以我使用数据库中的update_time字段作为乐观锁的version使用，将update_time字段设为每次有更新时自动刷新，使用此字段当作version使用，免去了每次自己维度版本号的问题。</p>
 <p>如下面sql:</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">`update_time` datetime <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> COMMENT <span class="hljs-string">&#x27;更新时间&#x27;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">`update_time` datetime <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> COMMENT <span class="hljs-string">&#x27;更新时间&#x27;</span><br></code></pre></td></tr></table></figure>
 
 <p>使用乐观锁时是这样的:</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">update</span> <span class="hljs-keyword">table</span> <span class="hljs-keyword">set</span>  field <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;field&#x27;</span> <span class="hljs-keyword">where</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> update_time <span class="hljs-operator">=</span> update_time<br></code></pre></td></tr></table></figure>
@@ -314,7 +314,7 @@
 <h2 id="精度问题"><a href="#精度问题" class="headerlink" title="精度问题"></a>精度问题</h2><p>但是这又引入了新的问题，默认情况下datetime的精度是秒级的，如果同一秒的两次更新，乐观锁是不生效的。</p>
 <p>为了解决这个问题，我将update_time字段的精度设置为小数点后6位，缩小精度后，乐观锁只有在同时0.000001秒内同时执行才会失效。<br>这样改动后在我需要的场景下，是可以满足要求的，一方面是因为与数据库的网络交互本身就比0.000001秒长，另一方面我的场景不需要乐观锁百分百生效</p>
 <p>如下是我使用了的sql更新表结构。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">`update_time` datetime(<span class="hljs-number">6</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span>(<span class="hljs-number">6</span>) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span>(<span class="hljs-number">6</span>) COMMENT <span class="hljs-string">&#x27;更新时间&#x27;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">`update_time` datetime(<span class="hljs-number">6</span>) <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span>(<span class="hljs-number">6</span>) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span>(<span class="hljs-number">6</span>) COMMENT <span class="hljs-string">&#x27;更新时间&#x27;</span><br></code></pre></td></tr></table></figure>
 
 
 <p>改动后手动更新一条数据，发现update_time字段果然保留了小数点后6位，于是我将代码部署到测试环境进行测试。</p>
@@ -324,7 +324,7 @@
 <p>查询数据，然后再更新竟然不行，更新失败了？？？</p>
 <h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>其实原因是，java里面的Date存储的是Long型的毫秒值，精度只到毫秒单位，而数据库里面的update_time是小数点后6位，已经到纳秒级别了，所以从数据库查询数据时，毫秒后面的被忽略了。<br>所以更新的时候才导致无法更新。</p>
 <p>解决这个问题的话，将数据库update_time精度设为小数点后3位即可。毫秒级别也已经很小了，毕竟一次数据库网络传输也要1-20毫秒</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">`update_time` datetime(<span class="hljs-number">3</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span>(<span class="hljs-number">3</span>) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span>(<span class="hljs-number">3</span>) COMMENT <span class="hljs-string">&#x27;更新时间&#x27;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">`update_time` datetime(<span class="hljs-number">3</span>) <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span>(<span class="hljs-number">3</span>) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span>(<span class="hljs-number">3</span>) COMMENT <span class="hljs-string">&#x27;更新时间&#x27;</span><br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -372,7 +372,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2024年8月17日</div>
+          <div>2025年10月11日</div>
         </div>
       
       
@@ -403,9 +403,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/1894068305.html" title="groovy闭包 list传参">
+                      <a href="/875549236.html" title="mybatis-generator多个数据库存在相同的表">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">groovy闭包 list传参</span>
+                        <span class="hidden-mobile">mybatis-generator多个数据库存在相同的表</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

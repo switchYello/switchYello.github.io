@@ -27,7 +27,7 @@
 <meta property="og:description" content="docker使用macvlan获取独立ipdocker启动的容器会获取一个docker分配的内网ip，一般是172开头。现在想让容器内获取一个与宿主机同级别的ip，在路由器看来是两个独立的设备。 这里需要使用linux的 macvlan功能，他可以把物理网卡虚拟出来一个，让其拥有独立的mac地址，在路由器看来就是独立的设备。 docker macvlan的官方文档 操作 使用docker命令创建一">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-05-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-05-27T03:49:23.973Z">
+<meta property="article:modified_time" content="2025-10-11T09:09:45.440Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="docker">
@@ -330,7 +330,7 @@
 <h2 id="拆除"><a href="#拆除" class="headerlink" title="拆除"></a>拆除</h2><p>不想要了把上面的配置都还原。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">移除宿主机的macvlan</span><br>sudo ip link set macvlan-shim down  # 下线接口<br>sudo ip addr delete 192.168.1.210/32 dev macvlan-shim #移除ip<br>sudo ip link delete macvlan-shim  #移除macvlan<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">移除docker的macvlan</span><br>docker stop &lt;xxx&gt;  # 停止容器<br>docker network ls  #查看网络接口<br>docker network rm macvlan-net #移除docker的macvlan<br></code></pre></td></tr></table></figure>
 
-<h2 id="docker-compose配置"><a href="#docker-compose配置" class="headerlink" title="docker compose配置"></a>docker compose配置</h2><p>使用compose方式配置network，可以按照下面模板做修改</p>
+<h2 id="docker-compose配置"><a href="#docker-compose配置" class="headerlink" title="docker compose配置"></a>docker compose配置</h2><p>使用compose方式配置network，可以按照下面模板做修改。</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">my_debian:</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">my_debian</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">debian:latest</span><br>    <span class="hljs-attr">privileged:</span> <span class="hljs-literal">true</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span><br>    <span class="hljs-attr">tty:</span> <span class="hljs-literal">true</span><br>    <span class="hljs-attr">networks:</span><br>      <span class="hljs-attr">macvlan_network:</span><br>        <span class="hljs-attr">ipv4_address:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.200</span> <br><span class="hljs-attr">networks:</span><br>  <span class="hljs-attr">macvlan_network:</span><br>    <span class="hljs-attr">driver:</span> <span class="hljs-string">macvlan</span><br>    <span class="hljs-attr">driver_opts:</span><br>      <span class="hljs-attr">parent:</span> <span class="hljs-string">enp2s0</span><br>    <span class="hljs-attr">ipam:</span><br>      <span class="hljs-attr">config:</span><br>        <span class="hljs-bullet">-</span> <span class="hljs-attr">subnet:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.0</span><span class="hljs-string">/24</span><br>          <span class="hljs-attr">gateway:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.1</span><br></code></pre></td></tr></table></figure>
 
                 
@@ -377,7 +377,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年5月27日</div>
+          <div>2025年10月11日</div>
         </div>
       
       
@@ -407,6 +407,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2266882737.html" title="rclone和alist文件加密问题">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">rclone和alist文件加密问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
