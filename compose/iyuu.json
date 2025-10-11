@@ -1,1 +1,0 @@
-{"services":{"iyuuplus-dev":{"stdin_open":true,"tty":true,"environment":["PUID=1000","PGID=1000"],"volumes":["./iyuu:/iyuu","./data:/data","/opt/docker/qbittorrent/config/qBittorrent/BT_backup:/torr/qb_torrents","/opt/docker/transmission/config/torrents:/torr/tr_torrents"],"ports":["8780:8780"],"container_name":"IYUUPlus","restart":"always","image":"iyuucn/iyuuplus-dev:latest"}}}

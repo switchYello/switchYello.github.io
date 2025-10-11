@@ -1,1 +1,0 @@
-{"services":{"clash":{"container_name":"clash","image":"debian:latest","privileged":true,"restart":"unless-stopped","tty":true,"networks":{"macvlan_network":{"ipv4_address":"192.168.1.200"}}}},"networks":{"macvlan_network":{"driver":"macvlan","driver_opts":{"parent":"enp2s0"},"ipam":{"config":[{"subnet":"192.168.1.0/24","gateway":"192.168.1.1"}]}}}}
