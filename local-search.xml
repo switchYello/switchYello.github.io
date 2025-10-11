@@ -4,33 +4,6 @@
   
   
   <entry>
-    <title>rclone和alist文件加密问题</title>
-    <link href="/2266882737.html"/>
-    <url>/2266882737.html</url>
-    
-    <content type="html"><![CDATA[<h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>本地的文件或者nas上的文件希望上传到网盘上，以防止本地磁盘损坏造成的数据丢失。同时又不想让网盘能够看到我们私有的照片，因此这里用到了rclone或者alist的文件加密功能。</p><h3 id="2-描述"><a href="#2-描述" class="headerlink" title="2.描述"></a>2.描述</h3><p>alist 提供了网盘挂载能力，他可以将支持的网盘挂载为 webdav协议，这样我们就可以脱离官方的客户端很方便的操纵网盘的文件了。<br>rclone 是remote clone的意思，他的功能挺多的，我通过rclone sync命令行可以让本地文件和远程文件(支持webdav)进行同步，以达到备份的目的。<br>同时rclone支持在与远程连接之间增加一层加密管道，原始文件写入管道自动加密，文件从管道读出自动解密。这样就能让我们的数据在云端处于加密状态，本次访问时可以实时解密，操作起来就像是没有加密一样，十分的方便。</p><p>rclone + alist 组合使用即很方便的将文件从本地加密同步到网盘。</p><h3 id="3-加密"><a href="#3-加密" class="headerlink" title="3.加密"></a>3.加密</h3><blockquote><p>下面是我没弄明白的地方，虽然我按照这么操作实现了目的，但是我并不知原理，后面我有时间再研究下。</p></blockquote><p>新版的alist同样也提供了加密的功能，并且借鉴了rclone的做法，与rclone使用相同的算法。也就是说在密码一致的情况下，rclone加密的文件alist能解密，alist加密的文件rclone能解密，使用起来十分的方便。</p><p>但是alist对密码做了处理，直接拿rclone的密文配置到alist中是不行的，或者相同的明文密码配置到alist中也不行。我参考了<a href="https://github.com/alist-org/alist/issues/5544">github</a>上这个提问。按照其中说的配置后可以生效。</p><h4 id="3-1-具体操作"><a href="#3-1-具体操作" class="headerlink" title="3.1 具体操作"></a>3.1 具体操作</h4><ol><li>查看rclone配置的密码和盐，文件在用户目录的.config下，其中的密码和密码2就是我们需要的的密码和盐，是以密文形式存储的。</li></ol><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd /home/user/.config/rclone/<br><br>user@debian:~/.config/rclone$ cat rclone.conf <br>[kuake_se_wrap]   # 夸克网盘的加密包装器<br>type = crypt<br>remote = kuake:kuake_se_wrap<br>filename_encryption = off<br>directory_name_encryption = false<br>password = 密码<br>password2 = 盐<br><br></code></pre></td></tr></table></figure><ol start="2"><li>配置alist<br>将rclone的密码和盐前面增加 <code>___Obfuscated___</code>前缀粘贴到alist网页配置端的密码和盐位置上就可以了。我猜测是alist检测到 <code>___Obfuscated___</code>前缀就直接保存，而没有前缀的会进行加密。<br>进过我的验证，密码直接输入原始的明文密码或者前缀+rclone密文密码都可以。</li></ol><p><img src="/img/in/2024-08-26-rclone%E5%92%8Calist%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E9%97%AE%E9%A2%98/1724605012416.png" alt="1724605012416"></p><h4 id="3-2-一些资料"><a href="#3-2-一些资料" class="headerlink" title="3.2 一些资料"></a>3.2 一些资料</h4><p>(rclone的加密部分的文档)[<a href="https://rclone.org/crypt/]">https://rclone.org/crypt/]</a></p>]]></content>
-    
-    
-    <categories>
-      
-      <category>搞事情</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>rclone</tag>
-      
-      <tag>alist</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>ss-rust安装</title>
     <link href="/3256892802.html"/>
     <url>/3256892802.html</url>
@@ -329,9 +302,9 @@
     
     <tags>
       
-      <tag>bug</tag>
-      
       <tag>netty</tag>
+      
+      <tag>bug</tag>
       
       <tag>project-reactor</tag>
       
@@ -359,6 +332,33 @@
     <tags>
       
       <tag>hexo</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>rclone和alist文件加密问题</title>
+    <link href="/2266882737.html"/>
+    <url>/2266882737.html</url>
+    
+    <content type="html"><![CDATA[<h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h3><p>本地的文件或者nas上的文件希望上传到网盘上，以防止本地磁盘损坏造成的数据丢失。同时又不想让网盘能够看到我们私有的照片，因此这里用到了rclone或者alist的文件加密功能。</p><h3 id="2-描述"><a href="#2-描述" class="headerlink" title="2.描述"></a>2.描述</h3><p>alist 提供了网盘挂载能力，他可以将支持的网盘挂载为 webdav协议，这样我们就可以脱离官方的客户端很方便的操纵网盘的文件了。<br>rclone 是remote clone的意思，他的功能挺多的，我通过rclone sync命令行可以让本地文件和远程文件(支持webdav)进行同步，以达到备份的目的。<br>同时rclone支持在与远程连接之间增加一层加密管道，原始文件写入管道自动加密，文件从管道读出自动解密。这样就能让我们的数据在云端处于加密状态，本次访问时可以实时解密，操作起来就像是没有加密一样，十分的方便。</p><p>rclone + alist 组合使用即很方便的将文件从本地加密同步到网盘。</p><h3 id="3-加密"><a href="#3-加密" class="headerlink" title="3.加密"></a>3.加密</h3><blockquote><p>下面是我没弄明白的地方，虽然我按照这么操作实现了目的，但是我并不知原理，后面我有时间再研究下。</p></blockquote><p>新版的alist同样也提供了加密的功能，并且借鉴了rclone的做法，与rclone使用相同的算法。也就是说在密码一致的情况下，rclone加密的文件alist能解密，alist加密的文件rclone能解密，使用起来十分的方便。</p><p>但是alist对密码做了处理，直接拿rclone的密文配置到alist中是不行的，或者相同的明文密码配置到alist中也不行。我参考了<a href="https://github.com/alist-org/alist/issues/5544">github</a>上这个提问。按照其中说的配置后可以生效。</p><h4 id="3-1-具体操作"><a href="#3-1-具体操作" class="headerlink" title="3.1 具体操作"></a>3.1 具体操作</h4><ol><li>查看rclone配置的密码和盐，文件在用户目录的.config下，其中的密码和密码2就是我们需要的的密码和盐，是以密文形式存储的。</li></ol><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd /home/user/.config/rclone/<br><br>user@debian:~/.config/rclone$ cat rclone.conf <br>[kuake_se_wrap]   # 夸克网盘的加密包装器<br>type = crypt<br>remote = kuake:kuake_se_wrap<br>filename_encryption = off<br>directory_name_encryption = false<br>password = 密码<br>password2 = 盐<br><br></code></pre></td></tr></table></figure><ol start="2"><li>配置alist<br>将rclone的密码和盐前面增加 <code>___Obfuscated___</code>前缀粘贴到alist网页配置端的密码和盐位置上就可以了。我猜测是alist检测到 <code>___Obfuscated___</code>前缀就直接保存，而没有前缀的会进行加密。<br>进过我的验证，密码直接输入原始的明文密码或者前缀+rclone密文密码都可以。</li></ol><p><img src="/img/in/2024-08-26-rclone%E5%92%8Calist%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E9%97%AE%E9%A2%98/1724605012416.png" alt="1724605012416"></p><h4 id="3-2-一些资料"><a href="#3-2-一些资料" class="headerlink" title="3.2 一些资料"></a>3.2 一些资料</h4><p>(rclone的加密部分的文档)[<a href="https://rclone.org/crypt/]">https://rclone.org/crypt/]</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>搞事情</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>rclone</tag>
+      
+      <tag>alist</tag>
       
     </tags>
     
@@ -634,9 +634,9 @@
       
       <tag>springboot</tag>
       
-      <tag>技巧</tag>
-      
       <tag>spring</tag>
+      
+      <tag>技巧</tag>
       
     </tags>
     
@@ -797,9 +797,9 @@
       
       <tag>mysql</tag>
       
-      <tag>mybatis</tag>
-      
       <tag>技巧</tag>
+      
+      <tag>mybatis</tag>
       
       <tag>mysql流式查询技巧</tag>
       
@@ -923,29 +923,6 @@
   
   
   <entry>
-    <title>mybatis-generator多个数据库存在相同的表</title>
-    <link href="/875549236.html"/>
-    <url>/875549236.html</url>
-    
-    <content type="html"><![CDATA[<h1 id="mybatis-generator多个数据库存在相同的表"><a href="#mybatis-generator多个数据库存在相同的表" class="headerlink" title="mybatis-generator多个数据库存在相同的表"></a>mybatis-generator多个数据库存在相同的表</h1><p>​</p><h2 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h2><p>使用mybatis时难免会使用其提供的mybatis-generator生成默认的xml和实体类，今天我发现如果本地安装一个mysql，里面创建两个不同的数据库，而他们有相同的表，生成的实体类中可能是随机的。<br>比如我有一个数据库 ‘a’ 里面有一张表 ‘user’，我现在在建一个库‘b’，里面也有一张表‘user’，这样我生成代码时，虽然jdbcUrl配置的是a库，但生成的User实体类可能是b库里面的。</p><h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><p>查看其源码，下面是核心方法<br>org.mybatis.generator.internal.db.DatabaseIntrospector#getColumns</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> Map&lt;ActualTableName, List&lt;IntrospectedColumn&gt;&gt; <span class="hljs-title function_">getColumns</span><span class="hljs-params">(</span><br><span class="hljs-params">        TableConfiguration tc)</span> <span class="hljs-keyword">throws</span> SQLException &#123;<br>    String localCatalog;<br>    String localSchema;<br>    String localTableName;<br><br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">delimitIdentifiers</span> <span class="hljs-operator">=</span> tc.isDelimitIdentifiers()<br>            || stringContainsSpace(tc.getCatalog())<br>            || stringContainsSpace(tc.getSchema())<br>            || stringContainsSpace(tc.getTableName());<br><br>    <span class="hljs-keyword">if</span> (delimitIdentifiers) &#123;<br>        localCatalog = tc.getCatalog();<br>        localSchema = tc.getSchema();<br>        localTableName = tc.getTableName();<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (databaseMetaData.storesLowerCaseIdentifiers()) &#123;<br>        localCatalog = tc.getCatalog() == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : tc.getCatalog()<br>                .toLowerCase();<br>        localSchema = tc.getSchema() == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : tc.getSchema()<br>                .toLowerCase();<br>        localTableName = tc.getTableName().toLowerCase();<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (databaseMetaData.storesUpperCaseIdentifiers()) &#123;<br>        localCatalog = tc.getCatalog() == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : tc.getCatalog()<br>                .toUpperCase();<br>        localSchema = tc.getSchema() == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : tc.getSchema()<br>                .toUpperCase();<br>        localTableName = tc.getTableName().toUpperCase();<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        localCatalog = tc.getCatalog();<br>        localSchema = tc.getSchema();<br>        localTableName = tc.getTableName();<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (tc.isWildcardEscapingEnabled()) &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">escapeString</span> <span class="hljs-operator">=</span> databaseMetaData.getSearchStringEscape();<br><br>        <span class="hljs-keyword">if</span> (localSchema != <span class="hljs-literal">null</span>) &#123;<br>            localSchema = escapeName(localSchema, escapeString);<br>        &#125;<br><br>        localTableName = escapeName(localTableName, escapeString);<br>    &#125;<br><br>    Map&lt;ActualTableName, List&lt;IntrospectedColumn&gt;&gt; answer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><br>    <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">fullTableName</span> <span class="hljs-operator">=</span> composeFullyQualifiedTableName(localCatalog, localSchema,<br>                        localTableName, <span class="hljs-string">&#x27;.&#x27;</span>);<br>        logger.debug(getString(<span class="hljs-string">&quot;Tracing.1&quot;</span>, fullTableName)); <span class="hljs-comment">//$NON-NLS-1$</span><br>    &#125;<br><br>    <span class="hljs-type">ResultSet</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> databaseMetaData.getColumns(localCatalog, localSchema,<br>            localTableName, <span class="hljs-string">&quot;%&quot;</span>); <span class="hljs-comment">//$NON-NLS-1$</span><br><br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">supportsIsAutoIncrement</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">supportsIsGeneratedColumn</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-type">ResultSetMetaData</span> <span class="hljs-variable">rsmd</span> <span class="hljs-operator">=</span> rs.getMetaData();<br>    <span class="hljs-type">int</span> <span class="hljs-variable">colCount</span> <span class="hljs-operator">=</span> rsmd.getColumnCount();<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; i &lt;= colCount; i++) &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;IS_AUTOINCREMENT&quot;</span>.equals(rsmd.getColumnName(i))) &#123; <span class="hljs-comment">//$NON-NLS-1$</span><br>            supportsIsAutoIncrement = <span class="hljs-literal">true</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;IS_GENERATEDCOLUMN&quot;</span>.equals(rsmd.getColumnName(i))) &#123; <span class="hljs-comment">//$NON-NLS-1$</span><br>            supportsIsGeneratedColumn = <span class="hljs-literal">true</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">while</span> (rs.next()) &#123;<br>        <span class="hljs-type">IntrospectedColumn</span> <span class="hljs-variable">introspectedColumn</span> <span class="hljs-operator">=</span> ObjectFactory<br>                .createIntrospectedColumn(context);<br><br>        introspectedColumn.setTableAlias(tc.getAlias());<br>        introspectedColumn.setJdbcType(rs.getInt(<span class="hljs-string">&quot;DATA_TYPE&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setActualTypeName(rs.getString(<span class="hljs-string">&quot;TYPE_NAME&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setLength(rs.getInt(<span class="hljs-string">&quot;COLUMN_SIZE&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setActualColumnName(rs.getString(<span class="hljs-string">&quot;COLUMN_NAME&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn<br>                .setNullable(rs.getInt(<span class="hljs-string">&quot;NULLABLE&quot;</span>) == DatabaseMetaData.columnNullable); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setScale(rs.getInt(<span class="hljs-string">&quot;DECIMAL_DIGITS&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setRemarks(rs.getString(<span class="hljs-string">&quot;REMARKS&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setDefaultValue(rs.getString(<span class="hljs-string">&quot;COLUMN_DEF&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br><br>        <span class="hljs-keyword">if</span> (supportsIsAutoIncrement) &#123;<br>            introspectedColumn.setAutoIncrement(<br>                    <span class="hljs-string">&quot;YES&quot;</span>.equals(rs.getString(<span class="hljs-string">&quot;IS_AUTOINCREMENT&quot;</span>))); <span class="hljs-comment">//$NON-NLS-1$ //$NON-NLS-2$</span><br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (supportsIsGeneratedColumn) &#123;<br>            introspectedColumn.setGeneratedColumn(<br>                    <span class="hljs-string">&quot;YES&quot;</span>.equals(rs.getString(<span class="hljs-string">&quot;IS_GENERATEDCOLUMN&quot;</span>))); <span class="hljs-comment">//$NON-NLS-1$ //$NON-NLS-2$</span><br>        &#125;<br><br>        <span class="hljs-type">ActualTableName</span> <span class="hljs-variable">atn</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ActualTableName</span>(<br>                rs.getString(<span class="hljs-string">&quot;TABLE_CAT&quot;</span>), <span class="hljs-comment">//$NON-NLS-1$</span><br>                rs.getString(<span class="hljs-string">&quot;TABLE_SCHEM&quot;</span>), <span class="hljs-comment">//$NON-NLS-1$</span><br>                rs.getString(<span class="hljs-string">&quot;TABLE_NAME&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br><br>        List&lt;IntrospectedColumn&gt; columns = answer.computeIfAbsent(atn, k -&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;());<br><br>        columns.add(introspectedColumn);<br><br>        <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>            logger.debug(getString(<br>                    <span class="hljs-string">&quot;Tracing.2&quot;</span>, <span class="hljs-comment">//$NON-NLS-1$</span><br>                    introspectedColumn.getActualColumnName(), Integer<br>                            .toString(introspectedColumn.getJdbcType()),<br>                    atn.toString()));<br>        &#125;<br>    &#125;<br><br>    closeResultSet(rs);<br><br>    <span class="hljs-keyword">if</span> (answer.size() &gt; <span class="hljs-number">1</span><br>            &amp;&amp; !stringContainsSQLWildcard(localSchema)<br>            &amp;&amp; !stringContainsSQLWildcard(localTableName)) &#123;<br>        <span class="hljs-comment">// issue a warning if there is more than one table and</span><br>        <span class="hljs-comment">// no wildcards were used</span><br>        <span class="hljs-type">ActualTableName</span> <span class="hljs-variable">inputAtn</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ActualTableName</span>(tc.getCatalog(), tc<br>                .getSchema(), tc.getTableName());<br><br>        <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">sb</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>();<br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">comma</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>        <span class="hljs-keyword">for</span> (ActualTableName atn : answer.keySet()) &#123;<br>            <span class="hljs-keyword">if</span> (comma) &#123;<br>                sb.append(<span class="hljs-string">&#x27;,&#x27;</span>);<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                comma = <span class="hljs-literal">true</span>;<br>            &#125;<br>            sb.append(atn.toString());<br>        &#125;<br><br>        warnings.add(getString(<span class="hljs-string">&quot;Warning.25&quot;</span>, <span class="hljs-comment">//$NON-NLS-1$</span><br>                inputAtn.toString(), sb.toString()));<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> answer;<br>&#125;<br><br></code></pre></td></tr></table></figure><p>上面方法内容有点多，核心逻辑就是</p><ol><li><p>根据CataLog，Schema，TableName三个属性从databaseMetaData里面获取ResultSet。</p><p> ResultSet rs &#x3D; databaseMetaData.getColumns(localCatalog, localSchema,localTableName, “%”);</p></li><li><p>遍历上面的结果集，按照结果集返回值里面的 TABLE_CAT ， TABLE_SCHEM  ， TABLE_NAME 存入到answer里。</p><p> ActualTableName atn &#x3D; new ActualTableName(<br>             rs.getString(“TABLE_CAT”), &#x2F;&#x2F;$NON-NLS-1$<br>             rs.getString(“TABLE_SCHEM”), &#x2F;&#x2F;$NON-NLS-1$<br>             rs.getString(“TABLE_NAME”)); &#x2F;&#x2F;$NON-NLS-1$</p></li><li><p>返回 answer对象。</p><p> 因为我们我先前没有指定catalog 和 scheme，这里的REsultSet里会获取a库和b库中的user表，即两张表都会返回。</p></li></ol><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>添加 <property name="nullCatalogMeansCurrent" value="true"/> 属性，不要从metadata中获取其他数据库的表</p><p>改动前</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">jdbcConnection</span> <span class="hljs-attr">driverClass</span>=<span class="hljs-string">&quot;com.mysql.jdbc.Driver&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">connectionURL</span>=<span class="hljs-string">&quot;$&#123;jdbc.url&#125;&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">userId</span>=<span class="hljs-string">&quot;$&#123;jdbc.username&#125;&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">password</span>=<span class="hljs-string">&quot;$&#123;jdbc.password&#125;&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">jdbcConnection</span>&gt;</span><br><br></code></pre></td></tr></table></figure><p>改动后</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">jdbcConnection</span> <span class="hljs-attr">driverClass</span>=<span class="hljs-string">&quot;com.mysql.jdbc.Driver&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">connectionURL</span>=<span class="hljs-string">&quot;$&#123;jdbc.url&#125;&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">userId</span>=<span class="hljs-string">&quot;$&#123;jdbc.username&#125;&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">password</span>=<span class="hljs-string">&quot;$&#123;jdbc.password&#125;&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;nullCatalogMeansCurrent&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">jdbcConnection</span>&gt;</span><br></code></pre></td></tr></table></figure><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://mybatis.org/generator/usage/mysql.html">https://mybatis.org/generator/usage/mysql.html</a></p><p><a href="https://github.com/mybatis/generator/issues/622">https://github.com/mybatis/generator/issues/622</a></p>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>mybatis</tag>
-      
-      <tag>bug</tag>
-      
-      <tag>generator</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>groovy闭包 list传参</title>
     <link href="/1894068305.html"/>
     <url>/1894068305.html</url>
@@ -967,6 +944,29 @@
   
   
   <entry>
+    <title>mybatis-generator多个数据库存在相同的表</title>
+    <link href="/875549236.html"/>
+    <url>/875549236.html</url>
+    
+    <content type="html"><![CDATA[<h1 id="mybatis-generator多个数据库存在相同的表"><a href="#mybatis-generator多个数据库存在相同的表" class="headerlink" title="mybatis-generator多个数据库存在相同的表"></a>mybatis-generator多个数据库存在相同的表</h1><p>​</p><h2 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h2><p>使用mybatis时难免会使用其提供的mybatis-generator生成默认的xml和实体类，今天我发现如果本地安装一个mysql，里面创建两个不同的数据库，而他们有相同的表，生成的实体类中可能是随机的。<br>比如我有一个数据库 ‘a’ 里面有一张表 ‘user’，我现在在建一个库‘b’，里面也有一张表‘user’，这样我生成代码时，虽然jdbcUrl配置的是a库，但生成的User实体类可能是b库里面的。</p><h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><p>查看其源码，下面是核心方法<br>org.mybatis.generator.internal.db.DatabaseIntrospector#getColumns</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> Map&lt;ActualTableName, List&lt;IntrospectedColumn&gt;&gt; <span class="hljs-title function_">getColumns</span><span class="hljs-params">(</span><br><span class="hljs-params">        TableConfiguration tc)</span> <span class="hljs-keyword">throws</span> SQLException &#123;<br>    String localCatalog;<br>    String localSchema;<br>    String localTableName;<br><br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">delimitIdentifiers</span> <span class="hljs-operator">=</span> tc.isDelimitIdentifiers()<br>            || stringContainsSpace(tc.getCatalog())<br>            || stringContainsSpace(tc.getSchema())<br>            || stringContainsSpace(tc.getTableName());<br><br>    <span class="hljs-keyword">if</span> (delimitIdentifiers) &#123;<br>        localCatalog = tc.getCatalog();<br>        localSchema = tc.getSchema();<br>        localTableName = tc.getTableName();<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (databaseMetaData.storesLowerCaseIdentifiers()) &#123;<br>        localCatalog = tc.getCatalog() == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : tc.getCatalog()<br>                .toLowerCase();<br>        localSchema = tc.getSchema() == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : tc.getSchema()<br>                .toLowerCase();<br>        localTableName = tc.getTableName().toLowerCase();<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (databaseMetaData.storesUpperCaseIdentifiers()) &#123;<br>        localCatalog = tc.getCatalog() == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : tc.getCatalog()<br>                .toUpperCase();<br>        localSchema = tc.getSchema() == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : tc.getSchema()<br>                .toUpperCase();<br>        localTableName = tc.getTableName().toUpperCase();<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        localCatalog = tc.getCatalog();<br>        localSchema = tc.getSchema();<br>        localTableName = tc.getTableName();<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (tc.isWildcardEscapingEnabled()) &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">escapeString</span> <span class="hljs-operator">=</span> databaseMetaData.getSearchStringEscape();<br><br>        <span class="hljs-keyword">if</span> (localSchema != <span class="hljs-literal">null</span>) &#123;<br>            localSchema = escapeName(localSchema, escapeString);<br>        &#125;<br><br>        localTableName = escapeName(localTableName, escapeString);<br>    &#125;<br><br>    Map&lt;ActualTableName, List&lt;IntrospectedColumn&gt;&gt; answer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><br>    <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">fullTableName</span> <span class="hljs-operator">=</span> composeFullyQualifiedTableName(localCatalog, localSchema,<br>                        localTableName, <span class="hljs-string">&#x27;.&#x27;</span>);<br>        logger.debug(getString(<span class="hljs-string">&quot;Tracing.1&quot;</span>, fullTableName)); <span class="hljs-comment">//$NON-NLS-1$</span><br>    &#125;<br><br>    <span class="hljs-type">ResultSet</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> databaseMetaData.getColumns(localCatalog, localSchema,<br>            localTableName, <span class="hljs-string">&quot;%&quot;</span>); <span class="hljs-comment">//$NON-NLS-1$</span><br><br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">supportsIsAutoIncrement</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">supportsIsGeneratedColumn</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-type">ResultSetMetaData</span> <span class="hljs-variable">rsmd</span> <span class="hljs-operator">=</span> rs.getMetaData();<br>    <span class="hljs-type">int</span> <span class="hljs-variable">colCount</span> <span class="hljs-operator">=</span> rsmd.getColumnCount();<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; i &lt;= colCount; i++) &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;IS_AUTOINCREMENT&quot;</span>.equals(rsmd.getColumnName(i))) &#123; <span class="hljs-comment">//$NON-NLS-1$</span><br>            supportsIsAutoIncrement = <span class="hljs-literal">true</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;IS_GENERATEDCOLUMN&quot;</span>.equals(rsmd.getColumnName(i))) &#123; <span class="hljs-comment">//$NON-NLS-1$</span><br>            supportsIsGeneratedColumn = <span class="hljs-literal">true</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">while</span> (rs.next()) &#123;<br>        <span class="hljs-type">IntrospectedColumn</span> <span class="hljs-variable">introspectedColumn</span> <span class="hljs-operator">=</span> ObjectFactory<br>                .createIntrospectedColumn(context);<br><br>        introspectedColumn.setTableAlias(tc.getAlias());<br>        introspectedColumn.setJdbcType(rs.getInt(<span class="hljs-string">&quot;DATA_TYPE&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setActualTypeName(rs.getString(<span class="hljs-string">&quot;TYPE_NAME&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setLength(rs.getInt(<span class="hljs-string">&quot;COLUMN_SIZE&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setActualColumnName(rs.getString(<span class="hljs-string">&quot;COLUMN_NAME&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn<br>                .setNullable(rs.getInt(<span class="hljs-string">&quot;NULLABLE&quot;</span>) == DatabaseMetaData.columnNullable); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setScale(rs.getInt(<span class="hljs-string">&quot;DECIMAL_DIGITS&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setRemarks(rs.getString(<span class="hljs-string">&quot;REMARKS&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br>        introspectedColumn.setDefaultValue(rs.getString(<span class="hljs-string">&quot;COLUMN_DEF&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br><br>        <span class="hljs-keyword">if</span> (supportsIsAutoIncrement) &#123;<br>            introspectedColumn.setAutoIncrement(<br>                    <span class="hljs-string">&quot;YES&quot;</span>.equals(rs.getString(<span class="hljs-string">&quot;IS_AUTOINCREMENT&quot;</span>))); <span class="hljs-comment">//$NON-NLS-1$ //$NON-NLS-2$</span><br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (supportsIsGeneratedColumn) &#123;<br>            introspectedColumn.setGeneratedColumn(<br>                    <span class="hljs-string">&quot;YES&quot;</span>.equals(rs.getString(<span class="hljs-string">&quot;IS_GENERATEDCOLUMN&quot;</span>))); <span class="hljs-comment">//$NON-NLS-1$ //$NON-NLS-2$</span><br>        &#125;<br><br>        <span class="hljs-type">ActualTableName</span> <span class="hljs-variable">atn</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ActualTableName</span>(<br>                rs.getString(<span class="hljs-string">&quot;TABLE_CAT&quot;</span>), <span class="hljs-comment">//$NON-NLS-1$</span><br>                rs.getString(<span class="hljs-string">&quot;TABLE_SCHEM&quot;</span>), <span class="hljs-comment">//$NON-NLS-1$</span><br>                rs.getString(<span class="hljs-string">&quot;TABLE_NAME&quot;</span>)); <span class="hljs-comment">//$NON-NLS-1$</span><br><br>        List&lt;IntrospectedColumn&gt; columns = answer.computeIfAbsent(atn, k -&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;());<br><br>        columns.add(introspectedColumn);<br><br>        <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>            logger.debug(getString(<br>                    <span class="hljs-string">&quot;Tracing.2&quot;</span>, <span class="hljs-comment">//$NON-NLS-1$</span><br>                    introspectedColumn.getActualColumnName(), Integer<br>                            .toString(introspectedColumn.getJdbcType()),<br>                    atn.toString()));<br>        &#125;<br>    &#125;<br><br>    closeResultSet(rs);<br><br>    <span class="hljs-keyword">if</span> (answer.size() &gt; <span class="hljs-number">1</span><br>            &amp;&amp; !stringContainsSQLWildcard(localSchema)<br>            &amp;&amp; !stringContainsSQLWildcard(localTableName)) &#123;<br>        <span class="hljs-comment">// issue a warning if there is more than one table and</span><br>        <span class="hljs-comment">// no wildcards were used</span><br>        <span class="hljs-type">ActualTableName</span> <span class="hljs-variable">inputAtn</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ActualTableName</span>(tc.getCatalog(), tc<br>                .getSchema(), tc.getTableName());<br><br>        <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">sb</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>();<br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">comma</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>        <span class="hljs-keyword">for</span> (ActualTableName atn : answer.keySet()) &#123;<br>            <span class="hljs-keyword">if</span> (comma) &#123;<br>                sb.append(<span class="hljs-string">&#x27;,&#x27;</span>);<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                comma = <span class="hljs-literal">true</span>;<br>            &#125;<br>            sb.append(atn.toString());<br>        &#125;<br><br>        warnings.add(getString(<span class="hljs-string">&quot;Warning.25&quot;</span>, <span class="hljs-comment">//$NON-NLS-1$</span><br>                inputAtn.toString(), sb.toString()));<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> answer;<br>&#125;<br><br></code></pre></td></tr></table></figure><p>上面方法内容有点多，核心逻辑就是</p><ol><li><p>根据CataLog，Schema，TableName三个属性从databaseMetaData里面获取ResultSet。</p><p> ResultSet rs &#x3D; databaseMetaData.getColumns(localCatalog, localSchema,localTableName, “%”);</p></li><li><p>遍历上面的结果集，按照结果集返回值里面的 TABLE_CAT ， TABLE_SCHEM  ， TABLE_NAME 存入到answer里。</p><p> ActualTableName atn &#x3D; new ActualTableName(<br>             rs.getString(“TABLE_CAT”), &#x2F;&#x2F;$NON-NLS-1$<br>             rs.getString(“TABLE_SCHEM”), &#x2F;&#x2F;$NON-NLS-1$<br>             rs.getString(“TABLE_NAME”)); &#x2F;&#x2F;$NON-NLS-1$</p></li><li><p>返回 answer对象。</p><p> 因为我们我先前没有指定catalog 和 scheme，这里的REsultSet里会获取a库和b库中的user表，即两张表都会返回。</p></li></ol><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>添加 <property name="nullCatalogMeansCurrent" value="true"/> 属性，不要从metadata中获取其他数据库的表</p><p>改动前</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">jdbcConnection</span> <span class="hljs-attr">driverClass</span>=<span class="hljs-string">&quot;com.mysql.jdbc.Driver&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">connectionURL</span>=<span class="hljs-string">&quot;$&#123;jdbc.url&#125;&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">userId</span>=<span class="hljs-string">&quot;$&#123;jdbc.username&#125;&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">password</span>=<span class="hljs-string">&quot;$&#123;jdbc.password&#125;&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">jdbcConnection</span>&gt;</span><br><br></code></pre></td></tr></table></figure><p>改动后</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">jdbcConnection</span> <span class="hljs-attr">driverClass</span>=<span class="hljs-string">&quot;com.mysql.jdbc.Driver&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">connectionURL</span>=<span class="hljs-string">&quot;$&#123;jdbc.url&#125;&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">userId</span>=<span class="hljs-string">&quot;$&#123;jdbc.username&#125;&quot;</span></span><br><span class="hljs-tag">                <span class="hljs-attr">password</span>=<span class="hljs-string">&quot;$&#123;jdbc.password&#125;&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;nullCatalogMeansCurrent&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">jdbcConnection</span>&gt;</span><br></code></pre></td></tr></table></figure><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://mybatis.org/generator/usage/mysql.html">https://mybatis.org/generator/usage/mysql.html</a></p><p><a href="https://github.com/mybatis/generator/issues/622">https://github.com/mybatis/generator/issues/622</a></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>bug</tag>
+      
+      <tag>mybatis</tag>
+      
+      <tag>generator</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>mysql使用updatetime作为乐观锁</title>
     <link href="/1509978234.html"/>
     <url>/1509978234.html</url>
@@ -977,9 +977,9 @@
     
     <tags>
       
-      <tag>mysql</tag>
-      
       <tag>bug</tag>
+      
+      <tag>mysql</tag>
       
       <tag>乐观锁</tag>
       
@@ -1252,9 +1252,9 @@
     
     <tags>
       
-      <tag>技巧</tag>
-      
       <tag>idea</tag>
+      
+      <tag>技巧</tag>
       
     </tags>
     
@@ -1334,9 +1334,9 @@
     
     <tags>
       
-      <tag>mysql</tag>
-      
       <tag>事务</tag>
+      
+      <tag>mysql</tag>
       
     </tags>
     
@@ -1466,9 +1466,9 @@
     
     <tags>
       
-      <tag>springSecurity</tag>
-      
       <tag>spring</tag>
+      
+      <tag>springSecurity</tag>
       
       <tag>jwt</tag>
       
@@ -1512,9 +1512,9 @@
     
     <tags>
       
-      <tag>openfeign</tag>
-      
       <tag>springcloud</tag>
+      
+      <tag>openfeign</tag>
       
     </tags>
     
@@ -1713,9 +1713,9 @@
     
     <tags>
       
-      <tag>slf4j</tag>
-      
       <tag>logback</tag>
+      
+      <tag>slf4j</tag>
       
     </tags>
     
@@ -1994,9 +1994,9 @@
     
     <tags>
       
-      <tag>linux</tag>
-      
       <tag>java</tag>
+      
+      <tag>linux</tag>
       
       <tag>bug</tag>
       
@@ -2040,9 +2040,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>netty</tag>
+      
+      <tag>java</tag>
       
       <tag>rc4</tag>
       
@@ -2185,9 +2185,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>netty</tag>
+      
+      <tag>java</tag>
       
     </tags>
     
@@ -2206,11 +2206,11 @@
     
     <tags>
       
-      <tag>linux</tag>
-      
       <tag>bbr</tag>
       
       <tag>服务器</tag>
+      
+      <tag>linux</tag>
       
     </tags>
     
@@ -2311,9 +2311,9 @@
     
     <tags>
       
-      <tag>maven</tag>
-      
       <tag>springboot</tag>
+      
+      <tag>maven</tag>
       
     </tags>
     
@@ -2422,9 +2422,9 @@
     
     <tags>
       
-      <tag>java</tag>
-      
       <tag>jackson</tag>
+      
+      <tag>java</tag>
       
       <tag>springmvc返回值过滤null</tag>
       
@@ -2445,9 +2445,9 @@
     
     <tags>
       
-      <tag>gitpage</tag>
-      
       <tag>jekyll</tag>
+      
+      <tag>gitpage</tag>
       
     </tags>
     
@@ -2529,9 +2529,9 @@
     
     <tags>
       
-      <tag>mybatis</tag>
-      
       <tag>idea</tag>
+      
+      <tag>mybatis</tag>
       
     </tags>
     
@@ -2611,9 +2611,9 @@
     
     <tags>
       
-      <tag>gitpage</tag>
-      
       <tag>jekyll</tag>
+      
+      <tag>gitpage</tag>
       
     </tags>
     
@@ -2940,9 +2940,9 @@
       
       <tag>java</tag>
       
-      <tag>slf4j</tag>
-      
       <tag>bug</tag>
+      
+      <tag>slf4j</tag>
       
     </tags>
     
@@ -3191,9 +3191,9 @@
       
       <tag>java</tag>
       
-      <tag>mybatis</tag>
-      
       <tag>技巧</tag>
+      
+      <tag>mybatis</tag>
       
     </tags>
     
