@@ -27,7 +27,7 @@
 <meta property="og:description" content="TOC{:toc}​        我以前写过一个使用DefaultServlet实现下载的博客springboot 添加defaultServlet实现更好的文件下载功能 ,这篇文章是对这类问题的多种解法讲解。  目的​         将图片存储在f:\\test文件夹或其子文件夹下，实现访问http:&#x2F;&#x2F;localhost&#x2F;static&#x2F;1.jpg网页上展示图片，访问http:&#x2F;&#x2F;loca">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-10-11T09:10:01.951Z">
+<meta property="article:modified_time" content="2025-10-11T09:19:02.236Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="springboot">
 <meta property="article:tag" content="java">
@@ -338,7 +338,7 @@
 </li>
 <li><p>像下面这样配置两个相同的路径，则后面覆盖前面的。</p>
 <ul>
-<li><pre><code class="java">registry.addResourceHandler(&quot;/classpath/**&quot;).addResourceLocations(&quot;file:D:/test&quot;)
+<li><pre><code class="language-java">registry.addResourceHandler(&quot;/classpath/**&quot;).addResourceLocations(&quot;file:D:/test&quot;)
                                                                  registry.addResourceHandler(&quot;/classpath/**&quot;).addResourceLocations(&quot;file:E:/zz&quot;)
 <figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey"><br><span class="hljs-title">- **切记不要配置成`classpath:</span>/`，这会导致`resources`文件夹暴露出来，导致配置文件泄露**<br><br><br><br>​        但是这种方法并不能实现文件下载，能识别出`content-type`的如图片会自动打开在浏览器上，不能识别的资源才会调用浏览器下载。<br><br><br><br># 关于自动配置<br><br>- 自动配置<br><br>  ​       一旦继承了`WebMvcConfigurationSupport`类，即使不重写`addResourceHandlers`类，自动配置的<span class="hljs-number">5</span>个路径就失效了。所以就不能访问静态文件了。<br><br>​       <br><br>- `swagger-ui`的静态资源<br><br>  ​     在使用`swagger-ui`时，它的原理是将`swagger-ui.html`页面打包到`springfox.swagger-ui`里面了。<br><br>  要想访问这个页面需要配置下面的路径来处理。<br><br>  ```java<br>  registry.addResourceHandler(<span class="hljs-string">&quot;/**&quot;</span>).addResourceLocations(<span class="hljs-string">&quot;classpath:/META-INF/resources/&quot;</span>)<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
 </code></pre>
@@ -347,7 +347,7 @@
 </li>
 <li><p>方法3搭配方法2</p>
 <p>举个例子:</p>
-<p>​		1. 将<code>/static</code>路径进行映射。</p>
+<p>​        1. 将<code>/static</code>路径进行映射。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">registry.addResourceHandler(<span class="hljs-string">&quot;/static/**&quot;</span>).addResourceLocations(<span class="hljs-string">&quot;classpath:/static/&quot;</span>);<br></code></pre></td></tr></table></figure>
 
 

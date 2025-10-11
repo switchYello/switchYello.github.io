@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/1.png">
 <meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/2.png">
 <meta property="article:published_time" content="2019-11-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-10-11T09:10:01.950Z">
+<meta property="article:modified_time" content="2025-10-11T09:19:02.235Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="gitpage">
 <meta property="article:tag" content="jekyll">
@@ -330,7 +330,7 @@ config.yml 主配置
 <p>也就仿照着这个头部将信息填写进去，，上下各用三个横线包住。</p>
 </blockquote>
 <p><img src="/img/in/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/2.png" srcset="/img/loading.gif" lazyload alt="文章格式"></p>
-<p>可以看出文章文件名命名规则为<br>    年-月-日-标题<br>文章内部最前面个，需要加入下面这种格式的来识别标题等</p>
+<p>可以看出文章文件名命名规则为<br>	年-月-日-标题<br>文章内部最前面个，需要加入下面这种格式的来识别标题等</p>
 <pre><code class="hljs">---
 layout:     post    #选择那个主题 layouts文件夹里的
 title:      &quot;你好，世界&quot;  #标题
@@ -342,13 +342,14 @@ tags:
     - diary			#打标签
 ---
 </code></pre>
-<p>​	<br>    今天是 2019-05-26	#正文</p>
+<p>​	<br>	今天是 2019-05-26	#正文</p>
 <h4 id="6-本地运行预览"><a href="#6-本地运行预览" class="headerlink" title="6.本地运行预览"></a>6.本地运行预览</h4><p>需要在本地搭建jekyll环境，而jekyll是用ruby开发的</p>
 <h5 id="下载ruby及安装"><a href="#下载ruby及安装" class="headerlink" title="下载ruby及安装"></a>下载ruby及安装</h5><p>这个软件对window兼容不太好，教程参考这个<a target="_blank" rel="noopener" href="http://jekyll-windows.juthilo.com/5-running-jekyll/">window上运行jekyll</a>进行安装</p>
 <p>文件所在的目录下，调用<code>jekyll serve</code>命令测试运行，如果没报错的话，控制台上会显示打开127.0.0.1:4000 就可以访问啦<br>如果报错的话，可以看看下面的内容，或者根据错误信息查询，记得主配置文件config.yml里面的东西要好好看一下，一条一条的看</p>
 <h4 id="7-遇到的问题"><a href="#7-遇到的问题" class="headerlink" title="7.遇到的问题"></a>7.遇到的问题</h4><h5 id="jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404"><a href="#jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404" class="headerlink" title="jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404"></a>jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404</h5><p>解决办法<a target="_blank" rel="noopener" href="http://kael-aiur.com/%E5%85%A5%E9%97%A8%E6%8C%87%E5%BC%95/jekyll%E4%B8%AD%E6%96%87%E6%96%87%E4%BB%B6%E5%90%8D%E6%9C%AC%E5%9C%B0%E9%A2%84%E8%A7%88%E9%97%AE%E9%A2%98.html">jekyll中文文件名本地预览问题</a>如下，</p>
 <p>修改安装目录\Ruby22-x64\lib\ruby\2.2.0\webrick\httpservlet下的filehandler.rb文件，建议先备份。</p>
-<p>找到下列两处，添加一句（ + 的一行为添加部分）</p>
+<p>找到下列两处，添加一句（ + 的一行为添加部分）
+	</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-built_in">path</span> = req.path_info.dup.force_encoding(Encoding.<span class="hljs-built_in">find</span>(<span class="hljs-string">&quot;filesystem&quot;</span>))<br>+ <span class="hljs-built_in">path</span>.force_encoding(<span class="hljs-string">&quot;UTF-8&quot;</span>) # 加入编码<br><span class="hljs-keyword">if</span> trailing_pathsep?(req.path_info)<br></code></pre></td></tr></table></figure>
 
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">break</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">base</span> == <span class="hljs-string">&quot;/&quot;</span><br>+ <span class="hljs-keyword">base</span>.force_encoding(<span class="hljs-string">&quot;UTF-8&quot;</span>) <span class="hljs-meta"># 加入編碼</span><br><span class="hljs-keyword">break</span> unless File.directory?(File.expand_path(res.filename + <span class="hljs-keyword">base</span>))<br></code></pre></td></tr></table></figure>
@@ -356,7 +357,7 @@ tags:
 <p>然后重启服务器即可jekyll clean &amp;&amp; jekyll s</p>
 <h5 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h5><pre><code class="hljs">Dependency Error: Yikes! It looks like you don’t have jekyll-paginate or one of its dependencies installed. 
 In order to use Jekyll as currently configured, you’ll need to install this gem. The full error message from Ruby is: ‘cannot load such file – jekyll-paginate’ If you run into trouble,
- you can find helpful resources at Getting Help
+	you can find helpful resources at Getting Help
 </code></pre>
 <p>运行<code>gem install jekyll-paginate</code>安装jekyll-paginate即可</p>
 <h4 id="8-上传到github"><a href="#8-上传到github" class="headerlink" title="8.上传到github"></a>8.上传到github</h4><pre><code class="hljs">直接git绑定远程仓库，上传等30s左右就能打开了

@@ -27,7 +27,7 @@
 <meta property="og:description" content="HeaderWriterFilter内部做了什么，导致静态资源不能访问了此filter会向相应中添加一些响应头，如果不搞清楚可能出现各种问题，策略如下面  ContentTypeOptionsConfig，默认启用配置x-content-type-options响应头  服务器设置该响应头，X-Content-Type-Options: nosniff，则浏览器拒绝MIME不正确的响应，放置MIM">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-10-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-10-11T09:10:01.949Z">
+<meta property="article:modified_time" content="2025-10-11T09:19:02.234Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="springSecurity">
 <meta name="twitter:card" content="summary_large_image">
@@ -323,8 +323,8 @@ DENY：禁止被iframe
 SAMEORIGIN：允许同源
 ALLOW-FROM：这种不支持配置需要AllowFromStrategy类处理
 </code></pre>
-<p>####HpkpConfig<br>    添加Public-Key-Pins或者Public-Key-Pins-Report-Only<br>    默认无配置，不启用<br>    https相关的东东</p>
-<p>####ContentSecurityPolicyConfig<br>    添加Content-Security-Policy响应头或者Content-Security-Policy-Report-Only<br>    与xss漏洞有关，默认无配置不开启</p>
+<p>####HpkpConfig<br>	添加Public-Key-Pins或者Public-Key-Pins-Report-Only<br>	默认无配置，不启用<br>	https相关的东东</p>
+<p>####ContentSecurityPolicyConfig<br>	添加Content-Security-Policy响应头或者Content-Security-Policy-Report-Only<br>	与xss漏洞有关，默认无配置不开启</p>
 <h4 id="ReferrerPolicyConfig-默认无配置，不启用"><a href="#ReferrerPolicyConfig-默认无配置，不启用" class="headerlink" title="ReferrerPolicyConfig 默认无配置，不启用"></a>ReferrerPolicyConfig 默认无配置，不启用</h4><pre><code class="hljs">Referrer-Policy响应头
 发送referer的策略
 </code></pre>
