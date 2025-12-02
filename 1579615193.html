@@ -1,0 +1,758 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="Springmvc全局异常处理,实现原理​	Springmvc的异常处理是由下面这个接口提供的，只有一个方法，用来处理异常。称之为异常处理器。 1234567public interface HandlerExceptionResolver &#123;	ModelAndView resolveException(			HttpServletRequest request, HttpServlet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springmvc异常处理">
+<meta property="og:url" content="https://www.huangchaoyu.com/1579615193.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="Springmvc全局异常处理,实现原理​	Springmvc的异常处理是由下面这个接口提供的，只有一个方法，用来处理异常。称之为异常处理器。 1234567public interface HandlerExceptionResolver &#123;	ModelAndView resolveException(			HttpServletRequest request, HttpServlet">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.487Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="全局异常处理">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>springmvc异常处理 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="springmvc异常处理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-06-23 00:00" pubdate>
+          2020年6月23日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">springmvc异常处理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Springmvc全局异常处理-实现原理"><a href="#Springmvc全局异常处理-实现原理" class="headerlink" title="Springmvc全局异常处理,实现原理"></a>Springmvc全局异常处理,实现原理</h1><p>​	<code>Springmvc</code>的异常处理是由下面这个接口提供的，只有一个方法，用来处理异常。称之为<code>异常处理器</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">HandlerExceptionResolver</span> &#123;<br><br>	ModelAndView <span class="hljs-title function_">resolveException</span><span class="hljs-params">(</span><br><span class="hljs-params">			HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span>;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		<code>DispatcherServlet</code>在初始化时，会调用下面这个方法，在这里初始化所有的异常处理器。这里的逻辑是如果容器内存在该类型的实例，就用容器内的，如果不存在就使用默认<code>spring.factories</code>文件里写的默认值。</p>
+<p>​		并且可以选择是搜索所有<code>HandlerExceptionResolver.class</code>类型的<code>bean</code>，还是只搜索名字叫<code>handlerExceptionResolver</code>的<code>bean</code>，由字段<code>detectAllHandlerExceptionResolvers</code>决定，默认搜索全部的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">initHandlerExceptionResolvers</span><span class="hljs-params">(ApplicationContext context)</span> &#123;<br>	<span class="hljs-built_in">this</span>.handlerExceptionResolvers = <span class="hljs-literal">null</span>;<br>		<br>       <br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.detectAllHandlerExceptionResolvers) &#123;<br>		Map&lt;String, HandlerExceptionResolver&gt; matchingBeans = BeanFactoryUtils<br>				.beansOfTypeIncludingAncestors(context, HandlerExceptionResolver.class, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>);<br>		<span class="hljs-keyword">if</span> (!matchingBeans.isEmpty()) &#123;<br>			<span class="hljs-built_in">this</span>.handlerExceptionResolvers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;HandlerExceptionResolver&gt;(matchingBeans.values());<br>			<span class="hljs-comment">// We keep HandlerExceptionResolvers in sorted order.</span><br>			OrderComparator.sort(<span class="hljs-built_in">this</span>.handlerExceptionResolvers);<br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-type">HandlerExceptionResolver</span> <span class="hljs-variable">her</span> <span class="hljs-operator">=</span><br>					context.getBean(HANDLER_EXCEPTION_RESOLVER_BEAN_NAME, HandlerExceptionResolver.class);<br>			<span class="hljs-built_in">this</span>.handlerExceptionResolvers = Collections.singletonList(her);<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (NoSuchBeanDefinitionException ex) &#123;<br>			<span class="hljs-comment">// Ignore, no HandlerExceptionResolver is fine too.</span><br>		&#125;<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.handlerExceptionResolvers == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-built_in">this</span>.handlerExceptionResolvers = getDefaultStrategies(context, HandlerExceptionResolver.class);<br>		<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>​		<code>doDispatch</code>方法里，将查找<code>controller</code>并调用。渲染结果会调用下面这个方法，用于处理结果返回值。其中参数<code>exception</code>不为空时表示有错误发生的，就用到了异常处理器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">processDispatchResult</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response,</span><br><span class="hljs-params">		<span class="hljs-meta">@Nullable</span> HandlerExecutionChain mappedHandler, <span class="hljs-meta">@Nullable</span> ModelAndView mv,</span><br><span class="hljs-params">		<span class="hljs-meta">@Nullable</span> Exception exception)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><br>	<span class="hljs-type">boolean</span> <span class="hljs-variable">errorView</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>	<span class="hljs-comment">//异常不为空</span><br>	<span class="hljs-keyword">if</span> (exception != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">if</span> (exception <span class="hljs-keyword">instanceof</span> ModelAndViewDefiningException) &#123;<br>			logger.debug(<span class="hljs-string">&quot;ModelAndViewDefiningException encountered&quot;</span>, exception);<br>			mv = ((ModelAndViewDefiningException) exception).getModelAndView();<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-type">Object</span> <span class="hljs-variable">handler</span> <span class="hljs-operator">=</span> (mappedHandler != <span class="hljs-literal">null</span> ? mappedHandler.getHandler() : <span class="hljs-literal">null</span>);		<br>               <span class="hljs-comment">//处理异常，返回处理结果</span><br>			mv = processHandlerException(request, response, handler, exception);<br>			errorView = (mv != <span class="hljs-literal">null</span>);<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-comment">// Did the handler return a view to render?</span><br>	<span class="hljs-keyword">if</span> (mv != <span class="hljs-literal">null</span> &amp;&amp; !mv.wasCleared()) &#123;<br>		render(mv, request, response);<br>		<span class="hljs-keyword">if</span> (errorView) &#123;<br>			WebUtils.clearErrorRequestAttributes(request);<br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) &#123;<br>			logger.trace(<span class="hljs-string">&quot;No view rendering, null ModelAndView returned.&quot;</span>);<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) &#123;<br>		<span class="hljs-comment">// Concurrent handling started during a forward</span><br>		<span class="hljs-keyword">return</span>;<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (mappedHandler != <span class="hljs-literal">null</span>) &#123;<br>		mappedHandler.triggerAfterCompletion(request, response, <span class="hljs-literal">null</span>);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		多个异常处理器会以责任链模式调用，这里可以看出，如果配置多个异常处理器，通过返回值是否为<code>null</code>来判断是否处理完成了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Nullable</span><br>	<span class="hljs-keyword">protected</span> ModelAndView <span class="hljs-title function_">processHandlerException</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response,</span><br><span class="hljs-params">			<span class="hljs-meta">@Nullable</span> Object handler, Exception ex)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><br>		<span class="hljs-comment">// Success and error responses may use different content types</span><br>		request.removeAttribute(HandlerMapping.PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);<br><br>		<span class="hljs-comment">// </span><br>		<span class="hljs-type">ModelAndView</span> <span class="hljs-variable">exMv</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>		<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.handlerExceptionResolvers != <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-comment">//责任链模式</span><br>			<span class="hljs-keyword">for</span> (HandlerExceptionResolver resolver : <span class="hljs-built_in">this</span>.handlerExceptionResolvers) &#123;<br>				exMv = resolver.resolveException(request, response, handler, ex);<br>				<span class="hljs-keyword">if</span> (exMv != <span class="hljs-literal">null</span>) &#123;<br>					<span class="hljs-keyword">break</span>;<br>				&#125;<br>			&#125;<br>		&#125;<br>		<span class="hljs-keyword">if</span> (exMv != <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-keyword">if</span> (exMv.isEmpty()) &#123;<br>				request.setAttribute(EXCEPTION_ATTRIBUTE, ex);<br>				<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>			&#125;<br>			<span class="hljs-comment">// We might still need view name translation for a plain error model...</span><br>			<span class="hljs-keyword">if</span> (!exMv.hasView()) &#123;<br>				<span class="hljs-type">String</span> <span class="hljs-variable">defaultViewName</span> <span class="hljs-operator">=</span> getDefaultViewName(request);<br>				<span class="hljs-keyword">if</span> (defaultViewName != <span class="hljs-literal">null</span>) &#123;<br>					exMv.setViewName(defaultViewName);<br>				&#125;<br>			&#125;<br>			<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) &#123;<br>				logger.trace(<span class="hljs-string">&quot;Using resolved error view: &quot;</span> + exMv, ex);<br>			&#125;<br>			<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>				logger.debug(<span class="hljs-string">&quot;Using resolved error view: &quot;</span> + exMv);<br>			&#125;<br>			WebUtils.exposeErrorRequestAttributes(request, ex, getServletName());<br>			<span class="hljs-keyword">return</span> exMv;<br>		&#125;<br><br>		<span class="hljs-keyword">throw</span> ex;<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>​		下面介绍<code>ExceptionHandlerExceptionResolver</code>源码，我们经常使用的就是这个，他需要配合</p>
+<p><code>RequestMappingHandlerMapping</code>，<code>RequestMappingHandlerAdapter</code>使用。这是我们最常用的组合。</p>
+<p>​		处理异常的逻辑如下，这里会优先查找<code>controller</code>里面的<code>@ExceptionHandler</code>注解标注的方法，如果没有则使用全局<code>@ControllerAdvice</code>里面的<code>@ExceptionHandler</code>标记的全局处理函数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs java">	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">protected</span> ModelAndView <span class="hljs-title function_">doResolveHandlerMethodException</span><span class="hljs-params">(HttpServletRequest request,</span><br><span class="hljs-params">			HttpServletResponse response, HandlerMethod handlerMethod, Exception exception)</span> &#123;<br>		<span class="hljs-comment">//查找该异常类型对应的处理函数</span><br>		<span class="hljs-type">ServletInvocableHandlerMethod</span> <span class="hljs-variable">exceptionHandlerMethod</span> <span class="hljs-operator">=</span> getExceptionHandlerMethod(handlerMethod, exception);<br>		<span class="hljs-keyword">if</span> (exceptionHandlerMethod == <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>		&#125;<br><br>	<span class="hljs-comment">//这里设置了参数处理器，和返回值处理器		exceptionHandlerMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);	exceptionHandlerMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);</span><br><br>		<span class="hljs-type">ServletWebRequest</span> <span class="hljs-variable">webRequest</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServletWebRequest</span>(request, response);<br>		<span class="hljs-type">ModelAndViewContainer</span> <span class="hljs-variable">mavContainer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ModelAndViewContainer</span>();<br><br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-comment">//开始回掉异常处理函数</span><br>			exceptionHandlerMethod.invokeAndHandle(webRequest, mavContainer, exception);<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (Exception invocationEx) &#123;<br>			logger.error(<span class="hljs-string">&quot;Failed to invoke @ExceptionHandler method: &quot;</span> + exceptionHandlerMethod, invocationEx);<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>		&#125;<br><br>		<span class="hljs-keyword">if</span> (mavContainer.isRequestHandled()) &#123;<br>			<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ModelAndView</span>();<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-type">ModelAndView</span> <span class="hljs-variable">mav</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ModelAndView</span>().addAllObjects(mavContainer.getModel());<br>			mav.setViewName(mavContainer.getViewName());<br>			<span class="hljs-keyword">if</span> (!mavContainer.isViewReference()) &#123;<br>				mav.setView((View) mavContainer.getView());<br>			&#125;<br>			<span class="hljs-keyword">return</span> mav;<br>		&#125;<br>	&#125;<br><br><br><br><span class="hljs-keyword">protected</span> ServletInvocableHandlerMethod <span class="hljs-title function_">getExceptionHandlerMethod</span><span class="hljs-params">(HandlerMethod handlerMethod, Exception exception)</span> &#123;<br>    <span class="hljs-comment">//优先解析类里面的处理函数</span><br>		<span class="hljs-keyword">if</span> (handlerMethod != <span class="hljs-literal">null</span>) &#123;<br>			Class&lt;?&gt; handlerType = handlerMethod.getBeanType();<br>			<span class="hljs-type">ExceptionHandlerMethodResolver</span> <span class="hljs-variable">resolver</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.exceptionHandlerCache.get(handlerType);<br>			<span class="hljs-keyword">if</span> (resolver == <span class="hljs-literal">null</span>) &#123;<br>				resolver = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ExceptionHandlerMethodResolver</span>(handlerType);<br>				<span class="hljs-built_in">this</span>.exceptionHandlerCache.put(handlerType, resolver);<br>			&#125;<br>			<span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> resolver.resolveMethod(exception);<br>			<span class="hljs-keyword">if</span> (method != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServletInvocableHandlerMethod</span>(handlerMethod.getBean(), method);<br>			&#125;<br>		&#125;<br>    <span class="hljs-comment">//其次查找全局的处理函数</span><br>		<span class="hljs-keyword">for</span> (Entry&lt;ControllerAdviceBean, ExceptionHandlerMethodResolver&gt; entry : <span class="hljs-built_in">this</span>.exceptionHandlerAdviceCache.entrySet()) &#123;<br>			<span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> entry.getValue().resolveMethod(exception);<br>			<span class="hljs-keyword">if</span> (method != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServletInvocableHandlerMethod</span>(entry.getKey().resolveBean(), method);<br>			&#125;<br>		&#125;<br>		<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>	&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>​	</p>
+<p>​		还有一点，<code>@ExceptionHandler</code>注解能添加<code>exception</code>类型的<code>value</code>值，只有匹配的异常类型才会使用此函数处理。如果没有在注解上标识能处理那种异常，则会解析方法的参数，参数中存在哪种异常就处理哪种。所以下面两种写法是等同的。</p>
+<p>​		如果同时存在，则以注解上的为准。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ExceptionHandler</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">exception</span><span class="hljs-params">(RuntimeException e)</span> &#123;<br>	<span class="hljs-keyword">return</span> e.getMessage();<br>&#125;<br><br><span class="hljs-meta">@ExceptionHandler(value = RuntimeException.class)</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">exception</span><span class="hljs-params">()</span> &#123;<br>	<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		还有一种常用的用法，用于接口的异常处理中，返回值是需要转成<code>Json</code>形式的，这里要在处理器上添加<code>@ResponseBody</code>注解，并且返回值是一个可以序列化成<code>Json</code>的对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ExceptionHandler</span><br><span class="hljs-meta">@ResponseBody</span><br><span class="hljs-keyword">public</span> JsonResource <span class="hljs-title function_">exception</span><span class="hljs-params">(Exception e)</span> &#123;<br>	<span class="hljs-keyword">return</span> JsonResource.ofFail(e.toString());<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		这种情况下需要配置返回值处理器，查看<code>ExceptionHandlerExceptionResolver</code>内的代码，其在初始化方法里初始化了<code>returnValueHandlers</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">afterPropertiesSet</span><span class="hljs-params">()</span> &#123;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.argumentResolvers == <span class="hljs-literal">null</span>) &#123;<br>		List&lt;HandlerMethodArgumentResolver&gt; resolvers = getDefaultArgumentResolvers();<br>		<span class="hljs-built_in">this</span>.argumentResolvers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HandlerMethodArgumentResolverComposite</span>().addResolvers(resolvers);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.returnValueHandlers == <span class="hljs-literal">null</span>) &#123;<br>		List&lt;HandlerMethodReturnValueHandler&gt; handlers = getDefaultReturnValueHandlers();<br>		<span class="hljs-built_in">this</span>.returnValueHandlers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HandlerMethodReturnValueHandlerComposite</span>().addHandlers(handlers);<br>	&#125;<br>	initExceptionHandlerAdviceCache();<br>&#125;<br><br><br><span class="hljs-keyword">protected</span> List&lt;HandlerMethodReturnValueHandler&gt; <span class="hljs-title function_">getDefaultReturnValueHandlers</span><span class="hljs-params">()</span> &#123;<br>	List&lt;HandlerMethodReturnValueHandler&gt; handlers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;HandlerMethodReturnValueHandler&gt;();<br><br>	<span class="hljs-comment">// Single-purpose return value types</span><br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ModelAndViewMethodReturnValueHandler</span>());<br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ModelMethodProcessor</span>());<br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ViewMethodReturnValueHandler</span>());<br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpEntityMethodProcessor</span>(getMessageConverters(), <span class="hljs-built_in">this</span>.contentNegotiationManager));<br><br>	<span class="hljs-comment">// Annotation-based return value types</span><br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ModelAttributeMethodProcessor</span>(<span class="hljs-literal">false</span>));<br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RequestResponseBodyMethodProcessor</span>(getMessageConverters(), <span class="hljs-built_in">this</span>.contentNegotiationManager));<br><br>	<span class="hljs-comment">// Multi-purpose return value types</span><br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ViewNameMethodReturnValueHandler</span>());<br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MapMethodProcessor</span>());<br><br>	<span class="hljs-comment">// Custom return value types</span><br>	<span class="hljs-keyword">if</span> (getCustomReturnValueHandlers() != <span class="hljs-literal">null</span>) &#123;<br>		handlers.addAll(getCustomReturnValueHandlers());<br>	&#125;<br><br>	<span class="hljs-comment">// Catch-all</span><br>	handlers.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ModelAttributeMethodProcessor</span>(<span class="hljs-literal">true</span>));<br><br>	<span class="hljs-keyword">return</span> handlers;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		<code>returnValueHandlers</code>不是本文要将的，这里说明一点<code>RequestResponseBodyMethodProcessor</code>是用来处理带有<code>@ResponseBody</code>注解的方法返回值，它的构造方法是要传入<code>MessageConverters</code>，要想将对象转成Json，需要给他配置一个<code>MappingJackson2HttpMessageConverter</code>才可以。</p>
+<p>​	</p>
+<p>​		如果是<code>xml</code>方式配置，就是下面这样。。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;messageConverters&quot;</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">ref</span> <span class="hljs-attr">bean</span>=<span class="hljs-string">&quot;stringHttpMessageConverter&quot;</span>/&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">ref</span> <span class="hljs-attr">bean</span>=<span class="hljs-string">&quot;jacksonHttpMessageConverter&quot;</span>/&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>​		</p>
+<p>​		使用<code>java</code>代码方式也是同理的，就是要将能处理返回值的<code>messageConverter</code>加入到<code>messageConverter</code>列表里。这里是继承它，在构造方法里加入<code>messageConverter</code>即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Component</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HandlerExceptionResolvers</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ExceptionHandlerExceptionResolver</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">HandlerExceptionResolvers</span><span class="hljs-params">()</span> &#123;<br>        getMessageConverters().add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MappingJackson2HttpMessageConverter</span>());<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h4 id="一般组合"><a href="#一般组合" class="headerlink" title="一般组合"></a>一般组合</h4><p>​		一般是要使用<code>ExceptionHandlerExceptionResolver</code> + <code>RequestMappingHandlerMapping</code> + <code>RequestMappingHandlerAdapter</code>这一组组合来处理请求的，<code>spring4.x</code>版本默认也是这样。</p>
+<h4 id="配置方式"><a href="#配置方式" class="headerlink" title="配置方式"></a>配置方式</h4><p>​		通过在方法上添加<code>@ExceptionHandler</code>注解可以将方法标记为一个异常处理器，并且在<code>Controller</code>里面写的异常处理器优先级大于<code>@ControllerAdvice</code>类里写的。</p>
+<p>​	<code>@ExceptionHandler</code>注解上或者方法参数上都可以指定能够处理的异常类型，一般写在参数里就可以。</p>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><p>​		异常处理的返回值会使用返回值处理器做处理，所以也需要配置返回值处理器，和配置<code>RequestMappingHandlerAdapter</code>是一样的。通用做法就是注入<code>MappingJackson2HttpMessageConverter</code>进去。</p>
+<p>​		</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/java/" class="print-no-link">#java</a>
+      
+        <a href="/tags/%E5%85%A8%E5%B1%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" class="print-no-link">#全局异常处理</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>springmvc异常处理</div>
+      <div>https://www.huangchaoyu.com/1579615193.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年6月23日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/806832644.html" title="git rebase使用场景">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">git rebase使用场景</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/3145821321.html" title="java web请求乱码问题">
+                        <span class="hidden-mobile">java web请求乱码问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

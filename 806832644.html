@@ -1,0 +1,768 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="git rebase使用场景 TOC{:toc}  场景1，多用户对同一远程仓库进行提交A，B同时从仓库pull下来代码，此时两人代码是一样的。 ​	首先是A，进行了修改 123&#x2F;&#x2F;修改文件a.txtgit add a.txtgit commit -m &quot;修复bug1&quot;  ​	此时A的log是： ![image-20200629144439490](&#x2F;img&amp;#x2F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git rebase使用场景">
+<meta property="og:url" content="https://www.huangchaoyu.com/806832644.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="git rebase使用场景 TOC{:toc}  场景1，多用户对同一远程仓库进行提交A，B同时从仓库pull下来代码，此时两人代码是一样的。 ​	首先是A，进行了修改 123&#x2F;&#x2F;修改文件a.txtgit add a.txtgit commit -m &quot;修复bug1&quot;  ​	此时A的log是： ![image-20200629144439490](&#x2F;img&amp;#x2F">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.502Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="git">
+<meta property="article:tag" content="git rebase">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>git rebase使用场景 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="git rebase使用场景"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-06-28 00:00" pubdate>
+          2020年6月28日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">git rebase使用场景</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="git-rebase使用场景"><a href="#git-rebase使用场景" class="headerlink" title="git rebase使用场景"></a>git rebase使用场景</h1><ul>
+<li>TOC<br>{:toc}</li>
+</ul>
+<h2 id="场景1，多用户对同一远程仓库进行提交"><a href="#场景1，多用户对同一远程仓库进行提交" class="headerlink" title="场景1，多用户对同一远程仓库进行提交"></a>场景1，多用户对同一远程仓库进行提交</h2><p>A，B同时从仓库pull下来代码，此时两人代码是一样的。</p>
+<p>​	首先是A，进行了修改</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">//修改文件a.txt<br>git add a.txt<br>git commit -m &quot;修复bug1&quot;<br></code></pre></td></tr></table></figure>
+
+<p>​	此时A的log是：</p>
+<p>![image-20200629144439490](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629144439490.png)</p>
+<p>​	然后是B进行了修改,并推送到远程分支</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">//修改文件a.txt<br>git add a.txt<br>git commit -m &quot;修复bug2&quot;<br><br>//修改文件a.txt<br>git add a.txt<br>git commit -m &quot;修复bug3&quot;<br><br>git push origin master<br></code></pre></td></tr></table></figure>
+
+<p>​	此时B的log是下图两个提交，由于B已经push到远程分支了，远程分支的提交记录是和B一样的。</p>
+<p>![image-20200629144513989](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629144513989.png)</p>
+<p>​	然后A想push时，会发现报错了，自己需要先pull合并，再push，于是A</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">git pull origin master<br>//解决冲突<br>git add a.txt<br>git commit -m &quot;解决冲突&quot;<br></code></pre></td></tr></table></figure>
+
+<p>​	此时A的log变成了这样</p>
+<p>![image-20200629144741125](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629144741125.png)</p>
+<p>​	这是因为需要把B提交的东西合并过来，所以产生了一个用于解决合并冲突的提交。强迫症觉得很不舒服。</p>
+<p>但是如果B提交后，A再拉取代码，在B提交基础上进行开发就不会产生分叉。这里可以使用<code>rebase</code>命令进行<code>变基</code>,将<code>基</code>变成<code>修复bug3</code>的那次提交。</p>
+<p>​	A想到使用变基方法，于是</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">git rebase origin/master<br>//解决冲突<br>git add a.txt<br>git rebase --continue<br></code></pre></td></tr></table></figure>
+
+<p>​	 此时提交日志变成这样</p>
+<p>![image-20200629145328469](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629145328469.png)</p>
+<p>​		通过对比上面的提交日志，可以看到<code>修复bug1</code>变成基于<code>修复bug3</code>那次提交，而不是原来那个提交了。这样就解决了分叉。</p>
+<p><strong>rebase 后面跟的分支名，意思是将当前分支的基线，变成指定的分支。</strong></p>
+<h2 id="场景2，多分支之间的冲突"><a href="#场景2，多分支之间的冲突" class="headerlink" title="场景2，多分支之间的冲突"></a>场景2，多分支之间的冲突</h2><p>A的本地初始版本是这样的</p>
+<p>![image-20200629145915238](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629145915238.png)</p>
+<p>A想创建一个dev分支进行开发，于是</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">git checkout -b dev<br><br>git add a.txt<br>git commit -m &quot;正常开发1&quot;<br><br>git add a.txt<br>git commit -m &quot;正常开发1&quot;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>A进行两次正常提交后log是这样的，dev分支超过master分支两次提交</p>
+<p>![image-20200629150243087](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629150243087.png)</p>
+<p>这是遇到一个紧急bug需要修复，于是A从master分支开启一个分支进行紧急修复,并合并到主线。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">git checkout master<br>//修复<br>git add a.txt<br>git commit -m &quot;进行修复紧急&quot;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>此时master分支的log是这样的</p>
+<p>![image-20200629150613982](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629150613982.png)</p>
+<p>A继续回到dev分支开发，开发完成后想要将dev分支合并到master，因为dev分支的基线和当前master的是不一致的，就会产生分叉。</p>
+<p>![image-20200629150845866](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629150845866.png)</p>
+<p>所以这里不要直接将dev分支合并到master，要先对dev分支进行rebase，将基线变成当前master，然后再合并。</p>
+<p>撤销上面的合并操作，先进行下面操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">git checkout dev<br>git rebase master<br>//解决冲突<br>git add a.txt<br>git rebase --continue<br></code></pre></td></tr></table></figure>
+
+<p>此时dev分支的log是这样的，发现<code>进行紧急修复</code>的提交已经过来了,且成为了dev分支的基线。</p>
+<p>![image-20200629152103287](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629152103287.png)</p>
+<p>这是再进行合并，就可以无冲突合并了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">git checkout master<br>git merge dev<br></code></pre></td></tr></table></figure>
+
+
+
+<p>![image-20200629152216064](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629152216064.png)</p>
+<h2 id="场景3，合并多次提交记录为一次"><a href="#场景3，合并多次提交记录为一次" class="headerlink" title="场景3，合并多次提交记录为一次"></a>场景3，合并多次提交记录为一次</h2><p>​	解决一个问题可能进行了多次提交，但每次提交更改的都比较少，或者是经过反复修改，想在想要将多次提交合并成一个可以这么做。</p>
+<p>起初日志是这样的:</p>
+<p>![image-20200629154137050](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629154137050.png)</p>
+<p>然后问题解决了提交记录就成了这样，中间两次提交都是没有意义的。</p>
+<p>![image-20200629154320358](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629154320358.png)</p>
+<p>下面将三次提交合并成一次</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">git rebase -i HEAD~3<br></code></pre></td></tr></table></figure>
+
+
+
+<p>弹出编辑框如下，可以仔细阅读下面的命令。</p>
+<p>![image-20200629154447769](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629154447769.png)</p>
+<p>我们将后两个提交的命令改为<code>squash</code>,意思就是合并到前一个提交上去，然后保存</p>
+<p>![image-20200629154716993](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629154716993.png)</p>
+<p>保存后还有一次重写提交日志的机会。保存后的记录成了这样，三次提交汇总成了一次。</p>
+<p>![image-20200629154850867](&#x2F;img&#x2F;in&#x2F;2020-06-29-git rebase使用场景&#x2F;image-20200629154850867.png)</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​	以上就是<code>rebase</code>的基本用法，用好<code>rebase</code>可以让我么的git记录更清晰。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/git/" class="print-no-link">#git</a>
+      
+        <a href="/tags/git-rebase/" class="print-no-link">#git rebase</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>git rebase使用场景</div>
+      <div>https://www.huangchaoyu.com/806832644.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年6月28日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2412438885.html" title="logback输出彩色日志，每个请求一种颜色">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">logback输出彩色日志，每个请求一种颜色</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1579615193.html" title="springmvc异常处理">
+                        <span class="hidden-mobile">springmvc异常处理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,723 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="guava eventBus使用和分析eventBus就是类似于观察这模式，我们将监听器注册到eventBus内，调用eventBus的post（object）方法， 将任何object对象发送到eventbus中，如果某个eventbus内的监听器对该object感兴趣，则会被回掉。并将该object作为参数传进去  为什么使用eventBus使用非常方便，效率高，且监听器只需加一个注解即可，不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="guava eventBus使用和分析">
+<meta property="og:url" content="https://www.huangchaoyu.com/3966182547.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="guava eventBus使用和分析eventBus就是类似于观察这模式，我们将监听器注册到eventBus内，调用eventBus的post（object）方法， 将任何object对象发送到eventbus中，如果某个eventbus内的监听器对该object感兴趣，则会被回掉。并将该object作为参数传进去  为什么使用eventBus使用非常方便，效率高，且监听器只需加一个注解即可，不">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-08-08T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.019Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>guava eventBus使用和分析 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="guava eventBus使用和分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-08-09 00:00" pubdate>
+          2019年8月9日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">guava eventBus使用和分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="guava-eventBus使用和分析"><a href="#guava-eventBus使用和分析" class="headerlink" title="guava eventBus使用和分析"></a>guava eventBus使用和分析</h2><pre><code class="hljs">eventBus就是类似于观察这模式，我们将监听器注册到eventBus内，调用eventBus的post（object）方法，
+将任何object对象发送到eventbus中，如果某个eventbus内的监听器对该object感兴趣，则会被回掉。并将该object作为参数传进去
+</code></pre>
+<h2 id="为什么使用"><a href="#为什么使用" class="headerlink" title="为什么使用"></a>为什么使用</h2><pre><code class="hljs">eventBus使用非常方便，效率高，且监听器只需加一个注解即可，不需要特定的方法名，不需要实现特定的接口，
+不需要知道自己身处于哪个eventbus中。
+</code></pre>
+<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-comment">//任写一个类，任写一个方法，但只能有一个参数，且在方法上，加上Subscribe注解,这就是一个观察者</span><br><span class="hljs-comment">//参数类型为这个方法感兴趣的类型，注解标记此方法是一个监听者，一个类中可以多个方法都加此注解，这样每个方法都是一个监听者。</span><br><br><span class="hljs-keyword">import</span> com.google.common.eventbus.Subscribe;<br><br><span class="hljs-comment">/*这是一个监听者*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Listerer3</span> &#123;<br>	<span class="hljs-meta">@Subscribe</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method1</span><span class="hljs-params">(Integer event)</span> &#123;<br>		System.out.println(event);<br>	&#125;<br>&#125;<br><br><br><span class="hljs-comment">//创建eventBus，注册监听者，发送数据</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>		<span class="hljs-comment">//创建eventBus</span><br>		<span class="hljs-type">EventBus</span> <span class="hljs-variable">e</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">EventBus</span>();<br>		<span class="hljs-comment">//注册观察者</span><br>		e.register(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Listerer3</span>());<br>		<span class="hljs-comment">//发送消息，发送的消息是int类型的，这样监听其他类型的监听者就不会收到这条消息</span><br>		<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) &#123;<br>			e.post(i);<br>		&#125;<br>	&#125;<br><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>***注意 消息监听者不只是能够监听类型完全匹配的消息，如果监听的是父类型，而消息是子类型，也是可以收到的 ***</p>
+</blockquote>
+<h2 id="消息是根据什么找到观察者的"><a href="#消息是根据什么找到观察者的" class="headerlink" title="消息是根据什么找到观察者的"></a>消息是根据什么找到观察者的</h2><pre><code class="hljs">消息可以使任意类型的，他根据观察者的参数类型进行匹配，如果观察者的能够处理则调用观察者的方法。否则不调用。
+其中如果观察者需要父类型的事件，而事件本身是子类型的同样可以触发。
+匹配方式是 `obj instanceof param` 而不是 `obj.getClass() == param.getClass()`
+</code></pre>
+<h2 id="eventbus底层是如何实现的"><a href="#eventbus底层是如何实现的" class="headerlink" title="eventbus底层是如何实现的"></a>eventbus底层是如何实现的</h2><h3 id="注册观察者"><a href="#注册观察者" class="headerlink" title="注册观察者"></a>注册观察者</h3><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs perl"> void register(Object listener) &#123;<br><br><span class="hljs-regexp">//</span>通过反射获取该<span class="hljs-class"><span class="hljs-keyword">class</span>及父类的的所有方法，检索带有 `@<span class="hljs-title">Subscribe</span>`注解的方法</span><br><span class="hljs-class">//键为<span class="hljs-title">Subscriber</span>注解方法的参数类型，值为同为此类型的所有<span class="hljs-title">method</span>，包装成<span class="hljs-title">Subscriber</span>对象</span><br><span class="hljs-class">   <span class="hljs-title">Multimap</span>&lt;<span class="hljs-title">Class</span>&lt;?&gt;, <span class="hljs-title">Subscriber</span>&gt; <span class="hljs-title">listenerMethods</span> = <span class="hljs-title">findAllSubscribers</span>(<span class="hljs-title">listener</span>)</span>;<br><br>//循环遍历，并放入subscribers对象的Map&lt;<span class="hljs-class"><span class="hljs-keyword">class</span>,<span class="hljs-title">Set</span>&lt;&gt;&gt;中</span><br><span class="hljs-class">   <span class="hljs-title">for</span> (<span class="hljs-title">Entry</span>&lt;<span class="hljs-title">Class</span>&lt;?&gt;, <span class="hljs-title">Collection</span>&lt;<span class="hljs-title">Subscriber</span>&gt;&gt; <span class="hljs-title">entry</span><span class="hljs-attr"> : listenerMethods</span>.<span class="hljs-title">asMap</span>().<span class="hljs-title">entrySet</span>()) </span>&#123;<br>     Class&lt;?&gt; eventType = entry.getKey();<br>     Collection&lt;Subscriber&gt; eventMethodsInListener = entry.getValue();<br><br>     CopyOnWriteArraySet&lt;Subscriber&gt; eventSubscribers = subscribers.get(eventType);<br><br>     <span class="hljs-keyword">if</span> (eventSubscribers == null) &#123;<br>       CopyOnWriteArraySet&lt;Subscriber&gt; newSet = new CopyOnWriteArraySet&lt;&gt;();<br>       eventSubscribers =<br>           MoreObjects.firstNonNull(subscribers.putIfAbsent(eventType, newSet), newSet);<br>     &#125;<br><br>     eventSubscribers.addAll(eventMethodsInListener);<br>   &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="取消注册观察者"><a href="#取消注册观察者" class="headerlink" title="取消注册观察者"></a>取消注册观察者</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs swift"> void unregister(<span class="hljs-type">Object</span> listener) &#123;<br><br><span class="hljs-comment">//通过反射获取该class及父类的的所有方法，检索带有 `@Subscribe`注解的方法</span><br><span class="hljs-comment">//键为Subscriber注解方法的参数类型，值为同为此类型的所有method，包装成Subscriber对象</span><br>   <span class="hljs-type">Multimap</span>&lt;<span class="hljs-type">Class</span>&lt;?&gt;, <span class="hljs-type">Subscriber</span>&gt; listenerMethods <span class="hljs-operator">=</span> findAllSubscribers(listener);<br><br><span class="hljs-comment">//遍历map，从总的观察者集合中移除这些观察者，每个观察者等同于一个带注解的方法</span><br>   <span class="hljs-keyword">for</span> (<span class="hljs-type">Entry</span>&lt;<span class="hljs-type">Class</span>&lt;?&gt;, <span class="hljs-type">Collection</span>&lt;<span class="hljs-type">Subscriber</span>&gt;&gt; entry : listenerMethods.asMap().entrySet()) &#123;<br>     <span class="hljs-type">Class</span>&lt;?&gt; eventType <span class="hljs-operator">=</span> entry.getKey();<br>     <span class="hljs-type">Collection</span>&lt;<span class="hljs-type">Subscriber</span>&gt; listenerMethodsForType <span class="hljs-operator">=</span> entry.getValue();<br><br>     <span class="hljs-type">CopyOnWriteArraySet</span>&lt;<span class="hljs-type">Subscriber</span>&gt; currentSubscribers <span class="hljs-operator">=</span> subscribers.get(eventType);<br>     <span class="hljs-keyword">if</span> (currentSubscribers <span class="hljs-operator">==</span> null <span class="hljs-operator">||</span> <span class="hljs-operator">!</span>currentSubscribers.removeAll(listenerMethodsForType)) &#123;<br>       <span class="hljs-keyword">throw</span> new <span class="hljs-type">IllegalArgumentException</span>(<br>           <span class="hljs-string">&quot;missing event subscriber for an annotated method. Is &quot;</span> <span class="hljs-operator">+</span> listener <span class="hljs-operator">+</span> <span class="hljs-string">&quot; registered?&quot;</span>);<br>     &#125;<br><br>     <span class="hljs-comment">// don&#x27;t try to remove the set if it&#x27;s empty; that can&#x27;t be done safely without a lock</span><br>     <span class="hljs-comment">// anyway, if the set is empty it&#x27;ll just be wrapping an array of length 0</span><br>   &#125;<br> &#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="发布消息"><a href="#发布消息" class="headerlink" title="发布消息"></a>发布消息</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs csharp"> <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">post</span>(<span class="hljs-params">Object <span class="hljs-keyword">event</span></span>)</span> &#123;<br><span class="hljs-comment">//根据消息类型，和消息的祖先类型，获取对应的观察者    </span><br>Iterator&lt;Subscriber&gt; eventSubscribers = subscribers.getSubscribers(<span class="hljs-keyword">event</span>);<br>   <span class="hljs-comment">//至少有一个观察者，则循环回掉他们的方法，否则，发送一个DeadEvent，可以写一个观察者观察DeadEvent类，这样如果有某种类型的事件没有观察者可以检测到</span><br><span class="hljs-keyword">if</span> (eventSubscribers.hasNext()) &#123;<br>     dispatcher.dispatch(<span class="hljs-keyword">event</span>, eventSubscribers);<br>   &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!(<span class="hljs-keyword">event</span> instanceof DeadEvent)) &#123;<br>     <span class="hljs-comment">// the event had no subscribers and was not itself a DeadEvent</span><br>     post(<span class="hljs-keyword">new</span> DeadEvent(<span class="hljs-keyword">this</span>, <span class="hljs-keyword">event</span>));<br>   &#125;<br> &#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><pre><code class="hljs">注册时会将对象的父类，父父类等的带注解的方法统统注册进来，得到一个参数类型为键，实际method为值的map ，即 map&lt;class,Set&lt;Method&gt;&gt;
+
+取消注册时，也会遍历祖先，因为有缓存了可能就不用遍历了，得到 map&lt;class,List&lt;Method&gt;&gt; ， 从总map中减去该map
+
+发布消息时，通过消息的类型，找到所有观察者，回掉他们的方法。不仅仅只是订阅了该消息类型的观察者，订阅了他父类的观察者同样可以收到消息。
+</code></pre>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><pre><code class="hljs">两个相同的观察者不能注册多次，判断相同的方法是 方法所在的对象是同一个，方法相同。
+也就是说，一个类的同一个对象不能注册多次，同一个类可以new多个对象，每个new出来的新对象可以共同存在。
+</code></pre>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/java/" class="print-no-link">#java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>guava eventBus使用和分析</div>
+      <div>https://www.huangchaoyu.com/3966182547.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年8月9日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/4227925025.html" title="追踪一下slf4j的工作原理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">追踪一下slf4j的工作原理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/4248451535.html" title="可以使用位操作存储简单一对多的情况">
+                        <span class="hidden-mobile">可以使用位操作存储简单一对多的情况</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

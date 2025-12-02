@@ -1,0 +1,767 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="springSecurity 退出登录​	 ​		这个filter比较简单，它要做的事情就是拦截退出登录的请求，执行退出逻辑，执行退出完成逻辑。 1234567891011121314151617181920212223public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)		throws I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springSecurity 退出登录">
+<meta property="og:url" content="https://www.huangchaoyu.com/218147151.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="springSecurity 退出登录​	 ​		这个filter比较简单，它要做的事情就是拦截退出登录的请求，执行退出逻辑，执行退出完成逻辑。 1234567891011121314151617181920212223public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)		throws I">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.533Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="springboot">
+<meta property="article:tag" content="springSecurity">
+<meta property="article:tag" content="logoutFilter">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>springSecurity 退出登录 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="springSecurity 退出登录"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-07-15 00:00" pubdate>
+          2020年7月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">springSecurity 退出登录</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="springSecurity-退出登录"><a href="#springSecurity-退出登录" class="headerlink" title="springSecurity 退出登录"></a>springSecurity 退出登录</h1><p>​	</p>
+<p>​		这个<code>filter</code>比较简单，它要做的事情就是拦截退出登录的请求，执行退出逻辑，执行退出完成逻辑。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest req, ServletResponse res, FilterChain chain)</span><br>		<span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>	<span class="hljs-type">HttpServletRequest</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> (HttpServletRequest) req;<br>	<span class="hljs-type">HttpServletResponse</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> (HttpServletResponse) res;<br>	<span class="hljs-comment">//匹配到是退出请求，默认是/logout</span><br>	<span class="hljs-keyword">if</span> (requiresLogout(request, response)) &#123;<br>		<span class="hljs-type">Authentication</span> <span class="hljs-variable">auth</span> <span class="hljs-operator">=</span> SecurityContextHolder.getContext().getAuthentication();<br><br>		<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>			logger.debug(<span class="hljs-string">&quot;Logging out user &#x27;&quot;</span> + auth<br>					+ <span class="hljs-string">&quot;&#x27; and transferring to logout destination&quot;</span>);<br>		&#125;<br>		<span class="hljs-comment">//执行退出逻辑</span><br>		<span class="hljs-built_in">this</span>.handler.logout(request, response, auth);<br>           <span class="hljs-comment">//执行退出完成成功，回掉逻辑</span><br>		logoutSuccessHandler.onLogoutSuccess(request, response, auth);<br><br>		<span class="hljs-keyword">return</span>;<br>	&#125;<br><br>	chain.doFilter(request, response);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="修改默认退出路径"><a href="#修改默认退出路径" class="headerlink" title="修改默认退出路径"></a>修改默认退出路径</h2><p>​	下面这样配置可以修改默认退出路径，原理是创建<code>LogoutFilter</code>时，将里面的匹配规则改为我们设置的路径。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">http.logout().logoutUrl(<span class="hljs-string">&quot;/my/logout&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>​	 值得注意的是，如果开启csrf功能，则退出请求只支持post，否则可以支持四种请求方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> RequestMatcher <span class="hljs-title function_">getLogoutRequestMatcher</span><span class="hljs-params">(H http)</span> &#123;<br>	<span class="hljs-keyword">if</span> (logoutRequestMatcher != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">return</span> logoutRequestMatcher;<br>	&#125;<br>	<span class="hljs-keyword">if</span> (http.getConfigurer(CsrfConfigurer.class) != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-built_in">this</span>.logoutRequestMatcher = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-built_in">this</span>.logoutUrl, <span class="hljs-string">&quot;POST&quot;</span>);<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-built_in">this</span>.logoutRequestMatcher = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OrRequestMatcher</span>(<br>			<span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-built_in">this</span>.logoutUrl, <span class="hljs-string">&quot;GET&quot;</span>),<br>			<span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-built_in">this</span>.logoutUrl, <span class="hljs-string">&quot;POST&quot;</span>),<br>			<span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-built_in">this</span>.logoutUrl, <span class="hljs-string">&quot;PUT&quot;</span>),<br>			<span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-built_in">this</span>.logoutUrl, <span class="hljs-string">&quot;DELETE&quot;</span>)<br>		);<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.logoutRequestMatcher;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="默认退出逻辑"><a href="#默认退出逻辑" class="headerlink" title="默认退出逻辑"></a>默认退出逻辑</h2><p>​	在<code>LogoutConfigurer</code>类里可以看到，默认会添加两个退出逻辑。</p>
+<p>​	首先删除session内的用户信息，再删除<code>SecurityContextHolder</code>保存的用户信息，这样就算退出完成了。</p>
+<p>如果项目里用户信息是保存在数据库里的，可与添加自定义的<code>logoutHandler</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> LogoutFilter <span class="hljs-title function_">createLogoutFilter</span><span class="hljs-params">(H http)</span> &#123;<br>    	<span class="hljs-comment">//这是是删除session，删除SecurityContextHolder</span><br>		logoutHandlers.add(contextLogoutHandler);<br>       <span class="hljs-comment">//这个是发送事件的</span><br>		logoutHandlers.add(postProcess(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutSuccessEventPublishingLogoutHandler</span>()));<br>		LogoutHandler[] handlers = logoutHandlers.toArray(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutHandler</span>[<span class="hljs-number">0</span>]);<br>		<span class="hljs-type">LogoutFilter</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutFilter</span>(getLogoutSuccessHandler(), handlers);<br>		result.setLogoutRequestMatcher(getLogoutRequestMatcher(http));<br>		result = postProcess(result);<br>		<span class="hljs-keyword">return</span> result;<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="添加自定义logoutHandler"><a href="#添加自定义logoutHandler" class="headerlink" title="添加自定义logoutHandler"></a>添加自定义logoutHandler</h2><p>​		可以看到自己添加的<code>LogoutHandler</code>会添加到<code>logoutHandlers</code>这个List里。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java">http.logout().addLogoutHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutHandler</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">logout</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Authentication authentication)</span> &#123;<br>        System.out.println(authentication.getPrincipal() + <span class="hljs-string">&quot;退出了&quot;</span>);<br>    &#125;<br>&#125;);<br><br><span class="hljs-keyword">public</span> LogoutConfigurer&lt;H&gt; <span class="hljs-title function_">addLogoutHandler</span><span class="hljs-params">(LogoutHandler logoutHandler)</span> &#123;<br>    <span class="hljs-built_in">this</span>.logoutHandlers.add(logoutHandler);<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="退出时自动删除Cookie"><a href="#退出时自动删除Cookie" class="headerlink" title="退出时自动删除Cookie"></a>退出时自动删除Cookie</h2><p>​	下面这样配置，可以在退出时自动删除指定的Cookie</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">http.logout().deleteCookies(<span class="hljs-string">&quot;sessionId&quot;</span>,<span class="hljs-string">&quot;usertoken&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​	原理就是添加了<code>CookieClearingLogoutHandler</code>，在退出时向<code>response</code>添加同名<code>cookie</code>，将客户端的覆盖掉。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> LogoutConfigurer&lt;H&gt; <span class="hljs-title function_">deleteCookies</span><span class="hljs-params">(String... cookieNamesToClear)</span> &#123;<br>    <span class="hljs-keyword">return</span> addLogoutHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CookieClearingLogoutHandler</span>(cookieNamesToClear));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="退出成功执行逻辑"><a href="#退出成功执行逻辑" class="headerlink" title="退出成功执行逻辑"></a>退出成功执行逻辑</h2><p>​	默认会重定向到<code>/login?logout</code>页面上，可以自定义重定向地址</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//自定义退出成功Url,会重定向到此url</span><br>http.logout().logoutSuccessUrl(<span class="hljs-string">&quot;/my/login&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​	重定向的原理就是用我们指定的路径创建一个<code>SimpleUrlLogoutSuccessHandler</code>。这个SuccessHandler调用时会做重定向操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> LogoutSuccessHandler <span class="hljs-title function_">getLogoutSuccessHandler</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">LogoutSuccessHandler</span> <span class="hljs-variable">handler</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.logoutSuccessHandler;<br>    <span class="hljs-keyword">if</span> (handler == <span class="hljs-literal">null</span>) &#123;<br>        handler = createDefaultSuccessHandler();<br>    &#125;<br>    <span class="hljs-keyword">return</span> handler;<br>&#125;<br><br><span class="hljs-keyword">private</span> LogoutSuccessHandler <span class="hljs-title function_">createDefaultSuccessHandler</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">SimpleUrlLogoutSuccessHandler</span> <span class="hljs-variable">urlLogoutHandler</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleUrlLogoutSuccessHandler</span>();<br>    urlLogoutHandler.setDefaultTargetUrl(logoutSuccessUrl);<br>    <span class="hljs-keyword">if</span> (defaultLogoutSuccessHandlerMappings.isEmpty()) &#123;<br>        <span class="hljs-keyword">return</span> urlLogoutHandler;<br>    &#125;<br>    <span class="hljs-type">DelegatingLogoutSuccessHandler</span> <span class="hljs-variable">successHandler</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DelegatingLogoutSuccessHandler</span>(defaultLogoutSuccessHandlerMappings);<br>    successHandler.setDefaultLogoutSuccessHandler(urlLogoutHandler);<br>    <span class="hljs-keyword">return</span> successHandler;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="自定义-logoutSuccessHandler"><a href="#自定义-logoutSuccessHandler" class="headerlink" title="自定义 logoutSuccessHandler"></a>自定义 logoutSuccessHandler</h2><p>​		有时候退出后不想重定向，而是数据给前台（前后端分离的项目应该都是这样）。可以自定义退出成功执行逻辑，可以覆盖上面的重定向操作。</p>
+<p>​		下面这样就是退出成功后，输出字符串到前台。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java">http.logout().logoutSuccessHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutSuccessHandler</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onLogoutSuccess</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Authentication authentication)</span> <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>        response.getWriter().write(<span class="hljs-string">&quot;logou success&quot;</span>);<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="多退出路径"><a href="#多退出路径" class="headerlink" title="多退出路径"></a>多退出路径</h2><p>退出后可以对页面进行重定向，也可以返回Json数据，有时候想要两者共存怎么办呢？</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">如访问 <span class="hljs-regexp">/api/</span>logout，则返回json<br>访问 <span class="hljs-regexp">/page/</span>logout，执行重定向到首页	<br></code></pre></td></tr></table></figure>
+
+<p>也是可以做到的。</p>
+<p>​	首先自定义退出匹配规则，这样就能匹配多个退出路径了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//自定义退出匹配规则</span><br>http.logout().logoutRequestMatcher(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OrRequestMatcher</span>(<br>   <span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-string">&quot;/api/logout&quot;</span>),<br>   <span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-string">&quot;/page/logout&quot;</span>)<br>));<br><br></code></pre></td></tr></table></figure>
+
+<p>​		为其中一个退出路径指定<code>logoutSuccessHandler</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//指定匹配/api/logout的退出路径，退出成功后执行逻辑</span><br>http.logout().defaultLogoutSuccessHandlerFor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutSuccessHandler</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onLogoutSuccess</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Authentication authentication)</span> <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>        response.getWriter().write(<span class="hljs-string">&quot;log success&quot;</span>);<br>    &#125;<br>&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-string">&quot;/api/logout&quot;</span>));<br>        <br></code></pre></td></tr></table></figure>
+
+<p>​		剩下的那个<code>/page/logout</code>没有指定处理逻辑，则会走默认的重定向到<code>logoutSuccessUrl</code>。</p>
+<p>这样就实现了拥有两个退出方式，且返回方式不同。</p>
+<h2 id="所有配置"><a href="#所有配置" class="headerlink" title="所有配置"></a>所有配置</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><br>     <span class="hljs-comment">//1. 添加自定义退出路径</span><br>     http.logout().logoutUrl(<span class="hljs-string">&quot;/my/logout&quot;</span>);<br>     <span class="hljs-comment">//2. 添加自定义退出操作，如在这里修改数据库用户状态</span><br>     http.logout().addLogoutHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutHandler</span>() &#123;<br>         <span class="hljs-meta">@Override</span><br>         <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">logout</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Authentication authentication)</span> &#123;<br>             System.out.println(authentication.getPrincipal() + <span class="hljs-string">&quot;退出了&quot;</span>);<br>         &#125;<br>     &#125;);<br>     <span class="hljs-comment">//3. 删除指定cookie</span><br>     http.logout().deleteCookies(<span class="hljs-string">&quot;sessionId&quot;</span>, <span class="hljs-string">&quot;usertoken&quot;</span>);<br>     <span class="hljs-comment">//4. 自定义退出成功重定向到Url</span><br>     http.logout().logoutSuccessUrl(<span class="hljs-string">&quot;/my/login&quot;</span>);<br><br>     <span class="hljs-comment">//5. 自定义退出成功Handler，此功能会覆盖4中的重定向操作</span><br>     http.logout().logoutSuccessHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutSuccessHandler</span>() &#123;<br>         <span class="hljs-meta">@Override</span><br>         <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onLogoutSuccess</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Authentication authentication)</span> <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>             response.getWriter().write(<span class="hljs-string">&quot;logou success&quot;</span>);<br>         &#125;<br>     &#125;);<br><br>     <span class="hljs-comment">//6.自定义退出匹配规则，可以存在多个。会覆盖1中的自定义路径</span><br>     http.logout().logoutRequestMatcher(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OrRequestMatcher</span>(<br>             <span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-string">&quot;/api/logout&quot;</span>),<br>             <span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-string">&quot;/page/logout&quot;</span>)<br>     ));<br>     <span class="hljs-comment">//7. 指定匹配/api/logout的退出路径，退出成功后执行逻辑</span><br><span class="hljs-comment">//满足匹配的走这里面的逻辑，不满足的走默认逻辑，默认逻辑是 4或者5</span><br>     http.logout().defaultLogoutSuccessHandlerFor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutSuccessHandler</span>() &#123;<br>         <span class="hljs-meta">@Override</span><br>         <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onLogoutSuccess</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Authentication authentication)</span> <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>             response.getWriter().write(<span class="hljs-string">&quot;log success&quot;</span>);<br>         &#125;<br>     &#125;, <span class="hljs-keyword">new</span> <span class="hljs-title class_">AntPathRequestMatcher</span>(<span class="hljs-string">&quot;/api/logout&quot;</span>));<br><br>     <span class="hljs-comment">//8.是否删除session，删除ContentSecurityHolder内的认证</span><br>     http.logout().invalidateHttpSession(<span class="hljs-literal">true</span>);<br>     http.logout().clearAuthentication(<span class="hljs-literal">true</span>);<br>     <span class="hljs-comment">//9.允许退出请求访问</span><br>     http.logout().permitAll();<br>     <br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​		<code>SpringSecurity</code>的退出操作很简单，也很灵活。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/springboot/" class="print-no-link">#springboot</a>
+      
+        <a href="/tags/springSecurity/" class="print-no-link">#springSecurity</a>
+      
+        <a href="/tags/logoutFilter/" class="print-no-link">#logoutFilter</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>springSecurity 退出登录</div>
+      <div>https://www.huangchaoyu.com/218147151.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年7月15日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/1889842632.html" title="springSecurity限制多用户登录">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">springSecurity限制多用户登录</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1516389516.html" title="springSecurity 防止csrf攻击">
+                        <span class="hidden-mobile">springSecurity 防止csrf攻击</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

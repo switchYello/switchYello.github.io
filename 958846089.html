@@ -1,0 +1,734 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="​	 springboot jackson默认配置​		springboot是约定大约配置，默认就会进行比较合理的配置，自动配置jackson也是如此。下面看一下springboot是如何配置jackson的反序列化特性的。 配置jackson的方法​		想要自定义配置jackson，只需实现Jackson2ObjectMapperBuilderCustomizer接口，并注册到spring容器里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot jackson默认配置">
+<meta property="og:url" content="https://www.huangchaoyu.com/958846089.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="​	 springboot jackson默认配置​		springboot是约定大约配置，默认就会进行比较合理的配置，自动配置jackson也是如此。下面看一下springboot是如何配置jackson的反序列化特性的。 配置jackson的方法​		想要自定义配置jackson，只需实现Jackson2ObjectMapperBuilderCustomizer接口，并注册到spring容器里">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.721Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="springboot">
+<meta property="article:tag" content="jackson">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>springboot jackson默认配置 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="springboot jackson默认配置"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-02-08 00:00" pubdate>
+          2021年2月8日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          897 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">springboot jackson默认配置</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>​	</p>
+<h1 id="springboot-jackson默认配置"><a href="#springboot-jackson默认配置" class="headerlink" title="springboot jackson默认配置"></a>springboot jackson默认配置</h1><p>​		springboot是约定大约配置，默认就会进行比较合理的配置，自动配置jackson也是如此。下面看一下springboot是如何配置jackson的反序列化特性的。</p>
+<h2 id="配置jackson的方法"><a href="#配置jackson的方法" class="headerlink" title="配置jackson的方法"></a>配置jackson的方法</h2><p>​		想要自定义配置jackson，只需实现<code>Jackson2ObjectMapperBuilderCustomizer</code>接口，并注册到spring容器里即可。</p>
+<p>平时我们主要关注下面两个配置，一个是序列化时不返回值为null的字段，二是反序列化时遇到不认识的key不报错而是忽略此key。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JacksonConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Jackson2ObjectMapperBuilderCustomizer</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">customize</span><span class="hljs-params">(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder)</span> &#123;<br>        jacksonObjectMapperBuilder.serializationInclusion(JsonInclude.Include.NON_NULL);<br>        jacksonObjectMapperBuilder.failOnUnknownProperties(<span class="hljs-literal">false</span>);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="自动配置的jackson配置"><a href="#自动配置的jackson配置" class="headerlink" title="自动配置的jackson配置"></a>自动配置的jackson配置</h2><p>如果没提供自定义的配置，将只使用springboot的默认配置，在<code>JacksonAutoConfiguration</code>类中，存在如下代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@Primary</span><br><span class="hljs-meta">@ConditionalOnMissingBean(ObjectMapper.class)</span><br><span class="hljs-keyword">public</span> ObjectMapper <span class="hljs-title function_">jacksonObjectMapper</span><span class="hljs-params">(Jackson2ObjectMapperBuilder builder)</span> &#123;<br>	<span class="hljs-keyword">return</span> builder.createXmlMapper(<span class="hljs-literal">false</span>).build();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可见其实使用<code>Jackson2ObjectMapperBuilder</code>类来创建ObjectMapper，且关闭了xml功能。</p>
+<p><code>Jackson2ObjectMapperBuilder</code>的创建同样在此类中，因为我们没有传入任何自定义<code>Jackson2ObjectMapperBuilderCustomizer</code>，所以其使用默认的值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@ConditionalOnMissingBean(Jackson2ObjectMapperBuilder.class)</span><br><span class="hljs-keyword">public</span> Jackson2ObjectMapperBuilder <span class="hljs-title function_">jacksonObjectMapperBuilder</span><span class="hljs-params">(</span><br><span class="hljs-params">		List&lt;Jackson2ObjectMapperBuilderCustomizer&gt; customizers)</span> &#123;<br>	<span class="hljs-type">Jackson2ObjectMapperBuilder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Jackson2ObjectMapperBuilder</span>();<br>	builder.applicationContext(<span class="hljs-built_in">this</span>.applicationContext);<br>	customize(builder, customizers);<br>	<span class="hljs-keyword">return</span> builder;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>查看<code>Jackson2ObjectMapperBuilder</code>类内部的build方法源码，其也是创建一个新的ObjectMapper并对其进行配置，重点就在下面源码的<code>configure(mapper)</code>方法里面。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> &lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ObjectMapper</span>&gt; T <span class="hljs-title function_">build</span><span class="hljs-params">()</span> &#123;<br>	ObjectMapper mapper;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.createXmlMapper) &#123;<br>		mapper = (<span class="hljs-built_in">this</span>.defaultUseWrapper != <span class="hljs-literal">null</span> ?<br>				<span class="hljs-keyword">new</span> <span class="hljs-title class_">XmlObjectMapperInitializer</span>().create(<span class="hljs-built_in">this</span>.defaultUseWrapper) :<br>				<span class="hljs-keyword">new</span> <span class="hljs-title class_">XmlObjectMapperInitializer</span>().create());<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		mapper = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectMapper</span>();<br>	&#125;<br>	configure(mapper);<br>	<span class="hljs-keyword">return</span> (T) mapper;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		进入configure方法里，其将此构建器的属性进行非空判断，如果不为空就设置到ObjectMapper里。因为我们没有提供任何自定义配置，所以这些值都是空的，其中此方法里有一行调用了<code>customizeDefaultFeatures(objectMapper)</code>方法，其会设置默认配置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configure</span><span class="hljs-params">(ObjectMapper objectMapper)</span> &#123;<br>	Assert.notNull(objectMapper, <span class="hljs-string">&quot;ObjectMapper must not be null&quot;</span>);<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.findModulesViaServiceLoader) &#123;<br>		<span class="hljs-comment">// Jackson 2.2+</span><br>		objectMapper.registerModules(ObjectMapper.findModules(<span class="hljs-built_in">this</span>.moduleClassLoader));<br>	&#125;<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.findWellKnownModules) &#123;<br>		registerWellKnownModulesIfAvailable(objectMapper);<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.modules != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">for</span> (Module <span class="hljs-keyword">module</span> : <span class="hljs-built_in">this</span>.modules) &#123;<br>			<span class="hljs-comment">// Using Jackson 2.0+ registerModule method, not Jackson 2.2+ registerModules</span><br>			objectMapper.registerModule(<span class="hljs-keyword">module</span>);<br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.moduleClasses != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">for</span> (Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Module</span>&gt; <span class="hljs-keyword">module</span> : <span class="hljs-built_in">this</span>.moduleClasses) &#123;<br>			objectMapper.registerModule(BeanUtils.instantiate(<span class="hljs-keyword">module</span>));<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.dateFormat != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setDateFormat(<span class="hljs-built_in">this</span>.dateFormat);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.locale != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setLocale(<span class="hljs-built_in">this</span>.locale);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.timeZone != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setTimeZone(<span class="hljs-built_in">this</span>.timeZone);<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.annotationIntrospector != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setAnnotationIntrospector(<span class="hljs-built_in">this</span>.annotationIntrospector);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.propertyNamingStrategy != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setPropertyNamingStrategy(<span class="hljs-built_in">this</span>.propertyNamingStrategy);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.defaultTyping != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setDefaultTyping(<span class="hljs-built_in">this</span>.defaultTyping);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.serializationInclusion != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setSerializationInclusion(<span class="hljs-built_in">this</span>.serializationInclusion);<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.filters != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setFilterProvider(<span class="hljs-built_in">this</span>.filters);<br>	&#125;<br><br>	<span class="hljs-keyword">for</span> (Class&lt;?&gt; target : <span class="hljs-built_in">this</span>.mixIns.keySet()) &#123;<br>		objectMapper.addMixIn(target, <span class="hljs-built_in">this</span>.mixIns.get(target));<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.serializers.isEmpty() || !<span class="hljs-built_in">this</span>.deserializers.isEmpty()) &#123;<br>		<span class="hljs-type">SimpleModule</span> <span class="hljs-variable">module</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleModule</span>();<br>		addSerializers(<span class="hljs-keyword">module</span>);<br>		addDeserializers(<span class="hljs-keyword">module</span>);<br>		objectMapper.registerModule(<span class="hljs-keyword">module</span>);<br>	&#125;<br><br>	customizeDefaultFeatures(objectMapper);<br>	<span class="hljs-keyword">for</span> (Object feature : <span class="hljs-built_in">this</span>.features.keySet()) &#123;<br>		configureFeature(objectMapper, feature, <span class="hljs-built_in">this</span>.features.get(feature));<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.handlerInstantiator != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setHandlerInstantiator(<span class="hljs-built_in">this</span>.handlerInstantiator);<br>	&#125;<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.applicationContext != <span class="hljs-literal">null</span>) &#123;<br>		objectMapper.setHandlerInstantiator(<br>				<span class="hljs-keyword">new</span> <span class="hljs-title class_">SpringHandlerInstantiator</span>(<span class="hljs-built_in">this</span>.applicationContext.getAutowireCapableBeanFactory()));<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>​		可以看到当features里面不包含<code>FAIL_ON_UNKNOWN_PROPERTIES</code>时，即我们没有主动将<code>FAIL_ON_UNKNOWN_PROPERTIES</code>设为true或者false，springboot会将其设置为false，这也正符合我们平时的使用习惯。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">customizeDefaultFeatures</span><span class="hljs-params">(ObjectMapper objectMapper)</span> &#123;<br>	<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.features.containsKey(MapperFeature.DEFAULT_VIEW_INCLUSION)) &#123;<br>		configureFeature(objectMapper, MapperFeature.DEFAULT_VIEW_INCLUSION, <span class="hljs-literal">false</span>);<br>	&#125;<br>       <span class="hljs-comment">//列表内找不到该属性，就将此属性设置为false</span><br>	<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.features.containsKey(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)) &#123;<br>		configureFeature(objectMapper, DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, <span class="hljs-literal">false</span>);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​		上面可以看出springboot会为我们自动配置好比较合理的配置，即约定大于配置，我们没有<code>FAIL_ON_UNKNOWN_PROPERTIES</code>的配置时，他会自动将其设为false。</p>
+<p>​		于是我们在下次自定义配置时，不配置此属性也是可以的，将上面的配置改为下面这样，其也是能自动设置<code>FAIL_ON_UNKNOWN_PROPERTIES=false</code>的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JacksonConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Jackson2ObjectMapperBuilderCustomizer</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">customize</span><span class="hljs-params">(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder)</span> &#123;<br>        jacksonObjectMapperBuilder.serializationInclusion(JsonInclude.Include.NON_NULL);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​		但是考虑到不是每个人都看过源码，还是推荐加上，这样其他人看到会更清晰一点。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/springboot/" class="print-no-link">#springboot</a>
+      
+        <a href="/tags/jackson/" class="print-no-link">#jackson</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>springboot jackson默认配置</div>
+      <div>https://www.huangchaoyu.com/958846089.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年2月8日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/3252428711.html" title="idea字段按照字母顺序排序">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">idea字段按照字母顺序排序</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/3542669704.html" title="idea选中多列，多光标">
+                        <span class="hidden-mobile">idea选中多列，多光标</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

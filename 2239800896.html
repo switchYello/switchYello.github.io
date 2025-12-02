@@ -1,0 +1,833 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="springCloudLoadbalance源码解读​		本文讲解spring-cloud-loadbalance这个包，这个包提供了微服务下的负载均衡功能。要想使用负载均衡前提是必须拥有注册中心，同一个名字的服务在注册中心上存在多个实例，这是就需要负载均衡来实现对多个实例的均衡请求。 ​		类比一下dns系统，一个域名在dns上可能存在多个ip地址，这就相当于同一个微服务模块在注册中心上存在多个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springCloudLoadbalance源码解读">
+<meta property="og:url" content="https://www.huangchaoyu.com/2239800896.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="springCloudLoadbalance源码解读​		本文讲解spring-cloud-loadbalance这个包，这个包提供了微服务下的负载均衡功能。要想使用负载均衡前提是必须拥有注册中心，同一个名字的服务在注册中心上存在多个实例，这是就需要负载均衡来实现对多个实例的均衡请求。 ​		类比一下dns系统，一个域名在dns上可能存在多个ip地址，这就相当于同一个微服务模块在注册中心上存在多个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2020-09-29-springCloudLoadbalance/image-20200930163757870.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2020-09-29-springCloudLoadbalance/image-20200930163902482.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2020-09-29-springCloudLoadbalance/image-20200930141712970.png">
+<meta property="article:published_time" content="2020-09-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.627Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="spring">
+<meta property="article:tag" content="springcloud">
+<meta property="article:tag" content="负载均衡">
+<meta property="article:tag" content="loadbalance">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.huangchaoyu.com/img/in/2020-09-29-springCloudLoadbalance/image-20200930163757870.png">
+  
+  
+  
+  <title>springCloudLoadbalance源码解读 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="springCloudLoadbalance源码解读"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-09-29 00:00" pubdate>
+          2020年9月29日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">springCloudLoadbalance源码解读</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="springCloudLoadbalance源码解读"><a href="#springCloudLoadbalance源码解读" class="headerlink" title="springCloudLoadbalance源码解读"></a>springCloudLoadbalance源码解读</h1><p>​		本文讲解<code>spring-cloud-loadbalance</code>这个包，这个包提供了微服务下的负载均衡功能。要想使用负载均衡前提是必须拥有注册中心，同一个名字的服务在注册中心上存在多个实例，这是就需要负载均衡来实现对多个实例的均衡请求。</p>
+<p>​		类比一下dns系统，一个域名在dns上可能存在多个ip地址，这就相当于同一个微服务模块在注册中心上存在多个实例，我们进行dns查询后获取到的多个ip地址，我们会选择其中一个进行连接，具体如何选择就需要一种策略来实现。一般查询dns会选择第一个ip地址，而微服务里的负载均衡会采用轮询的方式平均使用所有的实例。</p>
+<h3 id="堵塞式负载均衡接口api"><a href="#堵塞式负载均衡接口api" class="headerlink" title="堵塞式负载均衡接口api"></a>堵塞式负载均衡接口api</h3><p>​		</p>
+<p>​		首先看它的继承图</p>
+<p><img src="/img/in/2020-09-29-springCloudLoadbalance/image-20200930163757870.png" srcset="/img/loading.gif" lazyload alt="image-20200930163757870"></p>
+<p>​		负载均衡的接口是这样的，他的核心接口是<code>LoadBalancerClient</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ServiceInstanceChooser</span> &#123;<br>    <span class="hljs-comment">//传入微服务id，返回服务的详细信息（ip地址，端口 等）</span><br>	ServiceInstance <span class="hljs-title function_">choose</span><span class="hljs-params">(String serviceId)</span>;<br>    <br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">LoadBalancerClient</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ServiceInstanceChooser</span> &#123;<br>	<br>    <span class="hljs-comment">//传入微服务id和request对象，将request对象的执行返回结果返回</span><br>	&lt;T&gt; T <span class="hljs-title function_">execute</span><span class="hljs-params">(String serviceId, LoadBalancerRequest&lt;T&gt; request)</span> <span class="hljs-keyword">throws</span> IOException;<br><br>    <span class="hljs-comment">//传入微服务id，微服务实例，request，将request对象的执行结果返回</span><br>	&lt;T&gt; T <span class="hljs-title function_">execute</span><span class="hljs-params">(String serviceId, ServiceInstance serviceInstance,</span><br><span class="hljs-params">			LoadBalancerRequest&lt;T&gt; request)</span> <span class="hljs-keyword">throws</span> IOException;<br><br>    <span class="hljs-comment">//传入服务信息，和原始uri，将原始uri里面的host字段替换成真实服务的ip并返回</span><br>	URI <span class="hljs-title function_">reconstructURI</span><span class="hljs-params">(ServiceInstance instance, URI original)</span>;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>而<code>LoadBalancerRequest</code>对象像下面这样，只需要传入微服务实例，就能得到结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">LoadBalancerRequest</span>&lt;T&gt; &#123;<br><br>	T <span class="hljs-title function_">apply</span><span class="hljs-params">(ServiceInstance instance)</span> <span class="hljs-keyword">throws</span> Exception;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		所以核心方法就是<code>choose(String serviceId)</code>，他能由字符串形式的服务id得到服务实例。<code>LoadBalancerClient</code>的默认实现是这样的。我已经将多余部分删除了，他的逻辑就是使用<code>choose</code>方法获取到服务实例，然后调用<code>request</code>对象的apply方法就能得到结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BlockingLoadBalancerClient</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">LoadBalancerClient</span> &#123;<br>	<br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">execute</span><span class="hljs-params">(String serviceId, LoadBalancerRequest&lt;T&gt; request)</span><br>			<span class="hljs-keyword">throws</span> IOException &#123;<br>		<span class="hljs-type">ServiceInstance</span> <span class="hljs-variable">serviceInstance</span> <span class="hljs-operator">=</span> choose(serviceId);<br>		<span class="hljs-keyword">return</span> execute(serviceId, serviceInstance, request);<br>	&#125;<br><br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">execute</span><span class="hljs-params">(String serviceId, ServiceInstance serviceInstance,</span><br><span class="hljs-params">			LoadBalancerRequest&lt;T&gt; request)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>			<span class="hljs-keyword">return</span> request.apply(serviceInstance);<br>	&#125;<br><br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> URI <span class="hljs-title function_">reconstructURI</span><span class="hljs-params">(ServiceInstance serviceInstance, URI original)</span> &#123;<br>		<span class="hljs-keyword">return</span> LoadBalancerUriTools.reconstructURI(serviceInstance, original);<br>	&#125;<br>    <br>    <br>    <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> ServiceInstance <span class="hljs-title function_">choose</span><span class="hljs-params">(String serviceId)</span> &#123;<br>            ReactiveLoadBalancer&lt;ServiceInstance&gt; loadBalancer = loadBalancerClientFactory.getInstance(serviceId);<br>            <span class="hljs-keyword">if</span> (loadBalancer == <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>            &#125;<br>            Response&lt;ServiceInstance&gt; loadBalancerResponse = Mono.from(loadBalancer.choose()).block();<br>            <span class="hljs-keyword">if</span> (loadBalancerResponse == <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>            &#125;<br>            <span class="hljs-keyword">return</span> loadBalancerResponse.getServer();<br>        &#125;<br>    <br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		可以看到核心方法<code>choose</code>里面的逻辑是委托给<code>ReactiveLoadBalancer</code>来实现的，这是一种常见做法，将堵塞式的方法委托给非堵塞式的方法。下面看看这个非堵塞式接口是如何实现的。</p>
+<h3 id="非堵塞式api"><a href="#非堵塞式api" class="headerlink" title="非堵塞式api"></a>非堵塞式api</h3><p>​	上面是堵塞式的方式，而这种纯网络请求，不落库的场景是很容易做成异步形式的，下面看看非堵塞方式的api骨架。</p>
+<p>​		</p>
+<p><img src="/img/in/2020-09-29-springCloudLoadbalance/image-20200930163902482.png" srcset="/img/loading.gif" lazyload alt="image-20200930163902482"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ReactorLoadBalancer</span>&lt;T&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ReactiveLoadBalancer</span>&lt;T&gt; &#123;<br><br>	Mono&lt;Response&lt;T&gt;&gt; <span class="hljs-title function_">choose</span><span class="hljs-params">(Request request)</span>;<br><br>	<span class="hljs-keyword">default</span> Mono&lt;Response&lt;T&gt;&gt; <span class="hljs-title function_">choose</span><span class="hljs-params">()</span> &#123;<br>		<span class="hljs-keyword">return</span> choose(REQUEST);<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>非堵塞式的api更简单，他有一个<code>choose</code>方法，返回值是<code>Response&lt;T&gt;</code>，这个泛型T就是想要的到的结果数据。</p>
+<p>我们要做的事情就是由服务id，选取一个服务实例返回，这就是choose方法应该做到的。</p>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><p>​	上面的就是<code>spring-cloud</code>负载均衡方面的接口定义，具体实现都在<code>spring-cloud-loadbalance</code>依赖里面。</p>
+<p>打开spring.factories文件</p>
+<p><img src="/img/in/2020-09-29-springCloudLoadbalance/image-20200930141712970.png" srcset="/img/loading.gif" lazyload alt="image-20200930141712970"></p>
+<p>这个包下的配置文件很简单，只有三个，下面一个一个分析。</p>
+<h3 id="1-LoadBalancerCacheAutoConfiguration"><a href="#1-LoadBalancerCacheAutoConfiguration" class="headerlink" title="1. LoadBalancerCacheAutoConfiguration"></a>1. LoadBalancerCacheAutoConfiguration</h3><p>​		很显然此类与缓存有关，我们从注册中心获取到的服务信息是要缓存起来的，不可能每次都重新获取，此类上会创建一个<code>LoadBalancerCacheManager</code>对象，底层根据当前chasspath来选择Caffeine或evictor来缓存实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration(proxyBeanMethods = false)</span><br><span class="hljs-meta">@ConditionalOnClass(Caffeine.class)</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CaffeineLoadBalancerCacheManagerConfiguration</span> &#123;<br><br>	<span class="hljs-meta">@Bean(autowireCandidate = false)</span><br>	<span class="hljs-meta">@ConditionalOnMissingBean</span><br>	LoadBalancerCacheManager <span class="hljs-title function_">caffeineLoadBalancerCacheManager</span><span class="hljs-params">(</span><br><span class="hljs-params">			LoadBalancerCacheProperties cacheProperties)</span> &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CaffeineBasedLoadBalancerCacheManager</span>(cacheProperties);<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-BlockingLoadBalancerClientAutoConfiguration"><a href="#2-BlockingLoadBalancerClientAutoConfiguration" class="headerlink" title="2. BlockingLoadBalancerClientAutoConfiguration"></a>2. BlockingLoadBalancerClientAutoConfiguration</h3><p>​		此类也很简单，他创建了<code>BlockingLoadBalancerClient</code>的对象，并且传入<code>LoadBalancerClientFactory</code>，因为堵塞式的处理逻辑是委托给非堵塞式的，这里没有太多逻辑。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@ConditionalOnBean(LoadBalancerClientFactory.class)</span><br><span class="hljs-meta">@Primary</span><br><span class="hljs-keyword">public</span> BlockingLoadBalancerClient <span class="hljs-title function_">blockingLoadBalancerClient</span><span class="hljs-params">(</span><br><span class="hljs-params">    LoadBalancerClientFactory loadBalancerClientFactory)</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BlockingLoadBalancerClient</span>(loadBalancerClientFactory);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​	</p>
+<p>​		此堵塞式的客户端会将所有逻辑委托给非堵塞式的客户端。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> ServiceInstance <span class="hljs-title function_">choose</span><span class="hljs-params">(String serviceId)</span> &#123;<br>	<span class="hljs-comment">//获取非堵塞式客户端</span><br>       ReactiveLoadBalancer&lt;ServiceInstance&gt; loadBalancer = loadBalancerClientFactory.getInstance(serviceId);<br>	<span class="hljs-keyword">if</span> (loadBalancer == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>	&#125;<br>       <span class="hljs-comment">//将逻辑委托给非堵塞客户端</span><br>	Response&lt;ServiceInstance&gt; loadBalancerResponse = Mono.from(loadBalancer.choose()).block();<br>	<span class="hljs-keyword">if</span> (loadBalancerResponse == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>	&#125;<br>	<span class="hljs-keyword">return</span> loadBalancerResponse.getServer();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="3-LoadBalancerAutoConfiguration"><a href="#3-LoadBalancerAutoConfiguration" class="headerlink" title="3. LoadBalancerAutoConfiguration"></a>3. LoadBalancerAutoConfiguration</h3><p>​		此方法创建<code>LoadBalancerClientFactory</code>对象，这个类是一个<code>NamedContextFactory</code>类，他能根据当前容器创建子容器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ConditionalOnMissingBean</span><br><span class="hljs-meta">@Bean</span><br><span class="hljs-keyword">public</span> LoadBalancerClientFactory <span class="hljs-title function_">loadBalancerClientFactory</span><span class="hljs-params">()</span> &#123;<br>	<span class="hljs-type">LoadBalancerClientFactory</span> <span class="hljs-variable">clientFactory</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">LoadBalancerClientFactory</span>();<br>	clientFactory.setConfigurations(<br>			<span class="hljs-built_in">this</span>.configurations.getIfAvailable(Collections::emptyList));<br>	<span class="hljs-keyword">return</span> clientFactory;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>构造方法如下，默认将<code>LoadBalancerClientConfiguration</code>类注册到子容器内。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LoadBalancerClientFactory</span><br>		<span class="hljs-keyword">extends</span> <span class="hljs-title class_">NamedContextFactory</span>&lt;LoadBalancerClientSpecification&gt;<br>		<span class="hljs-keyword">implements</span> <span class="hljs-title class_">ReactiveLoadBalancer</span>.Factory&lt;ServiceInstance&gt; &#123;<br><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">NAMESPACE</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;loadbalancer&quot;</span>;<br><br><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">PROPERTY_NAME</span> <span class="hljs-operator">=</span> NAMESPACE + <span class="hljs-string">&quot;.client.name&quot;</span>;<br>	<br>    <span class="hljs-comment">//默认注册LoadBalancerClientConfiguration类</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-title function_">LoadBalancerClientFactory</span><span class="hljs-params">()</span> &#123;<br>		<span class="hljs-built_in">super</span>(LoadBalancerClientConfiguration.class, NAMESPACE, PROPERTY_NAME);<br>	&#125;<br><br>	<span class="hljs-keyword">public</span> String <span class="hljs-title function_">getName</span><span class="hljs-params">(Environment environment)</span> &#123;<br>		<span class="hljs-keyword">return</span> environment.getProperty(PROPERTY_NAME);<br>	&#125;<br>	<br>    <span class="hljs-comment">//从容器内获取ReactiveLoadBalancer</span><br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> ReactiveLoadBalancer&lt;ServiceInstance&gt; <span class="hljs-title function_">getInstance</span><span class="hljs-params">(String serviceId)</span> &#123;<br>		<span class="hljs-keyword">return</span> getInstance(serviceId, ReactorServiceInstanceLoadBalancer.class);<br>	&#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>主要看他的<code>getInstance</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> &lt;T&gt; T <span class="hljs-title function_">getInstance</span><span class="hljs-params">(String name, Class&lt;T&gt; type)</span> &#123;<br>       <span class="hljs-comment">//获取子容器</span><br>	<span class="hljs-type">AnnotationConfigApplicationContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> getContext(name);<br>	<span class="hljs-comment">//从子容器内获取type类型的bean</span><br>       <span class="hljs-keyword">if</span> (BeanFactoryUtils.beanNamesForTypeIncludingAncestors(context,<br>			type).length &gt; <span class="hljs-number">0</span>) &#123;<br>		<span class="hljs-keyword">return</span> context.getBean(type);<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>获取子容器的过程，这里使用缓存存储创建的每个子容器，子容器不会重复创建</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> AnnotationConfigApplicationContext <span class="hljs-title function_">getContext</span><span class="hljs-params">(String name)</span> &#123;<br>	<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.contexts.containsKey(name)) &#123;<br>		<span class="hljs-keyword">synchronized</span> (<span class="hljs-built_in">this</span>.contexts) &#123;<br>			<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.contexts.containsKey(name)) &#123;<br>				<span class="hljs-built_in">this</span>.contexts.put(name, createContext(name));<br>			&#125;<br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.contexts.get(name);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>创建子容器的过程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> AnnotationConfigApplicationContext <span class="hljs-title function_">createContext</span><span class="hljs-params">(String name)</span> &#123;<br>	<span class="hljs-type">AnnotationConfigApplicationContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AnnotationConfigApplicationContext</span>();<br>       <span class="hljs-comment">//如果存在name名称的配置将配置注册进去</span><br>       <span class="hljs-comment">//这里的配置可以通过setConfigurations方法设置</span><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.configurations.containsKey(name)) &#123;<br>		<span class="hljs-keyword">for</span> (Class&lt;?&gt; configuration : <span class="hljs-built_in">this</span>.configurations.get(name)<br>				.getConfiguration()) &#123;<br>			context.register(configuration);<br>		&#125;<br>	&#125;<br>       <br>       <span class="hljs-comment">//查询是否有default.开头的配置，将这些配置注册进去</span><br>	<span class="hljs-keyword">for</span> (Map.Entry&lt;String, C&gt; entry : <span class="hljs-built_in">this</span>.configurations.entrySet()) &#123;<br>		<span class="hljs-keyword">if</span> (entry.getKey().startsWith(<span class="hljs-string">&quot;default.&quot;</span>)) &#123;<br>			<span class="hljs-keyword">for</span> (Class&lt;?&gt; configuration : entry.getValue().getConfiguration()) &#123;<br>				context.register(configuration);<br>			&#125;<br>		&#125;<br>	&#125;<br>     <br>       <span class="hljs-comment">//注册构造方法里传入的LoadBalancerClientConfiguration.class</span><br>	context.register(PropertyPlaceholderAutoConfiguration.class,<br>			<span class="hljs-built_in">this</span>.defaultConfigType);<br>       <br>         <span class="hljs-comment">//将[propertyName - name] 存入环境变量</span><br>	context.getEnvironment().getPropertySources().addFirst(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MapPropertySource</span>(<br>			<span class="hljs-built_in">this</span>.propertySourceName,<br>			Collections.&lt;String, Object&gt;singletonMap(<span class="hljs-built_in">this</span>.propertyName, name)));<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.parent != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-comment">//将子容器的父容器设为当前容器</span><br>		context.setParent(<span class="hljs-built_in">this</span>.parent);<br>		context.setClassLoader(<span class="hljs-built_in">this</span>.parent.getClassLoader());<br>	&#125;<br>	context.setDisplayName(generateDisplayName(name));<br>	context.refresh();<br>	<span class="hljs-keyword">return</span> context;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​		</p>
+<p>​	下面是<code>LoadBalancerClientConfiguration</code>配置类，每个<code>serverId</code>都会创建一个子容器，每个子容器都会解析一遍此类，将解析出来的bean注册进容器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LoadBalancerClientConfiguration</span> &#123;<br><br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">REACTIVE_SERVICE_INSTANCE_SUPPLIER_ORDER</span> <span class="hljs-operator">=</span> <span class="hljs-number">193827465</span>;<br><br>	<span class="hljs-meta">@Bean</span><br>	<span class="hljs-meta">@ConditionalOnMissingBean</span><br>	<span class="hljs-keyword">public</span> ReactorLoadBalancer&lt;ServiceInstance&gt; <span class="hljs-title function_">reactorServiceInstanceLoadBalancer</span><span class="hljs-params">(</span><br><span class="hljs-params">			Environment environment,</span><br><span class="hljs-params">			LoadBalancerClientFactory loadBalancerClientFactory)</span> &#123;<br>		<span class="hljs-comment">//从容器内获取serverId名称</span><br>        <span class="hljs-comment">//因为创建子容器过程中，已经将[propertyName - name]键值对存储环境变量里了，此处获取的就是serverId</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);<br>		<br>        <span class="hljs-comment">//从容器内获取ServiceInstanceListSupplier对象，这是ServiceInstance的列表</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RoundRobinLoadBalancer</span>(loadBalancerClientFactory.getLazyProvider(name,<br>				ServiceInstanceListSupplier.class), name);<br>	&#125;<br>    <br> <span class="hljs-comment">/*</span><br><span class="hljs-comment"> 下面这些就是配置ServiceInstanceListSupplier的过程，他会根据当前环境自动选择堵塞式或者非堵塞式</span><br><span class="hljs-comment"> 使用order注解控制顺序，非堵塞式的优先堵塞式的。</span><br><span class="hljs-comment"> </span><br><span class="hljs-comment"> 同时根据配置文件选择是否根据地域优先或使用health-check</span><br><span class="hljs-comment"> */</span>   <br>	<span class="hljs-meta">@Configuration(proxyBeanMethods = false)</span><br>	<span class="hljs-meta">@ConditionalOnReactiveDiscoveryEnabled</span><br>	<span class="hljs-meta">@Order(REACTIVE_SERVICE_INSTANCE_SUPPLIER_ORDER)</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReactiveSupportConfiguration</span> &#123;<br><br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnBean(ReactiveDiscoveryClient.class)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-meta">@ConditionalOnProperty(value = &quot;spring.cloud.loadbalancer.configurations&quot;,</span><br><span class="hljs-meta">				havingValue = &quot;default&quot;, matchIfMissing = true)</span><br>		<span class="hljs-keyword">public</span> ServiceInstanceListSupplier <span class="hljs-title function_">discoveryClientServiceInstanceListSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">				ConfigurableApplicationContext context)</span> &#123;<br>			<span class="hljs-keyword">return</span> ServiceInstanceListSupplier.builder().withDiscoveryClient()<br>					.withCaching().build(context);<br>		&#125;<br><br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnBean(ReactiveDiscoveryClient.class)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-meta">@ConditionalOnProperty(value = &quot;spring.cloud.loadbalancer.configurations&quot;,</span><br><span class="hljs-meta">				havingValue = &quot;zone-preference&quot;)</span><br>		<span class="hljs-keyword">public</span> ServiceInstanceListSupplier <span class="hljs-title function_">zonePreferenceDiscoveryClientServiceInstanceListSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">				ConfigurableApplicationContext context)</span> &#123;<br>			<span class="hljs-keyword">return</span> ServiceInstanceListSupplier.builder().withDiscoveryClient()<br>					.withZonePreference().withCaching().build(context);<br>		&#125;<br><br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnBean(ReactiveDiscoveryClient.class)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-meta">@ConditionalOnProperty(value = &quot;spring.cloud.loadbalancer.configurations&quot;,</span><br><span class="hljs-meta">				havingValue = &quot;health-check&quot;)</span><br>		<span class="hljs-keyword">public</span> ServiceInstanceListSupplier <span class="hljs-title function_">healthCheckDiscoveryClientServiceInstanceListSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">				ConfigurableApplicationContext context)</span> &#123;<br>			<span class="hljs-keyword">return</span> ServiceInstanceListSupplier.builder().withDiscoveryClient()<br>					.withHealthChecks().withCaching().build(context);<br>		&#125;<br><br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnBean(ReactiveDiscoveryClient.class)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-keyword">public</span> ServiceInstanceSupplier <span class="hljs-title function_">discoveryClientServiceInstanceSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">				ReactiveDiscoveryClient discoveryClient, Environment env,</span><br><span class="hljs-params">				ApplicationContext context)</span> &#123;<br>			<span class="hljs-type">DiscoveryClientServiceInstanceSupplier</span> <span class="hljs-variable">delegate</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DiscoveryClientServiceInstanceSupplier</span>(<br>					discoveryClient, env);<br>			ObjectProvider&lt;LoadBalancerCacheManager&gt; cacheManagerProvider = context<br>					.getBeanProvider(LoadBalancerCacheManager.class);<br>			<span class="hljs-keyword">if</span> (cacheManagerProvider.getIfAvailable() != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CachingServiceInstanceSupplier</span>(delegate,<br>						cacheManagerProvider.getIfAvailable());<br>			&#125;<br>			<span class="hljs-keyword">return</span> delegate;<br>		&#125;<br><br>	&#125;<br><br>	<span class="hljs-meta">@Configuration(proxyBeanMethods = false)</span><br>	<span class="hljs-meta">@ConditionalOnBlockingDiscoveryEnabled</span><br>	<span class="hljs-meta">@Order(REACTIVE_SERVICE_INSTANCE_SUPPLIER_ORDER + 1)</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BlockingSupportConfiguration</span> &#123;<br><br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnBean(DiscoveryClient.class)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-meta">@ConditionalOnProperty(value = &quot;spring.cloud.loadbalancer.configurations&quot;,</span><br><span class="hljs-meta">				havingValue = &quot;default&quot;, matchIfMissing = true)</span><br>		<span class="hljs-keyword">public</span> ServiceInstanceListSupplier <span class="hljs-title function_">discoveryClientServiceInstanceListSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">				ConfigurableApplicationContext context)</span> &#123;<br>			<span class="hljs-keyword">return</span> ServiceInstanceListSupplier.builder().withBlockingDiscoveryClient()<br>					.withCaching().build(context);<br>		&#125;<br><br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnBean(DiscoveryClient.class)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-meta">@ConditionalOnProperty(value = &quot;spring.cloud.loadbalancer.configurations&quot;,</span><br><span class="hljs-meta">				havingValue = &quot;zone-preference&quot;)</span><br>		<span class="hljs-keyword">public</span> ServiceInstanceListSupplier <span class="hljs-title function_">zonePreferenceDiscoveryClientServiceInstanceListSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">				ConfigurableApplicationContext context)</span> &#123;<br>			<span class="hljs-keyword">return</span> ServiceInstanceListSupplier.builder().withBlockingDiscoveryClient()<br>					.withZonePreference().withCaching().build(context);<br>		&#125;<br><br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnBean(DiscoveryClient.class)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-meta">@ConditionalOnProperty(value = &quot;spring.cloud.loadbalancer.configurations&quot;,</span><br><span class="hljs-meta">				havingValue = &quot;health-check&quot;)</span><br>		<span class="hljs-keyword">public</span> ServiceInstanceListSupplier <span class="hljs-title function_">healthCheckDiscoveryClientServiceInstanceListSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">				ConfigurableApplicationContext context)</span> &#123;<br>			<span class="hljs-keyword">return</span> ServiceInstanceListSupplier.builder().withBlockingDiscoveryClient()<br>					.withHealthChecks().withCaching().build(context);<br>		&#125;<br><br>		<span class="hljs-meta">@Bean</span><br>		<span class="hljs-meta">@ConditionalOnBean(DiscoveryClient.class)</span><br>		<span class="hljs-meta">@ConditionalOnMissingBean</span><br>		<span class="hljs-keyword">public</span> ServiceInstanceSupplier <span class="hljs-title function_">discoveryClientServiceInstanceSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">				DiscoveryClient discoveryClient, Environment env,</span><br><span class="hljs-params">				ApplicationContext context)</span> &#123;<br>			<span class="hljs-type">DiscoveryClientServiceInstanceSupplier</span> <span class="hljs-variable">delegate</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DiscoveryClientServiceInstanceSupplier</span>(<br>					discoveryClient, env);<br>			ObjectProvider&lt;LoadBalancerCacheManager&gt; cacheManagerProvider = context<br>					.getBeanProvider(LoadBalancerCacheManager.class);<br>			<span class="hljs-keyword">if</span> (cacheManagerProvider.getIfAvailable() != <span class="hljs-literal">null</span>) &#123;<br>				<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CachingServiceInstanceSupplier</span>(delegate,<br>						cacheManagerProvider.getIfAvailable());<br>			&#125;<br>			<span class="hljs-keyword">return</span> delegate;<br>		&#125;<br><br>	&#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>​		下面看<code>RoundRobinLoadBalancer</code>是如何处理的。他从<code>serviceInstanceListSupplierProvider</code>里面获取到<code>List&lt;ServiceInstance&gt;</code>，并使用<code>getInstanceResponse</code>方法轮询选择一个服务对象返回。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RoundRobinLoadBalancer</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ReactorServiceInstanceLoadBalancer</span> &#123;<br><br>    	<span class="hljs-keyword">public</span> Mono&lt;Response&lt;ServiceInstance&gt;&gt; <span class="hljs-title function_">choose</span><span class="hljs-params">(Request request)</span> &#123;<br>		<span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> move supplier to Request?</span><br>		<span class="hljs-comment">// Temporary conditional logic till deprecated members are removed.</span><br>		<span class="hljs-keyword">if</span> (serviceInstanceListSupplierProvider != <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-type">ServiceInstanceListSupplier</span> <span class="hljs-variable">supplier</span> <span class="hljs-operator">=</span> serviceInstanceListSupplierProvider<br>					.getIfAvailable(NoopServiceInstanceListSupplier::<span class="hljs-keyword">new</span>);<br>            <br>            <span class="hljs-comment">//获取服务列表</span><br>			<span class="hljs-keyword">return</span> supplier.get().next().map(<span class="hljs-built_in">this</span>::getInstanceResponse);<br>		&#125;<br>		<span class="hljs-type">ServiceInstanceSupplier</span> <span class="hljs-variable">supplier</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.serviceInstanceSupplier<br>				.getIfAvailable(NoopServiceInstanceSupplier::<span class="hljs-keyword">new</span>);<br>		<span class="hljs-keyword">return</span> supplier.get().collectList().map(<span class="hljs-built_in">this</span>::getInstanceResponse);<br>	&#125;<br>    <br>    <span class="hljs-comment">//使用轮询的方式</span><br>    <span class="hljs-keyword">private</span> Response&lt;ServiceInstance&gt; <span class="hljs-title function_">getInstanceResponse</span><span class="hljs-params">(</span><br><span class="hljs-params">        List&lt;ServiceInstance&gt; instances)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">pos</span> <span class="hljs-operator">=</span> Math.abs(<span class="hljs-built_in">this</span>.position.incrementAndGet());<br><br>        <span class="hljs-type">ServiceInstance</span> <span class="hljs-variable">instance</span> <span class="hljs-operator">=</span> instances.get(pos % instances.size());<br><br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultResponse</span>(instance);<br>    &#125;<br>    <br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>​		默认<code>ServiceInstanceListSupplier</code>的生成是有<code>ServiceInstanceListSupplier.builder</code>工具类实现的，最后调用的<code>build</code>方法将当前容器传入进去，所需的<code>discoverClient</code>，<code>cache</code>等都能从容器内获取。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> ServiceInstanceListSupplier <span class="hljs-title function_">discoveryClientServiceInstanceListSupplier</span><span class="hljs-params">(</span><br><span class="hljs-params">    ConfigurableApplicationContext context)</span> &#123;<br>    <span class="hljs-keyword">return</span> ServiceInstanceListSupplier.builder().withDiscoveryClient()<br>        .withCaching().build(context);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="LoadBalancerClient注解"><a href="#LoadBalancerClient注解" class="headerlink" title="@LoadBalancerClient注解"></a>@LoadBalancerClient注解</h3><p>​		在创建<code>LoadBalancerClientFactory</code>时注意到调用<code>setConfigurations</code>方法，这些配置类是自动注入进来的，那么这些配置类是从哪里创建的，又是在哪里起作用的呢，通过<code>@LoadBalancerClient</code>注解可以方便的注入这些配置进去。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ConditionalOnMissingBean</span><br><span class="hljs-meta">@Bean</span><br><span class="hljs-keyword">public</span> LoadBalancerClientFactory <span class="hljs-title function_">loadBalancerClientFactory</span><span class="hljs-params">()</span> &#123;<br>	<span class="hljs-type">LoadBalancerClientFactory</span> <span class="hljs-variable">clientFactory</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">LoadBalancerClientFactory</span>();<br>	clientFactory.setConfigurations(<br>			<span class="hljs-built_in">this</span>.configurations.getIfAvailable(Collections::emptyList));<br>	<span class="hljs-keyword">return</span> clientFactory;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>注解需要提供名称表明配置要注册到哪个子容器里。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> LoadBalancerClient &#123;<br><br>	<span class="hljs-meta">@AliasFor(&quot;name&quot;)</span><br>	String <span class="hljs-title function_">value</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;<br><br>	<span class="hljs-meta">@AliasFor(&quot;value&quot;)</span><br>	String <span class="hljs-title function_">name</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;<br><br>	Class&lt;?&gt;[] configuration() <span class="hljs-keyword">default</span> &#123;&#125;;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>此注解引入了<code>LoadBalancerClientConfigurationRegistrar</code>类，这里将注解上name和configuration包装成<code>LoadBalancerClientSpecification</code>对象，注册到容器里。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerBeanDefinitions</span><span class="hljs-params">(AnnotationMetadata metadata,</span><br><span class="hljs-params">		BeanDefinitionRegistry registry)</span> &#123;<br>	Map&lt;String, Object&gt; attrs = metadata<br>			.getAnnotationAttributes(LoadBalancerClients.class.getName(), <span class="hljs-literal">true</span>);<br>	<span class="hljs-keyword">if</span> (attrs != <span class="hljs-literal">null</span> &amp;&amp; attrs.containsKey(<span class="hljs-string">&quot;value&quot;</span>)) &#123;<br>		AnnotationAttributes[] clients = (AnnotationAttributes[]) attrs.get(<span class="hljs-string">&quot;value&quot;</span>);<br>		<span class="hljs-keyword">for</span> (AnnotationAttributes client : clients) &#123;<br>			registerClientConfiguration(registry, getClientName(client),<br>					client.get(<span class="hljs-string">&quot;configuration&quot;</span>));<br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">if</span> (attrs != <span class="hljs-literal">null</span> &amp;&amp; attrs.containsKey(<span class="hljs-string">&quot;defaultConfiguration&quot;</span>)) &#123;<br>		String name;<br>		<span class="hljs-keyword">if</span> (metadata.hasEnclosingClass()) &#123;<br>			name = <span class="hljs-string">&quot;default.&quot;</span> + metadata.getEnclosingClassName();<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			name = <span class="hljs-string">&quot;default.&quot;</span> + metadata.getClassName();<br>		&#125;<br>		registerClientConfiguration(registry, name,<br>				attrs.get(<span class="hljs-string">&quot;defaultConfiguration&quot;</span>));<br>	&#125;<br>	Map&lt;String, Object&gt; client = metadata<br>			.getAnnotationAttributes(LoadBalancerClient.class.getName(), <span class="hljs-literal">true</span>);<br>	<span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> getClientName(client);<br>	<span class="hljs-keyword">if</span> (name != <span class="hljs-literal">null</span>) &#123;<br>		registerClientConfiguration(registry, name, client.get(<span class="hljs-string">&quot;configuration&quot;</span>));<br>	&#125;<br>&#125;<br><br><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerClientConfiguration</span><span class="hljs-params">(BeanDefinitionRegistry registry,</span><br><span class="hljs-params">		Object name, Object configuration)</span> &#123;<br>	<span class="hljs-type">BeanDefinitionBuilder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> BeanDefinitionBuilder<br>			.genericBeanDefinition(LoadBalancerClientSpecification.class);<br>	builder.addConstructorArgValue(name);<br>	builder.addConstructorArgValue(configuration);<br>	registry.registerBeanDefinition(name + <span class="hljs-string">&quot;.LoadBalancerClientSpecification&quot;</span>,<br>			builder.getBeanDefinition());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​	</p>
+<p>​		创建子容器时，根据名字从列表里获取配置并注册。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> AnnotationConfigApplicationContext <span class="hljs-title function_">createContext</span><span class="hljs-params">(String name)</span> &#123;<br>		<span class="hljs-type">AnnotationConfigApplicationContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AnnotationConfigApplicationContext</span>();<br>    <span class="hljs-comment">//根据名字选择筛选出配置，将配置注册到子容器里</span><br>		<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.configurations.containsKey(name)) &#123;<br>			<span class="hljs-keyword">for</span> (Class&lt;?&gt; configuration : <span class="hljs-built_in">this</span>.configurations.get(name)<br>					.getConfiguration()) &#123;<br>				context.register(configuration);<br>			&#125;<br>		&#125;<br>		<span class="hljs-keyword">for</span> (Map.Entry&lt;String, C&gt; entry : <span class="hljs-built_in">this</span>.configurations.entrySet()) &#123;<br>			<span class="hljs-keyword">if</span> (entry.getKey().startsWith(<span class="hljs-string">&quot;default.&quot;</span>)) &#123;<br>				<span class="hljs-keyword">for</span> (Class&lt;?&gt; configuration : entry.getValue().getConfiguration()) &#123;<br>					context.register(configuration);<br>				&#125;<br>			&#125;<br>		&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>上面可以看到<code>@LoadBalancerClient</code>是引入一个名字和配置类，配置类最终会注册到名称指定的子容器里。</p>
+<p>总结一下负载均衡获取根据实例id获取实例的过程</p>
+<ol>
+<li>创建<code>LoadBalancerClientFactory</code>工厂类，其是一个子容器的工厂</li>
+<li><code>LoadBalancerClientFactory</code>获取bean时会自动创建子容器，创建过程中会解析配置类（构造方法里传入的和<code>@LoadBalancerClient</code>注解引入的）</li>
+<li>由工厂类获取<code>ReactiveLoadBalancer</code>对象（解析好配置类后，此对象就会在子容器里）</li>
+<li>创建<code>BlockingLoadBalancerClient</code>供堵塞式api使用，其将逻辑委托给<code>ReactiveLoadBalancer</code></li>
+<li>这样我们就能从容器里获取堵塞式和非堵塞式的<code>LoadbalancerClient</code>了</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>​		<code>spring-loadbalance</code>是一个小巧的库，它支持堵塞式和非堵塞式的api，其中堵塞式是委托给非堵塞式来完成的，它的原理是使用<code>DiscoverClient</code>获取指定服务id对应的服务实例列表，通过轮询的方式从其中选择一个实例，并且可以配置缓存。 </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/spring/" class="print-no-link">#spring</a>
+      
+        <a href="/tags/springcloud/" class="print-no-link">#springcloud</a>
+      
+        <a href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" class="print-no-link">#负载均衡</a>
+      
+        <a href="/tags/loadbalance/" class="print-no-link">#loadbalance</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>springCloudLoadbalance源码解读</div>
+      <div>https://www.huangchaoyu.com/2239800896.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年9月29日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/305128508.html" title="mysql事务隔离与原理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">mysql事务隔离与原理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1448015480.html" title="springGateway配置需要注意的点">
+                        <span class="hidden-mobile">springGateway配置需要注意的点</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

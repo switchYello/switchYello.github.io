@@ -1,0 +1,768 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="linux的dns解析dns是我们最常用的功能，他就是实现一个目的，域名转换成ip，在linux系统中如何配置最好呢。 最简单的dns系统默认会查找 &#x2F;etc&#x2F;resolv.conf 文件查找dns，所以我只要修改该文件就能改变系统使用的dns,像下面这样 123[root@www ~]# vim &#x2F;etc&#x2F;resolv.confnameserver 168.95.1.1nameserver 13">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux的dns解析">
+<meta property="og:url" content="https://www.huangchaoyu.com/3456619767.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="linux的dns解析dns是我们最常用的功能，他就是实现一个目的，域名转换成ip，在linux系统中如何配置最好呢。 最简单的dns系统默认会查找 &#x2F;etc&#x2F;resolv.conf 文件查找dns，所以我只要修改该文件就能改变系统使用的dns,像下面这样 123[root@www ~]# vim &#x2F;etc&#x2F;resolv.confnameserver 168.95.1.1nameserver 13">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-09-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:48.139Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="dns">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>linux的dns解析 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="linux的dns解析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-12 00:00" pubdate>
+          2024年9月12日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">linux的dns解析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="linux的dns解析"><a href="#linux的dns解析" class="headerlink" title="linux的dns解析"></a>linux的dns解析</h1><p>dns是我们最常用的功能，他就是实现一个目的，域名转换成ip，在linux系统中如何配置最好呢。</p>
+<h2 id="最简单的dns"><a href="#最简单的dns" class="headerlink" title="最简单的dns"></a>最简单的dns</h2><p>系统默认会查找 <code>/etc/resolv.conf</code> 文件查找dns，所以我只要修改该文件就能改变系统使用的dns,像下面这样</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@www ~]# vim /etc/resolv.conf<br>nameserver 168.95.1.1<br>nameserver 139.175.10.20<br></code></pre></td></tr></table></figure>
+
+<p>但是这种做法非常的不灵活。而且基本没法做动态管理， 因此 <code>systemd-resolved.service</code>出来了</p>
+<hr>
+<h2 id="systemd-resolved-service"><a href="#systemd-resolved-service" class="headerlink" title="systemd-resolved.service"></a>systemd-resolved.service</h2><p>看他的名字就能看出来，这是一个比较官方的实现,且很多系统预先已经安装了，它实现的功能很简单。</p>
+<p>如果有些系统没有的话可以使用命令安装:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo apt install systemd-resolved<br></code></pre></td></tr></table></figure>
+
+<p>他做了这么几件事</p>
+<ol>
+<li>在本地53端口搭建一个dns服务器，将接收到的dns请求转发给配置的上游dns</li>
+<li>修改resolv.conf文件指向127.0.0.1,也就是将系统dns指向systemd-resolved.service</li>
+<li>提供了一些命令行，支持通过命令改dns之类的能力</li>
+</ol>
+<p>使用这个命令也能看到53已经被systemd-recolved监听了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">root@armbian:/$ sudo lsof -i:53<br>COMMAND       PID            USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME<br>systemd-r 1461065 systemd-resolve   17u  IPv4 5663216      0t0  UDP localhost:domain <br>systemd-r 1461065 systemd-resolve   18u  IPv4 5663217      0t0  TCP localhost:domain (LISTEN)<br></code></pre></td></tr></table></figure>
+
+<p>有了他的代理就可以做一些灵活的事情了.<br>下面是他的配置文件，DNS字段用空格分隔多个上游dns，DNSOverTLS参数可以指定使用ssh协议加密dns数据，支持缓存啦等能力。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"> <span class="hljs-built_in">cat</span> /etc/systemd/resolved.conf</span><br><br>[Resolve]<br><span class="hljs-meta prompt_"># </span><span class="language-bash">Some examples of DNS servers <span class="hljs-built_in">which</span> may be used <span class="hljs-keyword">for</span> DNS= and FallbackDNS=:</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Cloudflare: 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Google:     8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Quad9:      9.9.9.9 2620:fe::fe</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">DNS=</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">FallbackDNS=</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">Domains=</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">DNSSEC=no</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">DNSOverTLS=no</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">MulticastDNS=<span class="hljs-built_in">yes</span></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">LLMNR=<span class="hljs-built_in">yes</span></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">Cache=<span class="hljs-built_in">yes</span></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">DNSStubListener=<span class="hljs-built_in">yes</span></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">DNSStubListenerExtra=</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">ReadEtcHosts=<span class="hljs-built_in">yes</span></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">ResolveUnicastSingleLabel=no</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="smartdns或者dnsmasq"><a href="#smartdns或者dnsmasq" class="headerlink" title="smartdns或者dnsmasq"></a>smartdns或者dnsmasq</h2><p>systemd-resolved.service 基本满足了我们的需求，但是还不够我们要一些更加强大的能力比如说：</p>
+<ul>
+<li>DOT,DOH</li>
+<li>定制缓存能力，  比如某些网站的dns不缓存</li>
+<li>不同的域名使用不同的dns进行解析，比如国内网站走114.114.114.114,国外网站走8.8.8.8</li>
+<li>智能选择速度最快的地址，比如一个网站返回多个ip，智能选择一个速度最快的</li>
+<li>广告过滤， 拦截某些广告的地址，这样就变相拦截了广告</li>
+</ul>
+<p>等等啦这些功能，单纯 <code>systemd-resolved.service</code>就不够用了。我们引入 <code>smartdns</code>来实现上面的功能。<br><code>dnsmasq</code>与<code>smartdns</code>类似。</p>
+<p>官网文档：<a target="_blank" rel="noopener" href="https://pymumu.github.io/smartdns/install/linux/">smartdns官网文档</a></p>
+<p>smartdns也是在本地53端口开启了一个dns服务器，并且将请求转发给他的上游dns。实现原理上与 <code>systemd-resolved.service</code>是没有区别的。<br>不过针对请求的处理上它实现了更多的功能，具体看官网介绍吧。<br>不过有一点是既然都是监听53端口所以会与 <code>systemd-resolved.service</code>冲突, 安装完成后将 <code>systemd-resolved.service</code>关闭掉</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo systemct stop systemd-resolved.service<br>sudo systemct disable systemd-resolved.service<br>sudo systemct restart smartdns #重启smartdns<br></code></pre></td></tr></table></figure>
+
+<p><strong>smartdns代理上游dns时可以使用 DOT、DOH 访问，所以解决了域名污染问题。</strong></p>
+<p>smartdns的配置文件在 <code>/etc/smartdns</code>目录下。下面做一些简单介绍,  细节的看官网文档非常的详细:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><code class="hljs shell">root:$ cat /etc/smartdns/smartdns.conf <br><span class="hljs-meta prompt_"># </span><span class="language-bash">dns服务器的名称，友好展示，可以不配</span><br>server-name bf_smartdns<br><span class="hljs-meta prompt_"># </span><span class="language-bash">引入外部配置文件，相当于把指定的配置文件copy到当前配置文件中</span><br>conf-file /etc/smartdns/anti-ad-smartdns.conf<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">绑定 tcp，udp的53端口，默认只监听了udp，有些程序会使用到tcp所以把tcp的监听也打开了</span><br>bind [::]:53<br>bind-tcp [::]:53<br><span class="hljs-meta prompt_"># </span><span class="language-bash">既然是tcp， 那就有超时时间，配置60秒</span><br>tcp-idle-time 60<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">dns缓存的数量</span><br>cache-size 16384<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">强制指定 qtype 返回 SOA</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">force specific qtype <span class="hljs-built_in">return</span> soa</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">force-qtype-SOA [qtypeid |...]</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">force-qtype-SOA 65 28</span><br>force-qtype-SOA 65<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">支持双栈，即支持ipv4和ipv6</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Enable IPV4, IPV6 dual stack IP optimization selection strategy</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">dualstack-ip-selection-threshold [num] (0~1000)</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">dualstack-ip-allow-force-AAAA [<span class="hljs-built_in">yes</span>|no]</span><br>dualstack-ip-selection yes<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">配置日志，日志在 /var/log/smartdns/smartdns.log</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">set</span> <span class="hljs-built_in">log</span> level</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">log-level: [level], level=fatal, error, warn, notice, info, debug</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">log-file: file path of <span class="hljs-built_in">log</span> file.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">log-size: size of each <span class="hljs-built_in">log</span> file, support k,m,g</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">log-num: number of logs, 0 means <span class="hljs-built_in">disable</span> <span class="hljs-built_in">log</span></span><br>log-level info<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">log-file /var/log/smartdns/smartdns.log</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">log-size 128k</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">log-num 2</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">log-file-mode [mode]: file mode of <span class="hljs-built_in">log</span> file.</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">这一块是配置上游的dns，使用普通udp协议访问，因为我是用了DOH 所以这了没做配置</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">remote udp dns server list</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server [IP]:[PORT] [-blacklist-ip] [-whitelist-ip] [-check-edns] [-group [group] ...] [-exclude-default-group]</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">default port is 53</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -blacklist-ip: filter result with blacklist ip</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -whitelist-ip: filter result whth whitelist ip,  result <span class="hljs-keyword">in</span> whitelist-ip will be accepted.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -check-edns: result must exist edns RR, or discard result.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -group [group]: <span class="hljs-built_in">set</span> server to group, use with nameserver /domain/group.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -exclude-default-group: exclude this server from default group.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server 8.8.8.8 -blacklist-ip -check-edns -group g1 -group g2</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">server 114.114.114.114</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">remote tcp dns server list</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server-tcp [IP]:[PORT] [-blacklist-ip] [-whitelist-ip] [-group [group] ...] [-exclude-default-group]</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">default port is 53</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server-tcp 8.8.8.8</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">这一块是配置上游的dns，但是使用tls加密的即支持DOT的dns， 因为我是用了DOH 所以这了没做配置</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">remote tls dns server list</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server-tls [IP]:[PORT] [-blacklist-ip] [-whitelist-ip] [-spki-pin [sha256-pin]] [-group [group] ...] [-exclude-default-group]</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -spki-pin: TLS spki pin to verify.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -tls-host-verify: cert hostname to verify.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -host-name: TLS sni hostname.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -no-check-certificate: no check certificate.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Get SPKI with this <span class="hljs-built_in">command</span>:</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   <span class="hljs-built_in">echo</span> | openssl s_client -connect <span class="hljs-string">&#x27;[ip]:853&#x27;</span> | openssl x509 -pubkey -noout | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -<span class="hljs-built_in">base64</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">default port is 853</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">server-tls 8.8.8.8</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">server-tls 1.0.0.1</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">这一块是配置上游dns，使用https协议的，即 DOH</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">remote https dns server list</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server-https https://[host]:[port]/path [-blacklist-ip] [-whitelist-ip] [-spki-pin [sha256-pin]] [-group [group] ...] [-exclude-default-group]</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -spki-pin: TLS spki pin to verify.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -tls-host-verify: cert hostname to verify.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -host-name: TLS sni hostname.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -http-host: http host.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">  -no-check-certificate: no check certificate.</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">default port is 443</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server-https https://cloudflare-dns.com/dns-query</span><br>server-https https://223.5.5.5/dns-query<br>server-https https://1.12.12.12/dns-query<br>server-https https://doh.opendns.com/dns-query<br>server-https https://101.101.101.101/dns-query<br></code></pre></td></tr></table></figure>
+
+<p>好啦，下面是从smartdns官网拷贝的介绍，功能是非常灵活的。</p>
+<blockquote>
+<p>  多虚拟DNS服务器<br>支持多个虚拟DNS服务器，不同虚拟DNS服务器不同的端口，规则，客户端。<br>  多 DNS 上游服务器<br>支持配置多个上游 DNS 服务器，并同时进行查询，即使其中有 DNS 服务器异常，也不会影响查询。<br>  支持每个客户端独立控制<br>支持基于MAC，IP地址控制客户端使用不同查询规则，可实现家长控制等功能。<br>  返回最快 IP 地址<br>支持从域名所属 IP 地址列表中查找到访问速度最快的 IP 地址，并返回给客户端，提高网络访问速度。<br>  支持多种查询协议<br>支持 UDP、TCP、DOT 和 DOH 查询及服务，以及非 53 端口查询；支持通过socks5，HTTP代理查询;<br>  特定域名 IP 地址指定<br>支持指定域名的 IP 地址，达到广告过滤效果、避免恶意网站的效果。<br>  域名高性能后缀匹配<br>支持域名后缀匹配模式，简化过滤配置，过滤 20 万条记录时间 &lt; 1ms。<br>  域名分流<br>支持域名分流，不同类型的域名向不同的 DNS 服务器查询，支持iptable和nftable更好的分流；支持测速失败的情况下设置域名结果到对应ipset和nftset集合。<br>  Windows &#x2F; Linux 多平台支持<br>支持标准 Linux 系统（树莓派）、OpenWrt 系统各种固件和华硕路由器原生固件。同时还支持 WSL（Windows Subsystem for Linux，适用于 Linux 的 Windows 子系统）。<br>  支持 IPv4、IPv6 双栈<br>支持 IPv4 和 IPV 6网络，支持查询 A 和 AAAA 记录，支持双栈 IP 速度优化，并支持完全禁用 IPv6 AAAA 解析。<br>  支持DNS64<br>支持DNS64转换。<br>  高性能、占用资源少<br>多线程异步 IO 模式，cache 缓存查询结果。<br>  主流系统官方支持<br>主流路由系统官方软件源安装smartdns。</p>
+</blockquote>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ol>
+<li><p>ali的223.5.5.5不建议使用，有些网站解析出的域名是错误的。建议使用cloudflare的配合缓存也不会慢的。  </p>
+</li>
+<li><p>重启smartdns可以用这个命令 <code>sudo systemctl stop smartdns &amp;&amp; sleep 1 &amp;&amp; sudo rm -f /tmp/smartdns.cache &amp;&amp; sudo systemctl start smartdns</code>  </p>
+</li>
+<li><p>有些doh可以用这样进行测试<code>curl -H &#39;accept: application/dns-json&#39; &#39;https://1.1.1.1/dns-query?name=www.google.com&amp;type=A&#39;</code>  </p>
+</li>
+<li><p>如果发现不生效可以再检查下resolve.conf文件，有时候重启机器后可能里面配置的127.0.0.1会被改成网关的192.168.1.1，怀疑是dhcp服务在修改它</p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%90%9E%E4%BA%8B%E6%83%85/" class="category-chain-item">搞事情</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+        <a href="/tags/dns/" class="print-no-link">#dns</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>linux的dns解析</div>
+      <div>https://www.huangchaoyu.com/3456619767.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月12日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/227567824.html" title="shardingjdbc4.x初始化数据源过程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">shardingjdbc4.x初始化数据源过程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/750222647.html" title="docker配置使用ipv6">
+                        <span class="hidden-mobile">docker配置使用ipv6</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

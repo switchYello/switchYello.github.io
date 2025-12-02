@@ -1,0 +1,711 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="springSecurity的两种rememberMe方式springSecurity 使用RememberMeAuthenticationFilter处理记住我功能，代码逻辑  12345678910111213141516171819202122232425262728293031323334353637383940public void doFilter(ServletRequest req">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springSecurity的两种rememberMe方式">
+<meta property="og:url" content="https://www.huangchaoyu.com/1766048619.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="springSecurity的两种rememberMe方式springSecurity 使用RememberMeAuthenticationFilter处理记住我功能，代码逻辑  12345678910111213141516171819202122232425262728293031323334353637383940public void doFilter(ServletRequest req">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-10-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.118Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="springSecurity">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>springSecurity的两种rememberMe方式 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="springSecurity的两种rememberMe方式"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-10-30 00:00" pubdate>
+          2019年10月30日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          970 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">springSecurity的两种rememberMe方式</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="springSecurity的两种rememberMe方式"><a href="#springSecurity的两种rememberMe方式" class="headerlink" title="springSecurity的两种rememberMe方式"></a>springSecurity的两种rememberMe方式</h2><pre><code class="hljs">springSecurity 使用RememberMeAuthenticationFilter处理记住我功能，代码逻辑
+</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest req, ServletResponse res, FilterChain chain)</span><br>			<span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>		<span class="hljs-type">HttpServletRequest</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> (HttpServletRequest) req;<br>		<span class="hljs-type">HttpServletResponse</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> (HttpServletResponse) res;<br>		<span class="hljs-comment">//当前处于未登录状态</span><br>		<span class="hljs-keyword">if</span> (SecurityContextHolder.getContext().getAuthentication() == <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-comment">//使用rememberMeServices进行自动登录，返回登录成功标识</span><br>			<span class="hljs-type">Authentication</span> <span class="hljs-variable">rememberMeAuth</span> <span class="hljs-operator">=</span> rememberMeServices.autoLogin(request,response);<br><br>			<span class="hljs-keyword">if</span> (rememberMeAuth != <span class="hljs-literal">null</span>) &#123;<br><br>				<span class="hljs-keyword">try</span> &#123;<br>					<span class="hljs-comment">//验证rememberMeAuth的key和rememberMeServices的key是否一致</span><br>					rememberMeAuth = authenticationManager.authenticate(rememberMeAuth);<br><br>					<span class="hljs-comment">// Store to SecurityContextHolder</span><br>					SecurityContextHolder.getContext().setAuthentication(rememberMeAuth);<br><br>					onSuccessfulAuthentication(request, response, rememberMeAuth);<br><br>					<span class="hljs-keyword">if</span> (successHandler != <span class="hljs-literal">null</span>) &#123;<br>						successHandler.onAuthenticationSuccess(request, response,<br>								rememberMeAuth);<br><br>						<span class="hljs-keyword">return</span>;<br>					&#125;<br><br>				&#125;<br>				<span class="hljs-keyword">catch</span> (AuthenticationException authenticationException) &#123;<br><br>			&#125;<br><br>			chain.doFilter(request, response);<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			chain.doFilter(request, response);<br>		&#125;<br>	&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="springSeciruity提供的实现"><a href="#springSeciruity提供的实现" class="headerlink" title="springSeciruity提供的实现"></a>springSeciruity提供的实现</h3><pre><code class="hljs">上面的filter使用RememberMeServices来处理自动登录，
+TokenBasedRememberMeServices和PersistentTokenBasedRememberMeServices是springSecurity提供的两种处理remenberMe的实现类
+他俩都继承自 AbstractRememberMeServices
+</code></pre>
+<h3 id="0-AbstractRememberMeServices"><a href="#0-AbstractRememberMeServices" class="headerlink" title="0.AbstractRememberMeServices"></a>0.AbstractRememberMeServices</h3><figure class="highlight wren"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs wren"><span class="hljs-comment">//自动登录方法</span><br><span class="hljs-variable">public</span> <span class="hljs-variable">final</span> <span class="hljs-title class_">Authentication</span> <span class="hljs-title function_">autoLogin</span>(<span class="hljs-params">HttpServletRequest</span> <span class="hljs-params">request</span>,<br>		<span class="hljs-params">HttpServletResponse</span> <span class="hljs-params">response</span>) &#123;<br><br>	<span class="hljs-comment">//获取cookie中的指定cookie</span><br>	<span class="hljs-title class_">String</span> <span class="hljs-variable">rememberMeCookie</span> <span class="hljs-operator">=</span> <span class="hljs-title function_">extractRememberMeCookie</span>(<span class="hljs-variable">request</span>);<br>	<br>	<span class="hljs-title class_">UserDetails</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br><br>	<span class="hljs-title function_">try</span> &#123;<br>		<span class="hljs-comment">//base64转成字符串，再按照.分隔成数组</span><br>		<span class="hljs-title class_">String</span>[] <span class="hljs-variable">cookieTokens</span> <span class="hljs-operator">=</span> <span class="hljs-title function_">decodeCookie</span>(<span class="hljs-variable">rememberMeCookie</span>);<br>		<span class="hljs-comment">//子类实现的登录方法</span><br>		<span class="hljs-variable">user</span> <span class="hljs-operator">=</span> <span class="hljs-title function_">processAutoLoginCookie</span>(<span class="hljs-variable">cookieTokens</span>, <span class="hljs-variable">request</span>, <span class="hljs-variable">response</span>);<br>		<span class="hljs-comment">//检查用户状态，是否锁定，是否有效等</span><br>		<span class="hljs-variable">userDetailsChecker</span>.<span class="hljs-property">check</span>(<span class="hljs-variable">user</span>);<br>		<span class="hljs-comment">//返回验证成功的Authentication</span><br>		<span class="hljs-keyword">return</span> <span class="hljs-title function_">createSuccessfulAuthentication</span>(<span class="hljs-variable">request</span>, <span class="hljs-variable">user</span>);<br>	&#125;<br>	<span class="hljs-title function_">catch</span> (<span class="hljs-title class_">CookieTheftException</span> <span class="hljs-variable">cte</span>) &#123;<br>		<span class="hljs-title function_">cancelCookie</span>(<span class="hljs-variable">request</span>, <span class="hljs-variable">response</span>);<br>		<span class="hljs-variable">throw</span> <span class="hljs-variable">cte</span>;<br>	&#125;<br>	<span class="hljs-title function_">catch</span> (<span class="hljs-title class_">UsernameNotFoundException</span> <span class="hljs-variable">noUser</span>) &#123;<br>		<span class="hljs-variable">logger</span>.<span class="hljs-property">debug</span>(<span class="hljs-string">&quot;Remember-me login was valid but corresponding user not found.&quot;</span>,<br>				<span class="hljs-variable">noUser</span>);<br>	&#125;<br>	<span class="hljs-title function_">catch</span> (<span class="hljs-title class_">InvalidCookieException</span> invalidCookie) &#123;<br>		<span class="hljs-variable">logger</span>.<span class="hljs-property">debug</span>(<span class="hljs-string">&quot;Invalid remember-me cookie: &quot;</span> <span class="hljs-operator">+</span> invalidCookie.<span class="hljs-property">getMessage</span>());<br>	&#125;<br>	<span class="hljs-title function_">catch</span> (<span class="hljs-title class_">AccountStatusException</span> <span class="hljs-variable">statusInvalid</span>) &#123;<br>		<span class="hljs-variable">logger</span>.<span class="hljs-property">debug</span>(<span class="hljs-string">&quot;Invalid UserDetails: &quot;</span> <span class="hljs-operator">+</span> <span class="hljs-variable">statusInvalid</span>.<span class="hljs-property">getMessage</span>());<br>	&#125;<br>	<span class="hljs-title function_">catch</span> (<span class="hljs-title class_">RememberMeAuthenticationException</span> <span class="hljs-variable">e</span>) &#123;<br>		<span class="hljs-variable">logger</span>.<span class="hljs-property">debug</span>(<span class="hljs-variable">e</span>.<span class="hljs-property">getMessage</span>());<br>	&#125;<br><br>	<span class="hljs-title function_">cancelCookie</span>(<span class="hljs-variable">request</span>, <span class="hljs-variable">response</span>);<br>	<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="1-使用TokenBasedRememberMeServices如何实现processAutoLoginCookie方法的"><a href="#1-使用TokenBasedRememberMeServices如何实现processAutoLoginCookie方法的" class="headerlink" title="1. 使用TokenBasedRememberMeServices如何实现processAutoLoginCookie方法的"></a>1. 使用TokenBasedRememberMeServices如何实现processAutoLoginCookie方法的</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">protected</span> <span class="hljs-title class_">UserDetails</span> <span class="hljs-title function_">processAutoLoginCookie</span>(<span class="hljs-params"><span class="hljs-title class_">String</span>[] cookieTokens,</span><br><span class="hljs-params">			<span class="hljs-title class_">HttpServletRequest</span> request, <span class="hljs-title class_">HttpServletResponse</span> response</span>) &#123;<br>		<span class="hljs-comment">//验证cookie中解码完成的值数组长度是3，分别是[用户名，过期时间戳，md5(用户名：过期时间：密码：key)]</span><br>		<span class="hljs-keyword">if</span> (cookieTokens.<span class="hljs-property">length</span> != <span class="hljs-number">3</span>) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvalidCookieException</span>(<span class="hljs-string">&quot;Cookie token did not contain 3&quot;</span><br>					+ <span class="hljs-string">&quot; tokens, but contained &#x27;&quot;</span> + <span class="hljs-title class_">Arrays</span>.<span class="hljs-title function_">asList</span>(cookieTokens) + <span class="hljs-string">&quot;&#x27;&quot;</span>);<br>		&#125;<br><br>		long tokenExpiryTime;<br>		<span class="hljs-comment">//数组第二个元素转成Long</span><br>		<span class="hljs-keyword">try</span> &#123;<br>			tokenExpiryTime = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Long</span>(cookieTokens[<span class="hljs-number">1</span>]).<span class="hljs-title function_">longValue</span>();<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (<span class="hljs-title class_">NumberFormatException</span> nfe) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvalidCookieException</span>(<br>					<span class="hljs-string">&quot;Cookie token[1] did not contain a valid number (contained &#x27;&quot;</span><br>							+ cookieTokens[<span class="hljs-number">1</span>] + <span class="hljs-string">&quot;&#x27;)&quot;</span>);<br>		&#125;<br>		<span class="hljs-comment">//验证是否过期</span><br>		<span class="hljs-keyword">if</span> (<span class="hljs-title function_">isTokenExpired</span>(tokenExpiryTime)) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvalidCookieException</span>(<span class="hljs-string">&quot;Cookie token[1] has expired (expired on &#x27;&quot;</span><br>					+ <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(tokenExpiryTime) + <span class="hljs-string">&quot;&#x27;; current time is &#x27;&quot;</span> + <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>()<br>					+ <span class="hljs-string">&quot;&#x27;)&quot;</span>);<br>		&#125;<br>		<span class="hljs-comment">//使用UserDetailsService 查询出用户信息</span><br>		<span class="hljs-title class_">UserDetails</span> userDetails = <span class="hljs-title function_">getUserDetailsService</span>().<span class="hljs-title function_">loadUserByUsername</span>(<br>				cookieTokens[<span class="hljs-number">0</span>]);<br>		<span class="hljs-comment">//重新构造验证签名</span><br>		<span class="hljs-title class_">String</span> expectedTokenSignature = <span class="hljs-title function_">makeTokenSignature</span>(tokenExpiryTime,<br>				userDetails.<span class="hljs-title function_">getUsername</span>(), userDetails.<span class="hljs-title function_">getPassword</span>());<br>		<span class="hljs-comment">//比较重新构造的签名和cookie中数组第三位中的签名是否一致</span><br>		<span class="hljs-keyword">if</span> (!<span class="hljs-title function_">equals</span>(expectedTokenSignature, cookieTokens[<span class="hljs-number">2</span>])) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvalidCookieException</span>(<span class="hljs-string">&quot;Cookie token[2] contained signature &#x27;&quot;</span><br>					+ cookieTokens[<span class="hljs-number">2</span>] + <span class="hljs-string">&quot;&#x27; but expected &#x27;&quot;</span> + expectedTokenSignature + <span class="hljs-string">&quot;&#x27;&quot;</span>);<br>		&#125;<br><br>		<span class="hljs-keyword">return</span> userDetails;<br>	&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">上面的方法就是根据cookie中查询的用户名到数据库中查询出真实用户信息。根据真实的信息，构造出签名与cookie中的签名进行比较。
+这样可以防止cookie伪造，但不能防止cookie被别人窃取使用。
+</code></pre>
+<h3 id="2-使用PersistentTokenBasedRememberMeServices如何实现processAutoLoginCookie方法的"><a href="#2-使用PersistentTokenBasedRememberMeServices如何实现processAutoLoginCookie方法的" class="headerlink" title="2. 使用PersistentTokenBasedRememberMeServices如何实现processAutoLoginCookie方法的"></a>2. 使用PersistentTokenBasedRememberMeServices如何实现processAutoLoginCookie方法的</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">protected</span> UserDetails <span class="hljs-title function_">processAutoLoginCookie</span><span class="hljs-params">(String[] cookieTokens,</span><br><span class="hljs-params">			HttpServletRequest request, HttpServletResponse response)</span> &#123;<br><br>		<span class="hljs-keyword">if</span> (cookieTokens.length != <span class="hljs-number">2</span>) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvalidCookieException</span>(<span class="hljs-string">&quot;Cookie token did not contain &quot;</span> + <span class="hljs-number">2</span><br>					+ <span class="hljs-string">&quot; tokens, but contained &#x27;&quot;</span> + Arrays.asList(cookieTokens) + <span class="hljs-string">&quot;&#x27;&quot;</span>);<br>		&#125;<br>		<span class="hljs-comment">//获取cookie中的series和token。series是标识唯一cookie，token是生成cookie时创建的随机值</span><br>		<span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">presentedSeries</span> <span class="hljs-operator">=</span> cookieTokens[<span class="hljs-number">0</span>];<br>		<span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">presentedToken</span> <span class="hljs-operator">=</span> cookieTokens[<span class="hljs-number">1</span>];<br>		<span class="hljs-comment">//根据series到数据库中查询出此cookie的信息</span><br>		<span class="hljs-type">PersistentRememberMeToken</span> <span class="hljs-variable">token</span> <span class="hljs-operator">=</span> tokenRepository<br>				.getTokenForSeries(presentedSeries);<br><br>		<span class="hljs-keyword">if</span> (token == <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-comment">// No series match, so we can&#x27;t authenticate using this cookie</span><br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RememberMeAuthenticationException</span>(<br>					<span class="hljs-string">&quot;No persistent token found for series id: &quot;</span> + presentedSeries);<br>		&#125;<br><br>		<span class="hljs-comment">//比较数据库中查询出的token中的Token值是否与cookie中的token值相同，防止cookie伪造</span><br>		<span class="hljs-keyword">if</span> (!presentedToken.equals(token.getTokenValue())) &#123;<br>			<span class="hljs-comment">// Token doesn&#x27;t match series value. Delete all logins for this user and throw</span><br>			<span class="hljs-comment">// an exception to warn them.</span><br>			tokenRepository.removeUserTokens(token.getUsername());<br><br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CookieTheftException</span>(<br>					messages.getMessage(<br>							<span class="hljs-string">&quot;PersistentTokenBasedRememberMeServices.cookieStolen&quot;</span>,<br>							<span class="hljs-string">&quot;Invalid remember-me token (Series/token) mismatch. Implies previous cookie theft attack.&quot;</span>));<br>		&#125;<br>		<span class="hljs-comment">//验证是否过期</span><br>		<span class="hljs-keyword">if</span> (token.getDate().getTime() + getTokenValiditySeconds() * <span class="hljs-number">1000L</span> &lt; System<br>				.currentTimeMillis()) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RememberMeAuthenticationException</span>(<span class="hljs-string">&quot;Remember-me login has expired&quot;</span>);<br>		&#125;<br><br>		<span class="hljs-comment">//上面两步验证说明，cookie是有效的，这里创建新的token（Series不变，Token变成随机值）</span><br>		<span class="hljs-type">PersistentRememberMeToken</span> <span class="hljs-variable">newToken</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PersistentRememberMeToken</span>(<br>				token.getUsername(), token.getSeries(), generateTokenData(), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>());<br><br>		<span class="hljs-keyword">try</span> &#123;<br>		<span class="hljs-comment">//将修改后的Token更新到数据库 和返回给前台</span><br>			tokenRepository.updateToken(newToken.getSeries(), newToken.getTokenValue(),<br>					newToken.getDate());<br>			addCookie(newToken, request, response);<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (Exception e) &#123;<br>			logger.error(<span class="hljs-string">&quot;Failed to update token: &quot;</span>, e);<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RememberMeAuthenticationException</span>(<br>					<span class="hljs-string">&quot;Autologin failed due to data access problem&quot;</span>);<br>		&#125;<br>		<span class="hljs-keyword">return</span> getUserDetailsService().loadUserByUsername(token.getUsername());<br>	&#125;<br><br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">这个rememberMeServices的处理逻辑是，每次自动登录成功后将cookie中的某个随机值和数据库同步更新，假设cookie别别人盗用，自动登录后盗用者的cookie被更新了。
+主人的cookie就会变无效。下次主人会自动登录失败，系统就能发现cookie被盗用，此时删除数据库中的对应cookie验证，通知用户改密码等.
+</code></pre>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/springSecurity/" class="print-no-link">#springSecurity</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>springSecurity的两种rememberMe方式</div>
+      <div>https://www.huangchaoyu.com/1766048619.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年10月30日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/1878396521.html" title="netty 不要要在future监听器的回掉函数中抛出异常">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">netty 不要要在future监听器的回掉函数中抛出异常</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/3487395032.html" title="HeaderWriterFilter内部做了什么，导致静态资源不能访问了">
+                        <span class="hidden-mobile">HeaderWriterFilter内部做了什么，导致静态资源不能访问了</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

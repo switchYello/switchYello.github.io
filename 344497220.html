@@ -1,0 +1,828 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="TOC{:toc}  springBootActuator的使用启用actuator功能​			这个是Springboot提供的分析软件，他能提供一些指数供我们参考，因为他已经内置在Springboot里面了，要使用它非常简单，我们只需添加如下依赖在项目下。 12345&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&amp;lt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springBootActuator的使用">
+<meta property="og:url" content="https://www.huangchaoyu.com/344497220.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="TOC{:toc}  springBootActuator的使用启用actuator功能​			这个是Springboot提供的分析软件，他能提供一些指数供我们参考，因为他已经内置在Springboot里面了，要使用它非常简单，我们只需添加如下依赖在项目下。 12345&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&amp;lt">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.580Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="springboot">
+<meta property="article:tag" content="springbootActuator">
+<meta property="article:tag" content="springbootadmin">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>springBootActuator的使用 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="springBootActuator的使用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-08-25 00:00" pubdate>
+          2020年8月25日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">springBootActuator的使用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ul>
+<li>TOC<br>{:toc}</li>
+</ul>
+<h1 id="springBootActuator的使用"><a href="#springBootActuator的使用" class="headerlink" title="springBootActuator的使用"></a>springBootActuator的使用</h1><h2 id="启用actuator功能"><a href="#启用actuator功能" class="headerlink" title="启用actuator功能"></a>启用actuator功能</h2><p>​			这个是<code>Springboot</code>提供的分析软件，他能提供一些指数供我们参考，因为他已经内置在<code>Springboot</code>里面了，要使用它非常简单，我们只需添加如下依赖在项目下。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		他能提供<code>jmx</code>或者<code>web</code>两种方式的数据暴露方式，我们启用基于<code>web</code>的数据暴露方式。</p>
+<p>添加依赖后在配置文件里配置如下</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-comment">#默认开启</span><br><span class="hljs-attr">management.endpoints.enabled-by-default</span>=<span class="hljs-string">true</span><br><span class="hljs-comment">#以web方式暴露所有端点（include * 表示包含全部）</span><br><span class="hljs-attr">management.endpoints.web.exposure.include</span>=<span class="hljs-string">*</span><br><span class="hljs-comment">#关闭jmx的所有端点（exclude * 表示排除全部）</span><br><span class="hljs-attr">management.endpoints.jmx.exposure.exclude</span>=<span class="hljs-string">*</span><br><span class="hljs-comment">#health接口包含细节信息</span><br><span class="hljs-attr">management.endpoint.health.show-details</span>=<span class="hljs-string">always</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		这样运行项目后，我们访问<code>http://127.0.0.1:8080/actuator</code>就能看到一个<code>json</code>，里面包含所有暴露出来的端点地址信息，但是只看<code>json</code>是不利于观察的，下面我们讲解如何配置可视化界面。</p>
+<h2 id="配置可视化界面"><a href="#配置可视化界面" class="headerlink" title="配置可视化界面"></a>配置可视化界面</h2><p>​		上面我们已经启用了<code>actuator</code>功能，但是数据不利于观察，于是有人做出了这样的<code>gui</code>项目，只需要将地址配置给<code>gui</code>项目，<code>gui</code>项目帮我们请求地址，将<code>json</code>数据以可视化的方式展示出来。</p>
+<p>​	</p>
+<p>​		在上面的项目上添加如下依赖，这是<code>spring-boot-admin</code>项目的客户端。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>de.codecentric<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-admin-starter-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.3.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>​	 	配置文件里配置服务端的地址，假设服务端启动在8888端口</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">spring.boot.admin.client.instance.service-url</span>=<span class="hljs-string">http://127.0.0.1:8888</span><br></code></pre></td></tr></table></figure>
+
+<p>​			</p>
+<p><strong>新建一个项目作为服务端</strong>，添加如下依赖，这是<code>spring-boot-admin</code>项目的服务端。启动类上添加<code>@EnableAdminServer</code>注解，在8888端口启动。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>de.codecentric<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-admin-starter-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>​		假设服务端启动在8888端口的，在客户端里面配置服务端的地址，这样客户端启动时，会连接服务端，将当前项目的<code>actuator</code>地址告诉服务端，打开<code>http://127.0.0.1:8888</code>就能展示可视化的客户端信息了。	</p>
+<p>​		原理是这样的，拥有客户端的项目在启动时，将客户端的地址发送到服务端。服务端提供静态页面，页面上通过js访问服务端，服务端再请求项目，服务端在页面和客户端之间做转发操作。</p>
+<h2 id="实现原理源码分析"><a href="#实现原理源码分析" class="headerlink" title="实现原理源码分析"></a>实现原理源码分析</h2><p>​		配置了简单的<code>demo</code>，并简述了他的原理，下面我们深入到代码里面查看他的源码。</p>
+<h3 id="客户端原理"><a href="#客户端原理" class="headerlink" title="客户端原理"></a>客户端原理</h3><p>​		找到客户端<code>SpringBootAdminClientAutoConfiguration</code>类，此类在<code>spring.factorise</code>里配置了，启动时会自动执行。我么分析他的源码即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@ConditionalOnMissingBean</span><br><span class="hljs-keyword">public</span> RegistrationApplicationListener <span class="hljs-title function_">registrationListener</span><span class="hljs-params">(ClientProperties client,</span><br><span class="hljs-params">                                                            ApplicationRegistrator registrator)</span> &#123;<br>    <span class="hljs-type">RegistrationApplicationListener</span> <span class="hljs-variable">listener</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RegistrationApplicationListener</span>(registrator);<br>    listener.setAutoRegister(client.isAutoRegistration());<br>    listener.setAutoDeregister(client.isAutoDeregistration());<br>    listener.setRegisterPeriod(client.getPeriod());<br>    <span class="hljs-keyword">return</span> listener;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		查看此类，其中有方法上标记了<code>@EventListener</code>注解，他在监听到容器启动完成后向服务端注册自己，下面代码里开启的注册的定时任务，10秒钟心跳注册一次。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@EventListener</span><br><span class="hljs-meta">@Order(Ordered.LOWEST_PRECEDENCE)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onApplicationReady</span><span class="hljs-params">(ApplicationReadyEvent event)</span> &#123;<br>    <span class="hljs-keyword">if</span> (autoRegister) &#123;<br>        startRegisterTask();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​	</p>
+<p>​		注册逻辑是写在此方法里的，其中有一个<code>register</code>方法，负责向服务端发送信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@ConditionalOnMissingBean</span><br><span class="hljs-keyword">public</span> ApplicationRegistrator <span class="hljs-title function_">registrator</span><span class="hljs-params">(ClientProperties client, ApplicationFactory applicationFactory)</span> &#123;<br>    <span class="hljs-type">RestTemplateBuilder</span> <span class="hljs-variable">builder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RestTemplateBuilder</span>().setConnectTimeout(client.getConnectTimeout())<br>                                                           .setReadTimeout(client.getReadTimeout());<br>    <span class="hljs-keyword">if</span> (client.getUsername() != <span class="hljs-literal">null</span>) &#123;<br>        builder = builder.basicAuthentication(client.getUsername(), client.getPassword());<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApplicationRegistrator</span>(builder.build(), client, applicationFactory);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​		</p>
+<p>​		这是在<code>servlet</code>环境下的处理逻辑，可看淡它使用<code>RestTemplate</code>向服务端发送客户端的信息，如果是<code>webflux</code>环境下，会使用<code>webclient</code>发送信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">register</span><span class="hljs-params">(Application self, String adminUrl, <span class="hljs-type">boolean</span> firstAttempt)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            ResponseEntity&lt;Map&lt;String, Object&gt;&gt; response = template.exchange(adminUrl, HttpMethod.POST,<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpEntity</span>&lt;&gt;(self, HTTP_HEADERS), RESPONSE_TYPE);<br><br>            <span class="hljs-keyword">if</span> (response.getStatusCode().is2xxSuccessful()) &#123;<br>                <span class="hljs-keyword">if</span> (registeredId.compareAndSet(<span class="hljs-literal">null</span>, response.getBody().get(<span class="hljs-string">&quot;id&quot;</span>).toString())) &#123;<br>                    LOGGER.info(<span class="hljs-string">&quot;Application registered itself as &#123;&#125;&quot;</span>, response.getBody().get(<span class="hljs-string">&quot;id&quot;</span>).toString());<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    LOGGER.debug(<span class="hljs-string">&quot;Application refreshed itself as &#123;&#125;&quot;</span>, response.getBody().get(<span class="hljs-string">&quot;id&quot;</span>).toString());<br>                &#125;<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-keyword">if</span> (firstAttempt) &#123;<br>                    LOGGER.warn(<br>                        <span class="hljs-string">&quot;Application failed to registered itself as &#123;&#125;. Response: &#123;&#125;. Further attempts are logged on DEBUG level&quot;</span>,<br>                        self, response.toString());<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    LOGGER.debug(<span class="hljs-string">&quot;Application failed to registered itself as &#123;&#125;. Response: &#123;&#125;&quot;</span>, self,<br>                        response.toString());<br>                &#125;<br>            &#125;<br>        &#125; <span class="hljs-keyword">catch</span> (Exception ex) &#123;<br>            <span class="hljs-keyword">if</span> (firstAttempt) &#123;<br>                LOGGER.warn(<br>                    <span class="hljs-string">&quot;Failed to register application as &#123;&#125; at spring-boot-admin (&#123;&#125;): &#123;&#125;. Further attempts are logged on DEBUG level&quot;</span>,<br>                    self, client.getAdminUrl(), ex.getMessage());<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                LOGGER.debug(<span class="hljs-string">&quot;Failed to register application as &#123;&#125; at spring-boot-admin (&#123;&#125;): &#123;&#125;&quot;</span>, self,<br>                    client.getAdminUrl(), ex.getMessage());<br>            &#125;<br><br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>​		那么到底向服务端发送的是什么内容呢？，查看restTemplate发送请求的代码，他发送了<code>Application</code>序列化的结果。下面是一个<code>ApplicationFactory</code>，他的<code>createApplication</code>会创建一个<code>Application</code>的实例，该实例将包含服务端需要的信息。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ServletConfiguration</span> &#123;<br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-meta">@ConditionalOnMissingBean</span><br>    <span class="hljs-keyword">public</span> ApplicationFactory <span class="hljs-title function_">applicationFactory</span><span class="hljs-params">(InstanceProperties instance,</span><br><span class="hljs-params">                                                 ManagementServerProperties management,</span><br><span class="hljs-params">                                                 ServerProperties server,</span><br><span class="hljs-params">                                                 ServletContext servletContext,</span><br><span class="hljs-params">                                                 PathMappedEndpoints pathMappedEndpoints,</span><br><span class="hljs-params">                                                 WebEndpointProperties webEndpoint,</span><br><span class="hljs-params">                                                 MetadataContributor metadataContributor,</span><br><span class="hljs-params">                                                 DispatcherServletPath dispatcherServletPath)</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServletApplicationFactory</span>(instance,<br>            management,<br>            server,<br>            servletContext,<br>            pathMappedEndpoints,<br>            webEndpoint,<br>            metadataContributor,<br>            dispatcherServletPath<br>        );<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​	</p>
+<p>​	这就是Application内含有的字段。这些字段如果不自己配置，都可以从程序里自动获取到。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Application</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String name;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String managementUrl;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String healthUrl;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String serviceUrl;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, String&gt; metadata;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>​			这就是客户端逻辑，他先是使用监听器监听程序启动，再收集<code>Application</code>类字段上的那些信息，根据容器的不同选择<code>resttemplate</code> 或者 <code>webclient</code>，使用<code>Schedult</code>线程池，每10秒向服务器发送本程序的信息。</p>
+<p>​			我们只需要配置服务端的地址，剩下的数据都能自动收集到。并且客户端的代码很少，就十几个类。功能也比较简单。</p>
+<h3 id="服务端原理"><a href="#服务端原理" class="headerlink" title="服务端原理"></a>服务端原理</h3><p>​		引入下面依赖后，共有三个依赖项目被引入。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>de.codecentric<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-admin-starter-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>分别是</p>
+<ul>
+<li><p>spring-boot-admin-server-ui</p>
+</li>
+<li><p>spring-boot-admin-server-cloud</p>
+</li>
+<li><p>spring-boot-admin-server</p>
+</li>
+</ul>
+<h4 id="spring-boot-admin-server-ui"><a href="#spring-boot-admin-server-ui" class="headerlink" title="spring-boot-admin-server-ui"></a>spring-boot-admin-server-ui</h4><p>​		首先查看<code>spring-boot-admin-server-ui</code>项目，他在项目的<code>META-INF</code>文件夹下放置了页面的静态文件，并在代码里配置了<code>UiController</code>来返回这些静态页面。页面路径相关的配置由<code>AdminServerUiProperties</code>类配置，比较简单。</p>
+<h4 id="spring-boot-admin-server-cloud"><a href="#spring-boot-admin-server-cloud" class="headerlink" title="spring-boot-admin-server-cloud"></a>spring-boot-admin-server-cloud</h4><p>​		发现他配置了<code>InstanceDiscoveryListener</code>类，这里面对服务发现的事件进行监听，比如监听到<code>InstanceRegisteredEvent</code>事件时，调用<code>discoveryClient</code>读取注册中心，这些事件和注册中心都是在<code>spring-cloud-commons</code>包里定义的。如果使用注册中心，<code>admin-server</code>就能从注册中心拉取客户端信息，即使客户端不添加<code>admin-starter-client</code>也是可以的，这个稍后讲。</p>
+<p>​		下面这个方法就是就是发现逻辑，使用<code>discoveryClient</code>发现服务，进行转换后存储在<code>InstanceRegistry</code>里面。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">discover</span><span class="hljs-params">()</span> &#123;<br>    log.debug(<span class="hljs-string">&quot;Discovering new instances from DiscoveryClient&quot;</span>);<br>    Flux.fromIterable(discoveryClient.getServices())<br>        .filter(<span class="hljs-built_in">this</span>::shouldRegisterService)<br>        .flatMapIterable(discoveryClient::getInstances)<br>        .flatMap(<span class="hljs-built_in">this</span>::registerInstance)<br>        .collect(Collectors.toSet())<br>        .flatMap(<span class="hljs-built_in">this</span>::removeStaleInstances)<br>        .subscribe(v -&gt; &#123; &#125;, ex -&gt; log.error(<span class="hljs-string">&quot;Unexpected error.&quot;</span>, ex));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​			</p>
+<h4 id="spring-boot-admin-server"><a href="#spring-boot-admin-server" class="headerlink" title="spring-boot-admin-server"></a>spring-boot-admin-server</h4><p>首先spring.factories文件里面引入了 <code>AdminServerAutoConfiguration</code>配置类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ImportAutoConfiguration(&#123; AdminServerInstanceWebClientConfiguration.class, AdminServerWebConfiguration.class &#125;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AdminServerAutoConfiguration</span> &#123;<br>    .<br>    .<br>    .<br>&#125;        <br>    <br></code></pre></td></tr></table></figure>
+
+
+
+<p>同时这个类又引入了<code>AdminServerInstanceWebClientConfiguration.class</code>，<code>AdminServerWebConfiguration.class</code>两个类。</p>
+<h5 id="AdminServerInstanceWebClientConfiguration配置类"><a href="#AdminServerInstanceWebClientConfiguration配置类" class="headerlink" title="AdminServerInstanceWebClientConfiguration配置类"></a>AdminServerInstanceWebClientConfiguration配置类</h5><p>这个类里面主要定义和配置了<code>InstanceWebClient.Builder</code>，这是一个包装了WebClient的客户端，使用它来获取客户端信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration(proxyBeanMethods = false)</span><br><span class="hljs-meta">@Lazy(false)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AdminServerInstanceWebClientConfiguration</span> &#123;<br><br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> InstanceWebClient.Builder instanceWebClientBuilder;<br><br><span class="hljs-comment">//构造方法里，传入了WebClient和InstanceWebClientCustomizer，webclient.build就是springboot自动配置的 </span><br>	<span class="hljs-keyword">public</span> <span class="hljs-title function_">AdminServerInstanceWebClientConfiguration</span><span class="hljs-params">(ObjectProvider&lt;InstanceWebClientCustomizer&gt; customizers,</span><br><span class="hljs-params">			WebClient.Builder webClient)</span> &#123;<br>		<span class="hljs-built_in">this</span>.instanceWebClientBuilder = InstanceWebClient.builder(webClient);<br>		customizers.orderedStream().forEach((customizer) -&gt; customizer.customize(<span class="hljs-built_in">this</span>.instanceWebClientBuilder));<br>	&#125;<br><br><span class="hljs-comment">//这里在返回InstanceWebClient时进行了clone操作，同时也会可用一份WebClient，所以对此webclient的改动不会反应到全局webclient上    </span><br>	<span class="hljs-meta">@Bean</span><br>	<span class="hljs-meta">@ConditionalOnMissingBean</span><br>	<span class="hljs-meta">@Scope(&quot;prototype&quot;)</span><br>	<span class="hljs-keyword">public</span> InstanceWebClient.Builder <span class="hljs-title function_">instanceWebClientBuilder</span><span class="hljs-params">()</span> &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.instanceWebClientBuilder.clone();<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​		此配置类执行完成后，我们就拥有了一个封装好的<code>Webclient</code>供我们使用，并且对此类的所有配置都不会影响全局<code>Webclient</code>配置。</p>
+<p>​		下面这个类可以为请求添加Basic验证的请求头，如果客户端需要Basic验证，并且配置了密码，就能验证访问。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration(proxyBeanMethods = false)</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HttpHeadersProviderConfiguration</span> &#123;<br><br>	<span class="hljs-meta">@Bean</span><br>	<span class="hljs-meta">@ConditionalOnMissingBean</span><br>	<span class="hljs-keyword">public</span> BasicAuthHttpHeaderProvider <span class="hljs-title function_">basicAuthHttpHeadersProvider</span><span class="hljs-params">()</span> &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BasicAuthHttpHeaderProvider</span>();<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h5 id="AdminServerWebConfiguration"><a href="#AdminServerWebConfiguration" class="headerlink" title="AdminServerWebConfiguration"></a>AdminServerWebConfiguration</h5><p>此类配置了一些<code>Controller</code>。如下面这个方法用来接收客户端的注册。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@PostMapping(path = &quot;/instances&quot;, consumes = MediaType.APPLICATION_JSON_VALUE)</span><br><span class="hljs-keyword">public</span> Mono&lt;ResponseEntity&lt;Map&lt;String, InstanceId&gt;&gt;&gt; <span class="hljs-title function_">register</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> Registration registration,</span><br><span class="hljs-params">		UriComponentsBuilder builder)</span> &#123;<br>	<span class="hljs-type">Registration</span> <span class="hljs-variable">withSource</span> <span class="hljs-operator">=</span> Registration.copyOf(registration).source(<span class="hljs-string">&quot;http-api&quot;</span>).build();<br>	LOGGER.debug(<span class="hljs-string">&quot;Register instance &#123;&#125;&quot;</span>, withSource);<br>	<span class="hljs-keyword">return</span> registry.register(withSource).map((id) -&gt; &#123;<br>		<span class="hljs-type">URI</span> <span class="hljs-variable">location</span> <span class="hljs-operator">=</span> builder.replacePath(<span class="hljs-string">&quot;/instances/&#123;id&#125;&quot;</span>).buildAndExpand(id).toUri();<br>		<span class="hljs-keyword">return</span> ResponseEntity.created(location).body(Collections.singletonMap(<span class="hljs-string">&quot;id&quot;</span>, id));<br>	&#125;);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="AdminServerAutoConfiguration"><a href="#AdminServerAutoConfiguration" class="headerlink" title="AdminServerAutoConfiguration"></a>AdminServerAutoConfiguration</h5><p>​	上面通过<code>controller</code>可以接受用户注册，通过<code>Discover</code>能从注册中心发现服务，那么将这些信息存储在哪里呢？</p>
+<p>由此类里定义的三个组件完成的，分别是</p>
+<ul>
+<li><code>InstanceRegistry</code> 客户端实例的注册器，处理注册操作</li>
+<li><code>InstanceIdGenerator</code> 客户端id生成</li>
+<li><code>SnapshottingInstanceRepository</code> 上面的注册器实际上将信息存储在这个类里面，相当于是注册器的数据库，默认存储在内存里。</li>
+</ul>
+<h4 id="服务发现和密码保护"><a href="#服务发现和密码保护" class="headerlink" title="服务发现和密码保护"></a>服务发现和密码保护</h4><p>​			客户端<code>Actuator</code>相关接口一般是要加密的，如果采用HttpBasic方式加密，可以将密码配置到服务端，或者配置到注册中心的元数据里面，默认<code>admin-server</code>会从元数据里面获取如下的帐号密码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String[] USERNAME_KEYS = &#123; <span class="hljs-string">&quot;user.name&quot;</span>, <span class="hljs-string">&quot;user-name&quot;</span>, <span class="hljs-string">&quot;username&quot;</span> &#125;;<br><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String[] PASSWORD_KEYS = &#123; <span class="hljs-string">&quot;user.password&quot;</span>, <span class="hljs-string">&quot;user-password&quot;</span>, <span class="hljs-string">&quot;userpassword&quot;</span> &#125;;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>​			eureka注册中心将数据存储到元数据里面的方法是下面这样，这样服务端就不用配置客户端的密码了，能直接从注册中心里获取到。</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">eureka.instance.metadata-map.user-name</span>=<span class="hljs-string">abc</span><br><span class="hljs-attr">eureka.instance.metadata-map.user-password</span>=<span class="hljs-string">abc</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p>​		以上就是<code>admin-server</code>端的源码分析，他能使用服务发现，或者接口的方式得到客户端的信息，并存储起来，如果管理网页被打开，就会进行请求转发，转发到对应客户端的地址上。如果不存在注册中心，他就自己维持心跳，维持状态，否则它可以直接从注册中心内获取这些信息。关于密码保护，如果使用注册中心的话，可以将密码存储到元数据里，他尝试从元数据里按照上面三个名字获取账号密码。</p>
+<h3 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h3><p>​		以上就是<code>Actuator</code>可视化的过程，强烈推荐将<code>admin-server</code>单独部署为一个项目，将所有项目部署到一个注册中心里，这样其他项目不使用<code>admin-client</code>也是可以的</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/springboot/" class="print-no-link">#springboot</a>
+      
+        <a href="/tags/springbootActuator/" class="print-no-link">#springbootActuator</a>
+      
+        <a href="/tags/springbootadmin/" class="print-no-link">#springbootadmin</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>springBootActuator的使用</div>
+      <div>https://www.huangchaoyu.com/344497220.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年8月25日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/4217255769.html" title="springGateway常见类分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">springGateway常见类分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/521069115.html" title="springSecurity配置jwt">
+                        <span class="hidden-mobile">springSecurity配置jwt</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

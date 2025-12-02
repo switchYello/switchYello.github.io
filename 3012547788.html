@@ -1,0 +1,1033 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="Feign用法教程 TOC{:toc}  Maven依赖创建java项目，引入maven 1234567891011121314151617      &lt;!--核心包--&gt;&lt;dependency&gt;          &lt;groupId&gt;io.github.openfeign&lt;&#x2F;groupId&gt;          &lt;artifactId&gt;fe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Feign用法教程">
+<meta property="og:url" content="https://www.huangchaoyu.com/3012547788.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="Feign用法教程 TOC{:toc}  Maven依赖创建java项目，引入maven 1234567891011121314151617      &lt;!--核心包--&gt;&lt;dependency&gt;          &lt;groupId&gt;io.github.openfeign&lt;&#x2F;groupId&gt;          &lt;artifactId&gt;fe">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.209Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="openfeign">
+<meta property="article:tag" content="Http客户端">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Feign用法教程 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Feign文档翻译"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-12-13 00:00" pubdate>
+          2019年12月13日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          43 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Feign文档翻译</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Feign用法教程"><a href="#Feign用法教程" class="headerlink" title="Feign用法教程"></a>Feign用法教程</h1><ul>
+<li>TOC<br>{:toc}</li>
+</ul>
+<h2 id="Maven依赖"><a href="#Maven依赖" class="headerlink" title="Maven依赖"></a>Maven依赖</h2><p>创建java项目，引入maven</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs xml">      <span class="hljs-comment">&lt;!--核心包--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.openfeign<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>feign-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>10.7.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>      <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-comment">&lt;!--使用slf4j 打log--&gt;</span><br>       <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.openfeign<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>feign-slf4j<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>10.7.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>       <span class="hljs-comment">&lt;!--引入logback，版本自己选择--&gt;</span><br>      <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>ch.qos.logback<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>logback-classic<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>      <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="典型示例"><a href="#典型示例" class="headerlink" title="典型示例"></a>典型示例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">App</span> &#123;<br><br>    <span class="hljs-keyword">interface</span> <span class="hljs-title class_">GitHub</span> &#123;<br>        <span class="hljs-meta">@RequestLine(&quot;GET /repos/&#123;owner&#125;/&#123;repo&#125;/contributors&quot;)</span><br>        String <span class="hljs-title function_">contributors</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;owner&quot;)</span> String owner, <span class="hljs-meta">@Param(&quot;repo&quot;)</span> String repo)</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>        <span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>                .logLevel(Logger.Level.FULL)<br>                .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>        <br>        <span class="hljs-type">String</span> <span class="hljs-variable">contributors</span> <span class="hljs-operator">=</span> github.contributors(<span class="hljs-string">&quot;OpenFeign&quot;</span>, <span class="hljs-string">&quot;feign&quot;</span>);<br>    &#125;<br>    <br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="支持的注解"><a href="#支持的注解" class="headerlink" title="支持的注解"></a>支持的注解</h2><table>
+<thead>
+<tr>
+<th>注解</th>
+<th>target</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@RequestLine</td>
+<td>方法上</td>
+<td>按照上面的示例一样，可以在此注解中表名请求method，和请求地址，并且可以使用<code>&#123;表达式&#125;</code>，这样的形式来从参数中提取数据，动态构造请求地址。</td>
+</tr>
+<tr>
+<td>@Param</td>
+<td>参数上</td>
+<td>和上面示例一样，标记一个参数，这样在各种表达式中才能使用</td>
+</tr>
+<tr>
+<td>@Headers</td>
+<td>方法上<br />类上</td>
+<td>这个注解有一个value参数，里面放请求头，参数中和<code>@requestLine</code>类似，可以使用表达式来动态创建，如果标记在方法上则此方法对应的请求有效，如果标记在类上，则整个类所有方法对应的请求有效。</td>
+</tr>
+<tr>
+<td>@QeuryMap</td>
+<td>参数上</td>
+<td>将一个map或pojo标记为查询参数，取提取数据扩展成查询参数拼接在url后面</td>
+</tr>
+<tr>
+<td>@HeaderMap</td>
+<td>参数上</td>
+<td>和queryyMap同理，将键值对当成head处理</td>
+</tr>
+<tr>
+<td>@Body</td>
+<td>方法上</td>
+<td>用法和<code>RequestLine</code>类似，它的值会被当作请求体看待，如可以是一个json字符串，里面也可以用表达式</td>
+</tr>
+</tbody></table>
+<blockquote>
+<h4 id="覆盖请求host"><a href="#覆盖请求host" class="headerlink" title="覆盖请求host"></a>覆盖请求host</h4><p>​		如果不希望<code>Feign.builder</code>这样生成接口代理类时指定请求的host，那么可以在方法上添加一个	<code>java.net.URI</code>的参数，此参数将覆盖builder生成代理类时传入的host。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RequestLine(&quot;POST /repos/&#123;owner&#125;/&#123;repo&#125;/issues&quot;)</span><br><span class="hljs-keyword">void</span> <span class="hljs-title function_">createIssue</span><span class="hljs-params">(URI host, Issue issue, <span class="hljs-meta">@Param(&quot;owner&quot;)</span> String owner, <span class="hljs-meta">@Param(&quot;repo&quot;)</span> String repo)</span>;<br></code></pre></td></tr></table></figure></blockquote>
+<h2 id="模板和表达式"><a href="#模板和表达式" class="headerlink" title="模板和表达式"></a>模板和表达式</h2><p>​	Feign 表达式遵守 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc6570">这里</a>定义的String表达式（Level 1），使用<code>Param</code>注解来扩展表达式</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">GitHub</span> &#123;<br>  <br>  <span class="hljs-meta">@RequestLine(&quot;GET /repos/&#123;owner&#125;/&#123;repo&#125;/contributors&quot;)</span><br>  List&lt;Contributor&gt; <span class="hljs-title function_">contributors</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;owner&quot;)</span> String owner, <span class="hljs-meta">@Param(&quot;repo&quot;)</span> String repository)</span>;<br>  <br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">Contributor</span> &#123;<br>    String login;<br>    <span class="hljs-type">int</span> contributions;<br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyApp</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                         .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>    <br>    <span class="hljs-comment">/* owner和 repository两个参数会用来扩展RequestLine中的表达式模板</span><br><span class="hljs-comment">     * </span><br><span class="hljs-comment">     * 真实请求的链接就会变成</span><br><span class="hljs-comment">   	 *https://api.github.com/repos/OpenFeign/feign/contributors</span><br><span class="hljs-comment">     */</span><br>    github.contributors(<span class="hljs-string">&quot;OpenFeign&quot;</span>, <span class="hljs-string">&quot;feign&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>表达式必须用大括号<code>&#123;&#125;</code>包起来的形式，也可以使用正则来限制表达式解析后的值，正则使用冒号<code>:</code>进行分隔，比如 <code>&#123;owner:[a-zA-Z]*&#125;</code> 这样来限制<code>owner</code>必须是大小写字母。即前面的值必须满足后面的正则表达式， feign.template.Expressions#125</p>
+</blockquote>
+<h3 id="请求路径和参数扩展"><a href="#请求路径和参数扩展" class="headerlink" title="请求路径和参数扩展"></a>请求路径和参数扩展</h3><p><code>RequestLine</code> 和<code>QueryMap</code>模板符合 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc6570">URI Template -RFC6570</a>规范，下面需要注重指出:</p>
+<ul>
+<li><p>未被解析的表达式将被忽略</p>
+</li>
+<li><p>除非使用<code>@Param</code>注解的参数对参数标记为<code>encoded</code>，否则都要进行 pct-encoded。</p>
+<blockquote>
+<p>这里的意思是使用<code>@Param(value = &quot;owner&quot;,encoded = true) String owner</code>这样的形式表名该参数已经被编码过了，没标记的会被自动编码。新版本encoded这个参数被弃用了，因为新版本能自动检测值有没有被编码，如果已经编码了就不会再编码，如果没编码就进行编码，所以不使用此参数，让其默认false即可</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="Undefined-vs-Empty-Values"><a href="#Undefined-vs-Empty-Values" class="headerlink" title="Undefined vs Empty Values"></a>Undefined vs Empty Values</h4><p>Undefined的意思是 <code>null</code>，根据 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc6570">URI Template - RFC 6570</a>规范，可以为表达式提供一个空值。当Feign解析一个表达式时，它首先确认该值知否被定义，如果被定义了，则<code>query parameter</code>会被保留，如果没有被定义，则<code>query parameter</code>会被移除，下文会详细解释。</p>
+<ul>
+<li><p>表达式出现在path中</p>
+<ul>
+<li><p>如果是空字符串</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Fq</span> &#123;<br>       <span class="hljs-meta">@RequestLine(value = &quot;GET /item/&#123;id&#125;/create&quot;)</span><br>       String <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;id&quot;)</span> String id)</span>;<br>   &#125;<br>        <br>   <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>       <span class="hljs-type">Fq</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>               .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>               .logLevel(Logger.Level.FULL)<br>               .target(Fq.class, <span class="hljs-string">&quot;http://localhost&quot;</span>);<br>       <span class="hljs-type">String</span> <span class="hljs-variable">itemCoupon</span> <span class="hljs-operator">=</span> target.getItemCoupon(<span class="hljs-string">&quot;&quot;</span>);<br>       <br><span class="hljs-comment">//结果  GET http://localhost/item//create</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>如果是null</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Fq</span> &#123;<br>        <span class="hljs-meta">@RequestLine(value = &quot;GET /item/&#123;id&#125;/create&quot;)</span><br>        String <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;id&quot;)</span> String id)</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>        <span class="hljs-type">Fq</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>                .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>                .logLevel(Logger.Level.FULL)<br>                .target(Fq.class, <span class="hljs-string">&quot;http://localhost&quot;</span>);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">itemCoupon</span> <span class="hljs-operator">=</span> target.getItemCoupon(<span class="hljs-literal">null</span>);<br><span class="hljs-comment">//结果 GET http://localhost/item//create </span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>如果是<code>+</code>或<code>/</code> 这种特殊字符</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Fq</span> &#123;<br>       <span class="hljs-meta">@RequestLine(value = &quot;GET /item/&#123;id&#125;/create&quot;)</span><br>       String <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;id&quot;)</span> String id)</span>;<br>   &#125;<br>        <br>   <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>       <span class="hljs-type">Fq</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>               .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>               .logLevel(Logger.Level.FULL)<br>               .target(Fq.class, <span class="hljs-string">&quot;http://localhost&quot;</span>);<br>       <span class="hljs-type">String</span> <span class="hljs-variable">itemCoupon</span> <span class="hljs-operator">=</span> target.getItemCoupon(<span class="hljs-string">&quot;a+b/c&quot;</span>);<br><br><span class="hljs-comment">//结果  GET http://localhost/item/a+b/c/create HTTP/1.1</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>由上我们可以看出，如果参数表达式出现在path中，是不会被转码的，且如果是null的会变成空字符串。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>表达式出现在queryString中</p>
+<ul>
+<li><p>空字符串</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Fq</span> &#123;<br>        <span class="hljs-meta">@RequestLine(value = &quot;GET /item?id=&#123;id&#125;&quot;)</span><br>        String <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;id&quot;)</span> String id)</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>        <span class="hljs-type">Fq</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>                .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>                .logLevel(Logger.Level.FULL)<br>                .target(Fq.class, <span class="hljs-string">&quot;http://localhost&quot;</span>);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">itemCoupon</span> <span class="hljs-operator">=</span> target.getItemCoupon(<span class="hljs-string">&quot;&quot;</span>);<br><span class="hljs-comment">//结果  GET http://localhost/item?id HTTP/1.1</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>如果是null</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Fq</span> &#123;<br>        <span class="hljs-meta">@RequestLine(value = &quot;GET /item?id=&#123;id&#125;&quot;)</span><br>        String <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;id&quot;)</span> String id)</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>        <span class="hljs-type">Fq</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>                .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>                .logLevel(Logger.Level.FULL)<br>                .target(Fq.class, <span class="hljs-string">&quot;http://localhost&quot;</span>);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">itemCoupon</span> <span class="hljs-operator">=</span> target.getItemCoupon(<span class="hljs-literal">null</span>);<br><span class="hljs-comment">//结果 GET http://localhost/item HTTP/1.1</span><br>       <br></code></pre></td></tr></table></figure>
+</li>
+<li><p>如果是<code>+</code>或<code>/</code> 这种特殊字符</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Fq</span> &#123;<br>        <span class="hljs-meta">@RequestLine(value = &quot;GET /item?id=&#123;id&#125;&quot;)</span><br>        String <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;id&quot;)</span> String id)</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>        <span class="hljs-type">Fq</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>                .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>                .logLevel(Logger.Level.FULL)<br>                .target(Fq.class, <span class="hljs-string">&quot;http://localhost&quot;</span>);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">itemCoupon</span> <span class="hljs-operator">=</span> target.getItemCoupon(<span class="hljs-string">&quot;a+b/c&quot;</span>);<br><span class="hljs-comment">//结果 GET http://localhost/item?id=a%2Bb%2Fc HTTP/1.1</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>由上可以看出，出现在参数中的模板表达式，如果是空字符串则参数名会被保留下来，如果是null则移除参数名，如果有特殊字符，则进行转码。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>如果是<code>@QueryMap</code>拼接查询参数</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Fq</span> &#123;<br>        <span class="hljs-meta">@RequestLine(value = &quot;GET /item&quot;)</span><br>        String <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@QueryMap</span> Map map)</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>        <span class="hljs-type">Fq</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>                .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>                .logLevel(Logger.Level.FULL)<br>                .target(Fq.class, <span class="hljs-string">&quot;http://localhost&quot;</span>);<br>        Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        map.put(<span class="hljs-string">&quot;a&quot;</span>,<span class="hljs-string">&quot;1+1/2&quot;</span>);<br>        map.put(<span class="hljs-string">&quot;b&quot;</span>,<span class="hljs-string">&quot;&quot;</span>);<br>        map.put(<span class="hljs-string">&quot;c&quot;</span>,<span class="hljs-literal">null</span>);<br><br>        <span class="hljs-type">String</span> <span class="hljs-variable">itemCoupon</span> <span class="hljs-operator">=</span> target.getItemCoupon(map);<br>        <br><span class="hljs-comment">// 结果 GET http://localhost/item?a=1%2B1%2F2&amp;b&amp;c HTTP/1.1</span><br>        <br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>由上可以看出使用<code>RequestMap</code> 传递参数时，会对参数进行编码，且如果参数的值为null或空字符串，则保留参数的键</p>
+</blockquote>
+</li>
+</ul>
+<p>查看<a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign#advanced-usage">Advanced Usage</a> 有更多的示例。</p>
+<blockquote>
+<p>如何处理斜杠 <code>/</code></p>
+<p>默认情况下<code>@RequestLine</code>不会 encode 斜杠，要改变这种默认行为，可以将<code>@ReqeustLine</code>的属性<code>decodeSlash</code>设置为<code>false</code>，参考这个<a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign/issues/350">issus</a>,即默认情况下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/foo/&#123;id&#125;&quot;)</span><br>String <span class="hljs-title function_">getFooById</span><span class="hljs-params">(String id)</span> &#123;<br>&#125;<br>myFeignClient.getFooById(<span class="hljs-string">&quot;/1/2/3&quot;</span>)<br><span class="hljs-comment">//真正请求地址将是 ‘/foo/1/2/3’，不会对/转码</span><br>    <br></code></pre></td></tr></table></figure></blockquote>
+<blockquote>
+<p>如何处理加号<code>+</code></p>
+<p>根据url规范，加号是允许出现在path和查询参数中的，但是现实中处理起来可能不一样，有一些老系统，会把<code>+</code>当成空格，但是现代的新系统在查询参数中不会将<code>+</code>当成空格，而是显示成<code>%2B</code></p>
+<p>如果你希望使用<code>+</code>作为空格，你可以直接只用<code> </code>字符来当成空格，或者编码成 <code>@2B</code>,</p>
+<p>例如</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/foo/&#123;id&#125;&quot;)</span><br>String <span class="hljs-title function_">getFooById</span><span class="hljs-params">(String id)</span> &#123;<br>&#125;<br>myFeignClient.getFooById(<span class="hljs-string">&quot;/1+1/2&quot;</span>)<br><span class="hljs-comment">//真正请求地址将是 ‘/foo/1+1/2’，不会对+转码</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="上面这说的-和-在路径中不会转码，但在参数中会被转码"><a href="#上面这说的-和-在路径中不会转码，但在参数中会被转码" class="headerlink" title="上面这说的+和&#x2F; 在路径中不会转码，但在参数中会被转码"></a>上面这说的+和&#x2F; 在路径中不会转码，但在参数中会被转码</h4></blockquote>
+<h4 id="Expander接口"><a href="#Expander接口" class="headerlink" title="Expander接口"></a>Expander接口</h4><p><code>@Param</code>注解有一个可选的属性 <code>expander</code>允许控制该参数的解析，<code>expander</code>属性必须指向一个<code>Expander</code>接口的实现类，接口如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Expander</span> &#123;<br>    String <span class="hljs-title function_">expand</span><span class="hljs-params">(Object value)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Fq</span> &#123;<br>       <span class="hljs-meta">@RequestLine(value = &quot;GET /item?date=&#123;date&#125;&quot;)</span><br>       String <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(value = &quot;date&quot;, expander = DateExpander.class)</span> Date date)</span>;<br>   &#125;<br><br>   <span class="hljs-comment">//自定义格式化时间的expander</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DateExpander</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Param</span>.Expander &#123;<br>       <span class="hljs-meta">@Override</span><br>       <span class="hljs-keyword">public</span> String <span class="hljs-title function_">expand</span><span class="hljs-params">(Object value)</span> &#123;<br>           <span class="hljs-keyword">if</span> (!(value <span class="hljs-keyword">instanceof</span> Date)) &#123;<br>               <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;不支持的类型&quot;</span>);<br>           &#125;<br>           <span class="hljs-type">Date</span> <span class="hljs-variable">date</span> <span class="hljs-operator">=</span> (Date) value;<br>           <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>(<span class="hljs-string">&quot;yyyy-MM-dd&quot;</span>).format(date);<br>       &#125;<br>   &#125;<br><br>   <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String... args)</span> &#123;<br>       <span class="hljs-type">Fq</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>               .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>               .logLevel(Logger.Level.FULL)<br>               .target(Fq.class, <span class="hljs-string">&quot;http://localhost&quot;</span>);<br><br>       <span class="hljs-type">String</span> <span class="hljs-variable">itemCoupon</span> <span class="hljs-operator">=</span> target.getItemCoupon(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>());<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>框架在调用此接口前判断参数是否为null，如果为null则按照上面规范忽略此参数的键值对，不再调用此接口，所以此接口的参数会被保证非null。</p>
+<p>此接口的返回值可以是空字符串，也可以是null。返回值，按照上面[Undefined vs Empty Values](#Undefined vs Empty Values)规范处理。</p>
+<p>返回值中的特殊字符会被pct-encoded处理，查看<a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign#custom-param-expansion">Custom @Param Expansion</a>有更多示例。</p>
+</blockquote>
+<h3 id="请求头扩展"><a href="#请求头扩展" class="headerlink" title="请求头扩展"></a>请求头扩展</h3><p>和<a href="#%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E6%89%A9%E5%B1%95">请求参数扩展</a>类似，但进行了如下修改：</p>
+<ul>
+<li>默认不执行pct-encode ，（而请求参数扩展是默认encode的）。</li>
+<li>未解析的表达式将被忽略，如果解析结果是空字符串，则这条请求头会被移除 （而请求参数空字符串会添加没有值的参数而不是忽略整个参数）</li>
+</ul>
+<blockquote>
+<p>示例如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ContentService</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;GET /api/documents/&#123;contentType&#125;&quot;)</span><br>  <span class="hljs-meta">@Headers(&quot;Accept: &#123;contentType&#125;&quot;)</span><br>  String <span class="hljs-title function_">getDocumentByType</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;contentType&quot;)</span> String type)</span>;<br>&#125;<br></code></pre></td></tr></table></figure></blockquote>
+<h3 id="请求体扩展"><a href="#请求体扩展" class="headerlink" title="请求体扩展"></a>请求体扩展</h3><p><code>@Body</code>和<a href="#%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E6%89%A9%E5%B1%95">请求参数扩展</a>类似，但进行了如下修改：</p>
+<ul>
+<li>值不会进行encoder</li>
+<li>不能解析的表达式将被忽略，（把模板当成字符串）。</li>
+<li><code>Content-Type</code>头是必须要有的</li>
+</ul>
+<hr>
+<h2 id="定制化"><a href="#定制化" class="headerlink" title="定制化"></a>定制化</h2><p>Feign允许定制，它内置了一些可以实现的接口，通过<code>Feign.builder()</code>来实现定制，如定制自定义decoder：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Bank</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;POST /account/&#123;id&#125;&quot;)</span><br>  Account <span class="hljs-title function_">getAccountInfo</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;id&quot;)</span> String id)</span>;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BankService</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">Bank</span> <span class="hljs-variable">bank</span> <span class="hljs-operator">=</span> Feign.builder().decoder(<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">AccountDecoder</span>())<br>        .target(Bank.class, <span class="hljs-string">&quot;https://api.examplebank.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="多种接口"><a href="#多种接口" class="headerlink" title="多种接口"></a>多种接口</h2><p>这个例子中，target传递的不是（class，String） 而是一个target接口的实现类，上面传递的参数（class,String）会被构造为一个HardCodedTarget<T> (T class,String url) ，而你可以自己实现这一步。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CloudService</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">CloudDNS</span> <span class="hljs-variable">cloudDNS</span> <span class="hljs-operator">=</span> Feign.builder()<br>      .target(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CloudIdentityTarget</span>&lt;CloudDNS&gt;(user, apiKey));<br>  &#125;<br>  <br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">CloudIdentityTarget</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Target</span>&lt;CloudDNS&gt; &#123;<br>    <span class="hljs-comment">/* implementation of a Target */</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用自定义的target挺不错的，大家可以实现一个试试看。</p>
+</blockquote>
+<hr>
+<h2 id="整合示例"><a href="#整合示例" class="headerlink" title="整合示例"></a>整合示例</h2><h3 id="Gson"><a href="#Gson" class="headerlink" title="Gson"></a>Gson</h3><p><a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign/blob/master/gson">Gson</a>包含一个编码器一个解码器，和JSON API 一起工作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">GsonCodec</span> <span class="hljs-variable">codec</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonCodec</span>();<br>    <span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                         .encoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonEncoder</span>())<br>                         .decoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonDecoder</span>())<br>                         .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Jackson"><a href="#Jackson" class="headerlink" title="Jackson"></a>Jackson</h3><p><a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign/blob/master/jackson">Jackson</a> 使用Jackson来处理JSON也很好</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>      <span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                     .encoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">JacksonEncoder</span>())<br>                     .decoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">JacksonDecoder</span>())<br>                     .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="OkHttp"><a href="#OkHttp" class="headerlink" title="OkHttp"></a>OkHttp</h3><p>底层使用<a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign/blob/master/okhttp">OkHttpClient</a>来处理发送请求，因为默认是使用java.net.URL connection来发送请求的，性能比较低</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                     .client(<span class="hljs-keyword">new</span> <span class="hljs-title class_">OkHttpClient</span>())<br>                     .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Ribbon"><a href="#Ribbon" class="headerlink" title="Ribbon"></a>Ribbon</h3><p><a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign/blob/master/ribbon">RibbonClient</a> 提供负载均衡，需要负载均衡的可以使用这个</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">MyService</span> <span class="hljs-variable">api</span> <span class="hljs-operator">=</span> Feign.builder()<br>          .client(RibbonClient.create())<br>          .target(MyService.class, <span class="hljs-string">&quot;https://myAppProd&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Java-11-Http2"><a href="#Java-11-Http2" class="headerlink" title="Java 11 Http2"></a>Java 11 Http2</h3><p>使用java11提供的Http2,高版本jdk使用这个是很好的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                     .client(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Http2Client</span>())<br>                     .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Hystrix"><a href="#Hystrix" class="headerlink" title="Hystrix"></a>Hystrix</h3><p><a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign/blob/master/hystrix">HystrixFeign</a>使用这个让Feign使用<a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix">Hystrix</a>，带有熔断器功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">MyService</span> <span class="hljs-variable">api</span> <span class="hljs-operator">=</span> HystrixFeign.builder().target(MyService.class, <span class="hljs-string">&quot;https://myAppProd&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="SLF4J"><a href="#SLF4J" class="headerlink" title="SLF4J"></a>SLF4J</h3><p><a target="_blank" rel="noopener" href="https://github.com/OpenFeign/feign/blob/master/slf4j">SLF4JModule</a> 这个组件允许让Feign底层使用SLF4j来记录日志</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                     .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Slf4jLogger</span>())<br>                     .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Decoders"><a href="#Decoders" class="headerlink" title="Decoders"></a>Decoders</h3><p>配置一个解码器来处理相应<code>Response</code>，默认的支持返回值为<code>String</code>,<code>byte[]</code>,<code>void</code>,可以看一下源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                     .decoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonDecoder</span>())<br>                     .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>如果想让结果进入解码器前进行预处理，可以使用<code>mapAndDecode</code>方法，如下，传递解码器时传递一个lambda来预处理响应。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">JsonpApi</span> <span class="hljs-variable">jsonpApi</span> <span class="hljs-operator">=</span> Feign.builder()<br>                         .mapAndDecode((response, type) -&gt; jsopUnwrap(response, type), <span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonDecoder</span>())<br>                         .target(JsonpApi.class, <span class="hljs-string">&quot;https://some-jsonp-api.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Encoders"><a href="#Encoders" class="headerlink" title="Encoders"></a>Encoders</h3><p>发送一个带请求体的post请求最简单的方法就是定义一个post请求，参数是一个不带任何注解的String或者byte[],然后不要忘了添加<code>Content-Type</code>请求头。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">LoginClient</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;POST /&quot;)</span><br>  <span class="hljs-meta">@Headers(&quot;Content-Type: application/json&quot;)</span><br>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">login</span><span class="hljs-params">(String content)</span>;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    client.login(<span class="hljs-string">&quot;&#123;\&quot;user_name\&quot;: \&quot;denominator\&quot;, \&quot;password\&quot;: \&quot;secret\&quot;&#125;&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>上面这么做很麻烦，你不得不手工处理json字符串，更简单的方法是定义一个<code>encoder</code>，如下编码器会将参数<code>Credentials</code>处理成json字符串。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Credentials</span> &#123;<br>  <span class="hljs-keyword">final</span> String user_name;<br>  <span class="hljs-keyword">final</span> String password;<br><br>  Credentials(String user_name, String password) &#123;<br>    <span class="hljs-built_in">this</span>.user_name = user_name;<br>    <span class="hljs-built_in">this</span>.password = password;<br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">LoginClient</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;POST /&quot;)</span><br>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">login</span><span class="hljs-params">(Credentials creds)</span>;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">LoginClient</span> <span class="hljs-variable">client</span> <span class="hljs-operator">=</span> Feign.builder()<br>                              .encoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonEncoder</span>())<br>                              .target(LoginClient.class, <span class="hljs-string">&quot;https://foo.com&quot;</span>);<br>    <br>    client.login(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Credentials</span>(<span class="hljs-string">&quot;denominator&quot;</span>, <span class="hljs-string">&quot;secret&quot;</span>));<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Body-templates"><a href="#Body-templates" class="headerlink" title="@Body templates"></a>@Body templates</h3><p><code>@body</code>注解可以定义一个模板，从<code>@Param</code>标记的参数中提取数据，不要忘记添加<code>Content-Type</code>头</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">LoginClient</span> &#123;<br><br>  <span class="hljs-meta">@RequestLine(&quot;POST /&quot;)</span><br>  <span class="hljs-meta">@Headers(&quot;Content-Type: application/xml&quot;)</span><br>  <span class="hljs-meta">@Body(&quot;&lt;login \&quot;user_name\&quot;=\&quot;&#123;user_name&#125;\&quot; \&quot;password\&quot;=\&quot;&#123;password&#125;\&quot;/&gt;&quot;)</span><br>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">xml</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;user_name&quot;)</span> String user, <span class="hljs-meta">@Param(&quot;password&quot;)</span> String password)</span>;<br><br>  <span class="hljs-meta">@RequestLine(&quot;POST /&quot;)</span><br>  <span class="hljs-meta">@Headers(&quot;Content-Type: application/json&quot;)</span><br>  <span class="hljs-comment">// json 左右两边的括号必须转义的</span><br>  <span class="hljs-meta">@Body(&quot;%7B\&quot;user_name\&quot;: \&quot;&#123;user_name&#125;\&quot;, \&quot;password\&quot;: \&quot;&#123;password&#125;\&quot;%7D&quot;)</span><br>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">json</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;user_name&quot;)</span> String user, <span class="hljs-meta">@Param(&quot;password&quot;)</span> String password)</span>;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    client.xml(<span class="hljs-string">&quot;denominator&quot;</span>, <span class="hljs-string">&quot;secret&quot;</span>); <span class="hljs-comment">// &lt;login &quot;user_name&quot;=&quot;denominator&quot; &quot;password&quot;=&quot;secret&quot;/&gt;</span><br>    client.json(<span class="hljs-string">&quot;denominator&quot;</span>, <span class="hljs-string">&quot;secret&quot;</span>); <span class="hljs-comment">// &#123;&quot;user_name&quot;: &quot;denominator&quot;, &quot;password&quot;: &quot;secret&quot;&#125;</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Headers"><a href="#Headers" class="headerlink" title="@Headers"></a>@Headers</h3><h4 id="设置请求头的api"><a href="#设置请求头的api" class="headerlink" title="设置请求头的api"></a>设置请求头的api</h4><p><code>@Headers</code>注解可以设置在类上，以表示对所有接口生效，设置在方法上表示对该方法生效。</p>
+<p>如果类中的所有方法均要添加这个请求头，就会很有用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Headers(&quot;Accept: application/json&quot;)</span><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">BaseApi</span>&lt;V&gt; &#123;<br>  <span class="hljs-meta">@Headers(&quot;Content-Type: application/json&quot;)</span><br>  <span class="hljs-meta">@RequestLine(&quot;PUT /api/&#123;key&#125;&quot;)</span><br>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">put</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;key&quot;)</span> String key, V value)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>并且<code>@Header</code>注解是支持动态创建请求头的，从参数中提出数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Api</span> &#123;<br>   <span class="hljs-meta">@RequestLine(&quot;POST /&quot;)</span><br>   <span class="hljs-meta">@Headers(&quot;X-Ping: &#123;token&#125;&quot;)</span><br>   <span class="hljs-keyword">void</span> <span class="hljs-title function_">post</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;token&quot;)</span> String token)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>如果请求头的键值都是动态的，而且还不知道具体有多少个，可以使用<code>@HeaderMap</code>注解处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Api</span> &#123;<br>   <span class="hljs-meta">@RequestLine(&quot;POST /&quot;)</span><br>   <span class="hljs-keyword">void</span> <span class="hljs-title function_">post</span><span class="hljs-params">(<span class="hljs-meta">@HeaderMap</span> Map&lt;String, Object&gt; headerMap)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="为每个target设置请求头"><a href="#为每个target设置请求头" class="headerlink" title="为每个target设置请求头"></a>为每个target设置请求头</h4><p>有时候，如果同一个接口针对不同host（注:host是可以通过注入一个java.net.URI在运行中改变的）使用不同的请求头，或者请求头是根据具体请求变化的，则可以使用<code>RequestInterceptor</code> 或 <code>Target</code>来实现。</p>
+<p>使用<code>RequestInterceptor</code>的例子在<code>RequestInterceptor</code>章节再讲。</p>
+<p>下面是使用<code>Target</code>的解决灵活的请求头。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DynamicAuthTokenTarget</span>&lt;T&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Target</span>&lt;T&gt; &#123;<br>   <span class="hljs-keyword">public</span> <span class="hljs-title function_">DynamicAuthTokenTarget</span><span class="hljs-params">(Class&lt;T&gt; clazz,</span><br><span class="hljs-params">                                 UrlAndTokenProvider provider,</span><br><span class="hljs-params">                                 ThreadLocal&lt;String&gt; requestIdProvider)</span>;<br>   <br>   <span class="hljs-meta">@Override</span><br>   <span class="hljs-keyword">public</span> Request <span class="hljs-title function_">apply</span><span class="hljs-params">(RequestTemplate input)</span> &#123;<br>     <span class="hljs-type">TokenIdAndPublicURL</span> <span class="hljs-variable">urlAndToken</span> <span class="hljs-operator">=</span> provider.get();<br>     <span class="hljs-keyword">if</span> (input.url().indexOf(<span class="hljs-string">&quot;http&quot;</span>) != <span class="hljs-number">0</span>) &#123;<br>       input.insert(<span class="hljs-number">0</span>, urlAndToken.publicURL);<br>     &#125;<br>     input.header(<span class="hljs-string">&quot;X-Auth-Token&quot;</span>, urlAndToken.tokenId);<br>     input.header(<span class="hljs-string">&quot;X-Request-ID&quot;</span>, requestIdProvider.get());<br><br>     <span class="hljs-keyword">return</span> input.request();<br>   &#125;<br> &#125;<br> <br> <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>   <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>     <span class="hljs-type">Bank</span> <span class="hljs-variable">bank</span> <span class="hljs-operator">=</span> Feign.builder()<br>             .target(<span class="hljs-keyword">new</span> <span class="hljs-title class_">DynamicAuthTokenTarget</span>(Bank.class, provider, requestIdProvider));<br>   &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h2><h3 id="基础Api"><a href="#基础Api" class="headerlink" title="基础Api"></a>基础Api</h3><p>在很多情况下，服务端的接口遵循一致的约定，这时可以通过继承接口来处理。</p>
+<p>示例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">BaseAPI</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;GET /health&quot;)</span><br>  String <span class="hljs-title function_">health</span><span class="hljs-params">()</span>;<br><br>  <span class="hljs-meta">@RequestLine(&quot;GET /all&quot;)</span><br>  List&lt;Entity&gt; <span class="hljs-title function_">all</span><span class="hljs-params">()</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>你可以使用继承，来获取父类中的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">CustomAPI</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseAPI</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;GET /custom&quot;)</span><br>  String <span class="hljs-title function_">custom</span><span class="hljs-params">()</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>有些情况下，返回的Response表现形式也是一样的，如创建用户发送的json，获取用户得到的json，他们两个的形式都是一样的，可以定义公共泛型父类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Headers(&quot;Accept: application/json&quot;)</span><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">BaseApi</span>&lt;V&gt; &#123;<br><br>  <span class="hljs-meta">@RequestLine(&quot;GET /api/&#123;key&#125;&quot;)</span><br>  V <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;key&quot;)</span> String key)</span>;<br><br>  <span class="hljs-comment">//获取时，将结果返序列化成V类型  </span><br>  <span class="hljs-meta">@RequestLine(&quot;GET /api&quot;)</span><br>  List&lt;V&gt; <span class="hljs-title function_">list</span><span class="hljs-params">()</span>;<br><br>  <span class="hljs-comment">//发送时，将V类型序列化</span><br>  <span class="hljs-meta">@Headers(&quot;Content-Type: application/json&quot;)</span><br>  <span class="hljs-meta">@RequestLine(&quot;PUT /api/&#123;key&#125;&quot;)</span><br>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">put</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;key&quot;)</span> String key, V value)</span>;<br>&#125;<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">FooApi</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseApi</span>&lt;Foo&gt; &#123; &#125;<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">BarApi</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseApi</span>&lt;Bar&gt; &#123; &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><p>你可以设置一个<code>Logger</code> 和 <code>Logger.Level</code>来选择用什么处理日志以及日志级别</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">GitHub</span> <span class="hljs-variable">github</span> <span class="hljs-operator">=</span> Feign.builder()<br>                     .decoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonDecoder</span>())<br>                     .logger(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Logger</span>.JavaLogger(<span class="hljs-string">&quot;GitHub.Logger&quot;</span>).appendToFile(<span class="hljs-string">&quot;logs/http.log&quot;</span>))<br>                     .logLevel(Logger.Level.FULL)<br>                     .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：使用JavaLogger()时要避免使用无参的构造函数<code>JavaLogger()</code>来创建它，他有问题被弃用了，以后可能会删除。</p>
+</blockquote>
+<h3 id="Request-Interceptors"><a href="#Request-Interceptors" class="headerlink" title="Request Interceptors"></a>Request Interceptors</h3><p>当你需要改变所有的请求，无论这个请求的地址是什么时，可以<code>Request Interceptors</code>。比如你想添加<code>X-Forwarded-For</code>请求头。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ForwardedForInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">RequestInterceptor</span> &#123;<br>  <span class="hljs-meta">@Override</span> <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">apply</span><span class="hljs-params">(RequestTemplate template)</span> &#123;<br>    template.header(<span class="hljs-string">&quot;X-Forwarded-For&quot;</span>, <span class="hljs-string">&quot;origin.host.com&quot;</span>);<br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">Bank</span> <span class="hljs-variable">bank</span> <span class="hljs-operator">=</span> Feign.builder()<br>                 .decoder(accountDecoder)<br>                 .requestInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ForwardedForInterceptor</span>())<br>                 .target(Bank.class, <span class="hljs-string">&quot;https://api.examplebank.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>拦截器另一个常用的地方就是身份认证，如需要<code>BasicAuthRequestInterceptor</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">Bank</span> <span class="hljs-variable">bank</span> <span class="hljs-operator">=</span> Feign.builder()<br>                 .decoder(accountDecoder)<br>                 .requestInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BasicAuthRequestInterceptor</span>(username, password))<br>                 .target(Bank.class, <span class="hljs-string">&quot;https://api.examplebank.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>拦截器在Target前面执行，在Target的apply前一行代码。</p>
+</blockquote>
+<h3 id="Param扩展"><a href="#Param扩展" class="headerlink" title="@Param扩展"></a>@Param扩展</h3><p>上面讲到过<code>@Param</code>注解的expander 接口，下面这个例子将如果对参数进行修改，他将date格式化成毫秒值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Api</span> &#123;<br>  	<span class="hljs-meta">@RequestLine(&quot;GET /?since=&#123;date&#125;&quot;)</span> <br>    Result <span class="hljs-title function_">list</span><span class="hljs-params">(<span class="hljs-meta">@Param(value = &quot;date&quot;, expander = DateToMillis.class)</span> Date date)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意一点，如果有两个<code>@Param</code>标记的参数的名字是一样的，则后面的会覆盖前面的</p>
+</blockquote>
+<h3 id="QueryMap-动态查询参数"><a href="#QueryMap-动态查询参数" class="headerlink" title="@QueryMap 动态查询参数"></a>@QueryMap 动态查询参数</h3><p>一个普通的map，添加上<code>@QueryMap</code>注解，它里面的值会被拿出来作为查询参数处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Api</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;GET /find&quot;)</span><br>  V <span class="hljs-title function_">find</span><span class="hljs-params">(<span class="hljs-meta">@QueryMap</span> Map&lt;String, Object&gt; queryMap)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>不是map是pojo也是可以的，默认通过反射获取pojo内的字段拼接成查询参数。</p>
+<p>也可以定义一个<code>QueryMapEncoder</code>来处理如何从pojo中拿值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Api</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;GET /find&quot;)</span><br>  V <span class="hljs-title function_">find</span><span class="hljs-params">(<span class="hljs-meta">@QueryMap</span> CustomPojo customPojo)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>配置一个<code>queryMapEncoder</code>的例子。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">MyApi</span> <span class="hljs-variable">myApi</span> <span class="hljs-operator">=</span> Feign.builder()<br>                 .queryMapEncoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyCustomQueryMapEncoder</span>())<br>                 .target(MyApi.class, <span class="hljs-string">&quot;https://api.hostname.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>默认通过反射获取值，如果希望使用<code>java bean</code>规范通过 <code>get set</code>来获取值，可以配置一个<code>BeanQueryMapEncoder</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">MyApi</span> <span class="hljs-variable">myApi</span> <span class="hljs-operator">=</span> Feign.builder()<br>                 .queryMapEncoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BeanQueryMapEncoder</span>())<br>                 .target(MyApi.class, <span class="hljs-string">&quot;https://api.hostname.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：<code>@QueryMap</code>注解的解析在<code>@Requestline</code>之后，所以<code>@Requestline</code>上面定义的参数会被后来的<code>@QueryMap</code>定义的参数覆盖，且如果<code>@QueryMap</code>内定义一个空值参数会把<code>@Requestline</code>中定义的删掉。</p>
+</blockquote>
+<h3 id="Error-Handling"><a href="#Error-Handling" class="headerlink" title="Error Handling"></a>Error Handling</h3><p>配置一个error handDecoder，所有不再2xx范围内的响应，都会被此handler的decode方法处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">MyApi</span> <span class="hljs-variable">myApi</span> <span class="hljs-operator">=</span> Feign.builder()<br>                 .errorDecoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyErrorDecoder</span>())<br>                 .target(MyApi.class, <span class="hljs-string">&quot;https://api.hostname.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果你想进行重试，可以抛出一个<code>RetryableException</code>，这样框架接收到了此异常调用注册的<code>Retryer</code>来处理重试。</p>
+<h3 id="Retry-重试"><a href="#Retry-重试" class="headerlink" title="Retry 重试"></a>Retry 重试</h3><p>默认情况下会重试所有的<code>IoException</code>，和ErrorHandling里面抛出的<code>RetryableException</code>,通过在builder是设置一个Retryer来定制这种行为</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Example</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-type">MyApi</span> <span class="hljs-variable">myApi</span> <span class="hljs-operator">=</span> Feign.builder()<br>                 .retryer(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyRetryer</span>())<br>                 .target(MyApi.class, <span class="hljs-string">&quot;https://api.hostname.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><code>Retryer</code>通过方法<code>continueOrPropagate(RetryableException e)</code>来决定是否重试，无返回值。</p>
+<p>如果允许重试，则直接返回。</p>
+<p>如果不允许重试，请将参数中的RetryableException重新抛出。</p>
+<p>框架为每个<code>Client</code>执行器clone一个<code>Retryer</code>,所以你可以在retryer上维护状态，而不用担心冲突。</p>
+<blockquote>
+<p> 注:为每个client创建Retryer的方式是调用Feign.build() 时传入的Retryer的clone()方法</p>
+</blockquote>
+<p>如果不能重试成功，则抛出最后一次重试的<code>RetryException</code>,如果你想要导致异常的真正Exception，请使用</p>
+<p><code>exceptionPropagationPolicy()</code>构建Feign</p>
+<h3 id="Options配置"><a href="#Options配置" class="headerlink" title="Options配置"></a>Options配置</h3><p>可以在build Feign时设置默认的Options。</p>
+<p>如果想为每个请求设置独立Options则，接口的参数如果有类型是<code>feign.Request.Options</code>类型的，会作为配置传入，存在多个的情况下只取第一个。</p>
+<h3 id="静态和默认方法"><a href="#静态和默认方法" class="headerlink" title="静态和默认方法"></a>静态和默认方法</h3><p>java8+ 支持接口的静态方法和默认方法，这样就允许Feign客户端包含逻辑，</p>
+<p>比如你想提供默认参数，或者两个接口聚合成一个一个接口返回等</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">GitHub</span> &#123;<br>  <span class="hljs-meta">@RequestLine(&quot;GET /repos/&#123;owner&#125;/&#123;repo&#125;/contributors&quot;)</span><br>  List&lt;Contributor&gt; <span class="hljs-title function_">contributors</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;owner&quot;)</span> String owner, <span class="hljs-meta">@Param(&quot;repo&quot;)</span> String repo)</span>;<br><br>  <span class="hljs-meta">@RequestLine(&quot;GET /users/&#123;username&#125;/repos?sort=&#123;sort&#125;&quot;)</span><br>  List&lt;Repo&gt; <span class="hljs-title function_">repos</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;username&quot;)</span> String owner, <span class="hljs-meta">@Param(&quot;sort&quot;)</span> String sort)</span>;<br>	<span class="hljs-comment">//提供默认值</span><br>  <span class="hljs-keyword">default</span> List&lt;Repo&gt; <span class="hljs-title function_">repos</span><span class="hljs-params">(String owner)</span> &#123;<br>    <span class="hljs-keyword">return</span> repos(owner, <span class="hljs-string">&quot;full_name&quot;</span>);<br>  &#125;<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 从repos()中拿到list，再循环调用contributors拿到信息，最后返回</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">default</span> List&lt;Contributor&gt; <span class="hljs-title function_">contributors</span><span class="hljs-params">(String user)</span> &#123;<br>    <span class="hljs-type">MergingContributorList</span> <span class="hljs-variable">contributors</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MergingContributorList</span>();<br>    <span class="hljs-keyword">for</span>(Repo repo : <span class="hljs-built_in">this</span>.repos(owner)) &#123;<br>      contributors.addAll(<span class="hljs-built_in">this</span>.contributors(user, repo.getName()));<br>    &#125;<br>    <span class="hljs-keyword">return</span> contributors.mergeResult();<br>  &#125;<br><br>  <span class="hljs-keyword">static</span> GitHub <span class="hljs-title function_">connect</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> Feign.builder()<br>                .decoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonDecoder</span>())<br>                .target(GitHub.class, <span class="hljs-string">&quot;https://api.github.com&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="一些内置类"><a href="#一些内置类" class="headerlink" title="一些内置类"></a>一些内置类</h3><h4 id="feign-Response"><a href="#feign-Response" class="headerlink" title="feign.Response"></a>feign.Response</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Response</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Closeable</span> &#123;<br>	<span class="hljs-comment">//状态码</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> status;<br>    <span class="hljs-comment">//状态码后面的文字，如200 OK 则此字段就是OK</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String reason;<br>    <span class="hljs-comment">//响应头</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, Collection&lt;String&gt;&gt; headers;<br>  	<span class="hljs-comment">//响应体</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Body body;<br>    <span class="hljs-comment">//该响应对应的请求</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Request request;<br>  .<br>  .<br>  .<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="feign-Response-Body"><a href="#feign-Response-Body" class="headerlink" title="feign.Response.Body"></a>feign.Response.Body</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Body</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Closeable</span> &#123;<br>	<span class="hljs-comment">//数据长度</span><br>    Integer <span class="hljs-title function_">length</span><span class="hljs-params">()</span>;<br>	<span class="hljs-comment">//是否允许重复读取</span><br>    <span class="hljs-type">boolean</span> <span class="hljs-title function_">isRepeatable</span><span class="hljs-params">()</span>;<br>	<span class="hljs-comment">//返回流</span><br>    InputStream <span class="hljs-title function_">asInputStream</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IOException;<br>	<br>    <span class="hljs-meta">@Deprecated</span><br>    <span class="hljs-keyword">default</span> Reader <span class="hljs-title function_">asReader</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>      <span class="hljs-keyword">return</span> asReader(StandardCharsets.UTF_8);<br>    &#125;<br>	<span class="hljs-comment">//返回read流</span><br>    Reader <span class="hljs-title function_">asReader</span><span class="hljs-params">(Charset charset)</span> <span class="hljs-keyword">throws</span> IOException;<br>  &#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/openfeign/" class="print-no-link">#openfeign</a>
+      
+        <a href="/tags/Http%E5%AE%A2%E6%88%B7%E7%AB%AF/" class="print-no-link">#Http客户端</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Feign用法教程</div>
+      <div>https://www.huangchaoyu.com/3012547788.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年12月13日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/1305379791.html" title="Feign高级功能">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Feign高级功能</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/4271254320.html" title="free-mybatis-plugin的使用方法">
+                        <span class="hidden-mobile">free-mybatis-plugin的使用方法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

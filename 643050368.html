@@ -1,0 +1,769 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="​	 上篇讲了，SpringMvc是如何将返回值转成Json的， 默认情况下Springboot是如何配置HandlerAdapter的，如何根据配置文件影响到ObjectMapper的创建的。 下面讲一讲如何做才是最佳实践，如何做能满足需求。 1. 最大限度使用Springboot的自动配置如果我们想最大限度使用Springboot，且想修改接口返回Json格式等，那么我们可以在配置文件中配置常">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot配置MappingJackson2HttpMessageConverter最佳实践">
+<meta property="og:url" content="https://www.huangchaoyu.com/643050368.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="​	 上篇讲了，SpringMvc是如何将返回值转成Json的， 默认情况下Springboot是如何配置HandlerAdapter的，如何根据配置文件影响到ObjectMapper的创建的。 下面讲一讲如何做才是最佳实践，如何做能满足需求。 1. 最大限度使用Springboot的自动配置如果我们想最大限度使用Springboot，且想修改接口返回Json格式等，那么我们可以在配置文件中配置常">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.268Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="springboot">
+<meta property="article:tag" content="jackson">
+<meta property="article:tag" content="HttpMessageConverter">
+<meta property="article:tag" content="json">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>springboot配置MappingJackson2HttpMessageConverter最佳实践 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="springboot配置MappingJackson2HttpMessageConverter最佳实践"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-02-16 00:00" pubdate>
+          2020年2月16日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">springboot配置MappingJackson2HttpMessageConverter最佳实践</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>​	</p>
+<p>上篇讲了，<code>SpringMvc是如何将返回值转成Json的</code>，</p>
+<p>默认情况下<code>Springboot是如何配置HandlerAdapter</code>的，如何根据配置文件影响到<code>ObjectMapper</code>的创建的。</p>
+<p>下面讲一讲如何做才是最佳实践，如何做能满足需求。</p>
+<h2 id="1-最大限度使用Springboot的自动配置"><a href="#1-最大限度使用Springboot的自动配置" class="headerlink" title="1. 最大限度使用Springboot的自动配置"></a>1. 最大限度使用<code>Springboot</code>的自动配置</h2><p>如果我们想最大限度使用<code>Springboot</code>，且想修改接口返回<code>Json</code>格式等，那么我们可以在配置文件中配置常用的配置。</p>
+<p>我们在配置文件里打出<code>spring.jackson</code>，<code>ide</code>会给我们提示，我们发现常用的配置都有，比如配置输出时间格式的</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mel"><span class="hljs-keyword">spring</span>.jackson.<span class="hljs-keyword">date</span>-<span class="hljs-keyword">format</span>=yyyy-MM-dd HH:mm:ss<br></code></pre></td></tr></table></figure>
+
+
+
+<p>也可以打开看看下面这个类,里面也有对应的配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">org.springframework.boot.autoconfigure.jackson.JacksonProperties<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-使用自己创建的ObjectMapper"><a href="#2-使用自己创建的ObjectMapper" class="headerlink" title="2.使用自己创建的ObjectMapper"></a>2.使用自己创建的<code>ObjectMapper</code></h2><p>创建一个<code>ObjectMapper</code>的<code>Bean</code>，但要标记为<code>@Primary</code>才能覆盖自动配置的。这样的话配置文件里的配置不会生效，我们自己创建的就可以随心所欲的配置了。</p>
+<p>并且推荐使用下面的第二种方式创建，点开源码能看到它里面添加了额外的配置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@Primary</span><br><span class="hljs-keyword">public</span> ObjectMapper <span class="hljs-title function_">objectMapper</span> <span class="hljs-params">()</span>&#123;<br>    <span class="hljs-type">ObjectMapper</span> <span class="hljs-variable">objectMapper</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectMapper</span>();<br>    objectMapper.setDateFormat(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>(<span class="hljs-string">&quot;yyyy-MM-dd&quot;</span>));<br>    <span class="hljs-keyword">return</span> objectMapper;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@Primary</span><br><span class="hljs-keyword">public</span> ObjectMapper <span class="hljs-title function_">objectMapper</span> <span class="hljs-params">()</span>&#123;<br>    <span class="hljs-keyword">return</span> Jackson2ObjectMapperBuilder<br>            .json()<br>            .dateFormat(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>(<span class="hljs-string">&quot;yyyy-MM-dd&quot;</span>))<br>            .build();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>因为<code>org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration</code>里的自动配置，加入了<code>@ConditionalOnMissingBean</code>注解，所以系统就不会自动配置了。</p>
+<h2 id="3-使用自己创建的MappingJackson2HttpMessageConverter"><a href="#3-使用自己创建的MappingJackson2HttpMessageConverter" class="headerlink" title="3. 使用自己创建的MappingJackson2HttpMessageConverter"></a>3. 使用自己创建的<code>MappingJackson2HttpMessageConverter</code></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-keyword">public</span> MappingJackson2HttpMessageConverter <span class="hljs-title function_">objectMapper</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">ObjectMapper</span> <span class="hljs-variable">objectMapper</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectMapper</span>();<br>    objectMapper.setDateFormat(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>(<span class="hljs-string">&quot;yyyy-MM-dd&quot;</span>));<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MappingJackson2HttpMessageConverter</span>(objectMapper);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>因为<code>org.springframework.boot.autoconfigure.http.JacksonHttpMessageConvertersConfiguration</code>类中对<code>MappingJackson2HttpMessageConverter</code>的自动配置添加了条件判断，所以自动配置就不会执行了。</p>
+<p>判断如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@ConditionalOnMissingBean(value = MappingJackson2HttpMessageConverter.class,</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-如果继承WebMvcConfigurationSupport"><a href="#4-如果继承WebMvcConfigurationSupport" class="headerlink" title="4.如果继承WebMvcConfigurationSupport"></a>4.如果继承<code>WebMvcConfigurationSupport</code></h2><p>这个类里面又很多<code>MVC</code>相关的配置，我个人比较习惯继承这个类，但是继承这个类后，上面三种方法无论是改配置文件，自定义<code>ObjectMapper</code>，还是自己定义<code>MappingJackson2HttpMessageConverter</code>均失效了。</p>
+<p>大家可以试一下，那么是什么原因导致失效的呢？，如何解决这个问题？</p>
+<h4 id="1-是什么原因导致失效的呢？"><a href="#1-是什么原因导致失效的呢？" class="headerlink" title="1.是什么原因导致失效的呢？"></a>1.是什么原因导致失效的呢？</h4><p>我们可以看一下<code>WebMvcAutoConfiguration</code>的源码，发现这个类上有<code>@ConditionalOnMissingBean(WebMvcConfigurationSupport.class)</code>的注解，</p>
+<p>也就是说找不到<code>WebMvcConfigurationSupport</code>才进行自动配置，而我们继承了<code>WebMvcConfigurationSupport</code>，并添加@Configuration，则<code>MapperAdaper</code>不会被自动配置，所以自动创建的</p>
+<p><code>MappingJackson2HttpMessageConverter</code>和<code>ObjectMapper</code>都虽然创建了但也不会起作用了。</p>
+<h4 id="2-如何解决这个问题？"><a href="#2-如何解决这个问题？" class="headerlink" title="2. 如何解决这个问题？"></a>2. 如何解决这个问题？</h4><p>既然我习惯继承<code>WebMvcConfigurationSupport</code>，如果想定制<code>ObjectMapper</code>该怎么办呢，查看<code>WebMvcConfigurationSupport</code>源码,发现他有这样一个方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-keyword">public</span> RequestMappingHandlerAdapter <span class="hljs-title function_">requestMappingHandlerAdapter</span><span class="hljs-params">()</span> &#123;<br>	<span class="hljs-type">RequestMappingHandlerAdapter</span> <span class="hljs-variable">adapter</span> <span class="hljs-operator">=</span> createRequestMappingHandlerAdapter();<br>	adapter.setContentNegotiationManager(mvcContentNegotiationManager());<br>	<span class="hljs-comment">//这里注入了MessageConverter，请进入getMessageConverters()方法</span><br>	adapter.setMessageConverters(getMessageConverters());<br>	adapter.setWebBindingInitializer(getConfigurableWebBindingInitializer());<br>	adapter.setCustomArgumentResolvers(getArgumentResolvers());<br>	adapter.setCustomReturnValueHandlers(getReturnValueHandlers());<br><br>	<span class="hljs-keyword">if</span> (jackson2Present) &#123;<br>		adapter.setRequestBodyAdvice(Collections.singletonList(<span class="hljs-keyword">new</span> <span class="hljs-title class_">JsonViewRequestBodyAdvice</span>()));<br>		adapter.setResponseBodyAdvice(Collections.singletonList(<span class="hljs-keyword">new</span> <span class="hljs-title class_">JsonViewResponseBodyAdvice</span>()));<br>	&#125;<br><br>	<span class="hljs-type">AsyncSupportConfigurer</span> <span class="hljs-variable">configurer</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AsyncSupportConfigurer</span>();<br>	configureAsyncSupport(configurer);<br>	<span class="hljs-keyword">if</span> (configurer.getTaskExecutor() != <span class="hljs-literal">null</span>) &#123;<br>		adapter.setTaskExecutor(configurer.getTaskExecutor());<br>	&#125;<br>	<span class="hljs-keyword">if</span> (configurer.getTimeout() != <span class="hljs-literal">null</span>) &#123;<br>		adapter.setAsyncRequestTimeout(configurer.getTimeout());<br>	&#125;<br>	adapter.setCallableInterceptors(configurer.getCallableInterceptors());<br>	adapter.setDeferredResultInterceptors(configurer.getDeferredResultInterceptors());<br><br>	<span class="hljs-keyword">return</span> adapter;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>从上面源码能看到，没有在<code>WebMvcAutoConfiguration</code>里面配置的<code>RequestMappingHandlerAdapter</code>在这里配置了，但这里并没有使用Spring容器里面的<code>ObjectMapper</code>和<code>MappingJackson2HttpMessageConverter</code>，而是新创建的，所以系统自动配置的和我们自己注入到<code>Spring容器</code>的才会失效，因为根本就没有被使用。</p>
+<p>我们看一下是如何添加MessageConverter的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">final</span> List&lt;HttpMessageConverter&lt;?&gt;&gt; getMessageConverters() &#123;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.messageConverters == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-built_in">this</span>.messageConverters = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>		<span class="hljs-comment">//这个方法是空实现</span><br>		configureMessageConverters(<span class="hljs-built_in">this</span>.messageConverters);<br>		<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.messageConverters.isEmpty()) &#123;<br>		<span class="hljs-comment">//添加默认的messageConverters</span><br>			addDefaultHttpMessageConverters(<span class="hljs-built_in">this</span>.messageConverters);<br>		&#125;<br>		<span class="hljs-comment">//继续处理</span><br>		extendMessageConverters(<span class="hljs-built_in">this</span>.messageConverters);<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.messageConverters;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>上面代码能看出，首先是通过<code>configureMessageConverters(this.messageConverters)</code>方法配置，但该方法是空实现，然后添加默认的<code>MessageConverter</code>,然后<code>extendMessageConverters(this.messageConverters)</code></p>
+<p>所以我们可以在继承类中重写<code>extendMessageConverters</code>方法，在这个类中对默认的<code>MessageConverter</code>进行修改或添加删除等操作，如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">extendMessageConverters</span><span class="hljs-params">(List&lt;HttpMessageConverter&lt;?&gt;&gt; converters)</span> &#123;<br>    <span class="hljs-comment">//将StringHttpMessageConverter设成UTF8格式</span><br>    converters.stream()<br>            .filter(c -&gt; c <span class="hljs-keyword">instanceof</span> StringHttpMessageConverter)<br>            .map(c -&gt; (StringHttpMessageConverter) c)<br>            .forEach(c -&gt; c.setDefaultCharset(StandardCharsets.UTF_8));<br><br>    <span class="hljs-comment">//将MappingJackson2HttpMessageConverter设为自己的ObjectMapper</span><br>    <span class="hljs-type">ObjectMapper</span> <span class="hljs-variable">mapper</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectMapper</span>();<br>    mapper.setDateFormat(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>(<span class="hljs-string">&quot;yyyy-MM-dd&quot;</span>));<br>    converters.stream()<br>            .filter(c -&gt; c <span class="hljs-keyword">instanceof</span> MappingJackson2HttpMessageConverter)<br>            .map(c -&gt; (MappingJackson2HttpMessageConverter) c)<br>            .forEach(c -&gt; c.setObjectMapper(mapper));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5.总结"></a>5.总结</h2><p>如果你不打算继承<code>WebMvcConfigurationSupport</code>，那么自动配置生效，你可以通过配置文件配置<code>Jackson</code>或通过提供自己的类配置<code>Jackson</code>，但注意如果覆盖<code>ObjectMappe</code>r要加<code>@Primary</code>注解才行。</p>
+<p>如果你不小心或打算继承<code>WebMvcConfigurationSupport</code>，那上面的自动配置依然会执行，但不会被使用，这就导致上面的配置不灵了，可以实现<code>extendMessageConverters</code>方法，在里面我们可以任意处理<code>MessageConverter</code>。</p>
+<h2 id="6-回答下上篇文章的问题"><a href="#6-回答下上篇文章的问题" class="headerlink" title="6.回答下上篇文章的问题"></a>6.回答下上篇文章的问题</h2><ol>
+<li>配置文件里配置列<code>Jackson</code>但不生效？</li>
+</ol>
+<p>可能是覆盖了<code>WebMvcConfigurationSupport</code>，或重写了<code>ObjectMapper</code>或重写了<code>MappingJackson2HttpMessageConverter</code>，这样导致配置文件里的不生效了。</p>
+<ol start="2">
+<li>自己手动创建<code>ObjectMapper</code>来代替<code>Springboot</code>帮我们创建的，但不生效？</li>
+</ol>
+<p>你肯定是继承了<code>WebMvcConfigurationSupport</code>。</p>
+<ol start="3">
+<li>如何做才是最佳实践？</li>
+</ol>
+<p>上面已经列举了四种方式，要注意他们的优先级，且继承<code>WebMvcConfigurationSupport</code>会导致前三种方式创建的对象不被使用，也就是失效了。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/springboot/" class="print-no-link">#springboot</a>
+      
+        <a href="/tags/jackson/" class="print-no-link">#jackson</a>
+      
+        <a href="/tags/HttpMessageConverter/" class="print-no-link">#HttpMessageConverter</a>
+      
+        <a href="/tags/json/" class="print-no-link">#json</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>springboot配置MappingJackson2HttpMessageConverter最佳实践</div>
+      <div>https://www.huangchaoyu.com/643050368.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年2月16日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/3399176269.html" title="springboot Maven打包">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">springboot Maven打包</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/3222672442.html" title="springboot如何自动配置MappingJackson2HttpMessageConverter">
+                        <span class="hidden-mobile">springboot如何自动配置MappingJackson2HttpMessageConverter</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

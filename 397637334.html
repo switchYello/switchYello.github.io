@@ -1,0 +1,741 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题 TOC{:toc}  什么是预检请求当浏览器发送post请求时，一般请求体都比较大，但如果是跨域的话，服务器会拒绝该请求，传输的数据被丢弃。为了不浪费流量，浏览器在发送post前先发送一个小的options请求，将接下来的请求方式等设置到请求头中，服务器检查请求头，如果服务器允许这样的请求则返回200并在相">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题">
+<meta property="og:url" content="https://www.huangchaoyu.com/397637334.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题 TOC{:toc}  什么是预检请求当浏览器发送post请求时，一般请求体都比较大，但如果是跨域的话，服务器会拒绝该请求，传输的数据被丢弃。为了不浪费流量，浏览器在发送post前先发送一个小的options请求，将接下来的请求方式等设置到请求头中，服务器检查请求头，如果服务器允许这样的请求则返回200并在相">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.152Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="springSecurity">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-11-15 00:00" pubdate>
+          2019年11月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="跨域与预检请求-PreFlightRequest，springSecurity解决跨域问题"><a href="#跨域与预检请求-PreFlightRequest，springSecurity解决跨域问题" class="headerlink" title="跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题"></a>跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题</h2><ul>
+<li>TOC<br>{:toc}</li>
+</ul>
+<h4 id="什么是预检请求"><a href="#什么是预检请求" class="headerlink" title="什么是预检请求"></a>什么是预检请求</h4><p>当浏览器发送post请求时，一般请求体都比较大，但如果是跨域的话，服务器会拒绝该请求，传输的数据被丢弃。<br>为了不浪费流量，浏览器在发送post前先发送一个小的options请求，将接下来的请求方式等设置到请求头中，<br>服务器检查请求头，如果服务器允许这样的请求<br>则返回200并在相应头中设置以下消息给客户端，如允许什么样的请求头，请求方式，是否允许带cookie等，<br>否则就拒绝请求。<br>这样的话，浏览器就不会再发送接下来的post请求了，从而节省资源。</p>
+<ul>
+<li>其中两个请求头就是<ul>
+<li><p><code>Access-Control-Request-Method:POST</code>,表示稍后的请求使用什么method进行请求，这里是 port，</p>
+</li>
+<li><p><code>Access-Control-Request-Headers:content-type</code>,表示稍后的请求中自定义请求头是什么这里我是 content-type</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="查看spring的CorsFilter源码"><a href="#查看spring的CorsFilter源码" class="headerlink" title="查看spring的CorsFilter源码"></a>查看spring的CorsFilter源码</h4><pre><code class="hljs">在servlet环境下，请求都要经过filter，spring为我们提供了CorsFilter来处理这个问题。
+</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilterInternal</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response,</span><br><span class="hljs-params">		FilterChain filterChain)</span> <span class="hljs-keyword">throws</span> ServletException, IOException &#123;<br>	<span class="hljs-comment">//必须带有origin头部的请求，不带的则直接放行</span><br>	<span class="hljs-keyword">if</span> (CorsUtils.isCorsRequest(request)) &#123;<br>		<span class="hljs-type">CorsConfiguration</span> <span class="hljs-variable">corsConfiguration</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.configSource.getCorsConfiguration(request);<br>		<span class="hljs-keyword">if</span> (corsConfiguration != <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-comment">//验证是否有效，源码在下面</span><br>			<span class="hljs-type">boolean</span> <span class="hljs-variable">isValid</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.processor.processRequest(corsConfiguration, request, response);<br>			<span class="hljs-comment">//如果不是有效的||是预检请求则直接返回，表示拒绝</span><br>			<span class="hljs-comment">//这里如果验证失败了，response中会设置跨域提示相关的头部，则直接return告诉浏览器</span><br>			<span class="hljs-comment">//如果验证成功了，但是是预检请求，则response中设置了同意的头部，直接返回即可</span><br>			<span class="hljs-keyword">if</span> (!isValid || CorsUtils.isPreFlightRequest(request)) &#123;<br>				<span class="hljs-keyword">return</span>;<br>			&#125;<br>		&#125;<br>	&#125;<br><br>	filterChain.doFilter(request, response);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">上面源码可以看出，拦截器对请求进行检查，对是预检请求的request进行处理
+检查没通过则isValid为false，直接返回，此时response被设置了401状态码，前台看到的是401
+如果检查通过，但是是预检请求也直接返回，此时前台收到的是无内容的200响应
+</code></pre>
+<h4 id="如何判断是预检请求的逻辑"><a href="#如何判断是预检请求的逻辑" class="headerlink" title="如何判断是预检请求的逻辑"></a>如何判断是预检请求的逻辑</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isPreFlightRequest</span><span class="hljs-params">(HttpServletRequest request)</span> &#123;<br>	<span class="hljs-comment">//</span><br>	<span class="hljs-keyword">return</span> (isCorsRequest(request) <br>			&amp;&amp; HttpMethod.OPTIONS.matches(request.getMethod()) <br>			&amp;&amp;request.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD) != <span class="hljs-literal">null</span>);<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">上面源码isPreFlightRequest中三个`&amp;&amp;`连接的判断可以看出，满足预检请求的条件是
+1.是cors请求，即带有origin头的，如get方式的请求就不带有origin头，所以就不是cors请求
+2.必须是options的请求  
+3.带有Access-Control-Request-Method请求头，表示接下来的请求方式
+满足上面三个条件就是预检请求了
+</code></pre>
+<h4 id="this-processor-processRequest-corsConfiguration-request-response-这里面做了什么"><a href="#this-processor-processRequest-corsConfiguration-request-response-这里面做了什么" class="headerlink" title="this.processor.processRequest(corsConfiguration, request, response)这里面做了什么"></a>this.processor.processRequest(corsConfiguration, request, response)这里面做了什么</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">processRequest</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> CorsConfiguration config, HttpServletRequest request,</span><br><span class="hljs-params">			HttpServletResponse response)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>		<span class="hljs-comment">//非cors请求的直接返回true</span><br>		<span class="hljs-keyword">if</span> (!CorsUtils.isCorsRequest(request)) &#123;<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>		&#125;<br>		<span class="hljs-comment">//设过Access-Control-Allow-Origin的直接返回true，如果此filter前面还有其他filter处理过了，就会有Access-Control-Allow-Origin头了</span><br>		<span class="hljs-type">ServletServerHttpResponse</span> <span class="hljs-variable">serverResponse</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServletServerHttpResponse</span>(response);<br>		<span class="hljs-keyword">if</span> (responseHasCors(serverResponse)) &#123;<br>			logger.trace(<span class="hljs-string">&quot;Skip: response already contains \&quot;Access-Control-Allow-Origin\&quot;&quot;</span>);<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>		&#125;<br>		<span class="hljs-comment">//是同源的直接返回true，同源的请求满足cors，允许放行</span><br>		<span class="hljs-type">ServletServerHttpRequest</span> <span class="hljs-variable">serverRequest</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServletServerHttpRequest</span>(request);<br>		<span class="hljs-keyword">if</span> (WebUtils.isSameOrigin(serverRequest)) &#123;<br>			logger.trace(<span class="hljs-string">&quot;Skip: request is from same origin&quot;</span>);<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>		&#125;<br>		<span class="hljs-comment">//得到是否是预检请求</span><br>		<span class="hljs-type">boolean</span> <span class="hljs-variable">preFlightRequest</span> <span class="hljs-operator">=</span> CorsUtils.isPreFlightRequest(request);<br>		<span class="hljs-comment">//如果config为空，则没有配置文件，然后判断如果是预检请求则拒绝，如果不是预检请求则放行。</span><br>		<span class="hljs-keyword">if</span> (config == <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-keyword">if</span> (preFlightRequest) &#123;<br>				rejectRequest(serverResponse);<br>				<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>			&#125;<br>			<span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>			&#125;<br>		&#125;<br>		<span class="hljs-comment">//真实检测逻辑，获取各种请求头和配置文件进行对比</span><br>		<span class="hljs-keyword">return</span> handleInternal(serverRequest, serverResponse, config, preFlightRequest);<br>	&#125;<br><br><br><br><span class="hljs-keyword">protected</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">handleInternal</span><span class="hljs-params">(ServerHttpRequest request, ServerHttpResponse response,</span><br><span class="hljs-params">			CorsConfiguration config, <span class="hljs-type">boolean</span> preFlightRequest)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>		<span class="hljs-comment">//获取origin头</span><br>		<span class="hljs-type">String</span> <span class="hljs-variable">requestOrigin</span> <span class="hljs-operator">=</span> request.getHeaders().getOrigin();<br>		<span class="hljs-comment">//与配置的AllowedOrigins进行比较，得到匹配的</span><br>		<span class="hljs-type">String</span> <span class="hljs-variable">allowOrigin</span> <span class="hljs-operator">=</span> checkOrigin(config, requestOrigin);<br>		<span class="hljs-type">HttpHeaders</span> <span class="hljs-variable">responseHeaders</span> <span class="hljs-operator">=</span> response.getHeaders();<br><br>		responseHeaders.addAll(HttpHeaders.VARY, Arrays.asList(HttpHeaders.ORIGIN,<br>				HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS));<br>		<span class="hljs-comment">//如果origin都不匹配，返回false</span><br>		<span class="hljs-keyword">if</span> (allowOrigin == <span class="hljs-literal">null</span>) &#123;<br>			logger.debug(<span class="hljs-string">&quot;Reject: &#x27;&quot;</span> + requestOrigin + <span class="hljs-string">&quot;&#x27; origin is not allowed&quot;</span>);<br>			rejectRequest(response);<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>		&#125;<br>		<span class="hljs-comment">//获取请求method，如果是预检请求则获取Access-Control-Request-Method里的method</span><br>		<span class="hljs-type">HttpMethod</span> <span class="hljs-variable">requestMethod</span> <span class="hljs-operator">=</span> getMethodToUse(request, preFlightRequest);<br>		<span class="hljs-comment">//检查请求头是否是AllowedMethods里配置的</span><br>		List&lt;HttpMethod&gt; allowMethods = checkMethods(config, requestMethod);<br>		<span class="hljs-keyword">if</span> (allowMethods == <span class="hljs-literal">null</span>) &#123;<br>			logger.debug(<span class="hljs-string">&quot;Reject: HTTP &#x27;&quot;</span> + requestMethod + <span class="hljs-string">&quot;&#x27; is not allowed&quot;</span>);<br>			rejectRequest(response);<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>		&#125;<br>		<span class="hljs-comment">//获取请求header，如果是预检请求则获取Access-Control-Request-Headers里配置的</span><br>		List&lt;String&gt; requestHeaders = getHeadersToUse(request, preFlightRequest);<br>		<span class="hljs-comment">//请求头与AllowedHeader里的进行匹配</span><br>		List&lt;String&gt; allowHeaders = checkHeaders(config, requestHeaders);<br>		<span class="hljs-keyword">if</span> (preFlightRequest &amp;&amp; allowHeaders == <span class="hljs-literal">null</span>) &#123;<br>			logger.debug(<span class="hljs-string">&quot;Reject: headers &#x27;&quot;</span> + requestHeaders + <span class="hljs-string">&quot;&#x27; are not allowed&quot;</span>);<br>			rejectRequest(response);<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>		&#125;<br>		<span class="hljs-comment">//上面的method，origin，head 三个检测都通过的话，则说明请求是自己人请求的，放行设置响应头</span><br>		responseHeaders.setAccessControlAllowOrigin(allowOrigin);<br><br>		<span class="hljs-keyword">if</span> (preFlightRequest) &#123;<br>			responseHeaders.setAccessControlAllowMethods(allowMethods);<br>		&#125;<br><br>		<span class="hljs-keyword">if</span> (preFlightRequest &amp;&amp; !allowHeaders.isEmpty()) &#123;<br>			responseHeaders.setAccessControlAllowHeaders(allowHeaders);<br>		&#125;<br><br>		<span class="hljs-keyword">if</span> (!CollectionUtils.isEmpty(config.getExposedHeaders())) &#123;<br>			responseHeaders.setAccessControlExposeHeaders(config.getExposedHeaders());<br>		&#125;<br><br>		<span class="hljs-keyword">if</span> (Boolean.TRUE.equals(config.getAllowCredentials())) &#123;<br>			responseHeaders.setAccessControlAllowCredentials(<span class="hljs-literal">true</span>);<br>		&#125;<br><br>		<span class="hljs-keyword">if</span> (preFlightRequest &amp;&amp; config.getMaxAge() != <span class="hljs-literal">null</span>) &#123;<br>			responseHeaders.setAccessControlMaxAge(config.getMaxAge());<br>		&#125;<br><br>		response.flush();<br>		<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>	&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<h4 id="总结，什么时候允许request向下进入servlet"><a href="#总结，什么时候允许request向下进入servlet" class="headerlink" title="总结，什么时候允许request向下进入servlet"></a>总结，什么时候允许request向下进入servlet</h4><ul>
+<li><p>非cors请求，即头部不带origin的：有效</p>
+</li>
+<li><p>response上已经设置过Access-Control-Allow-Origin：有效</p>
+</li>
+<li><p>同源请求：有效</p>
+</li>
+<li><p>缺少cors配置，是预检请求：拒绝</p>
+</li>
+<li><p>缺少cors配置，不是预检请求：有效</p>
+</li>
+<li><p>如果头部中的origin和配置的AllowedOrigins不匹配：拒绝</p>
+</li>
+<li><p>如果头部中的Access-Control-Request-Method和配置的AllowedMethods不匹配：拒绝</p>
+</li>
+<li><p>如果头部中的Access-Control-Request-Headers与配置中AllowedHeader不匹配且是预检请求：拒绝</p>
+</li>
+</ul>
+<h4 id="在springSecurity-的config中配置cors的例子"><a href="#在springSecurity-的config中配置cors的例子" class="headerlink" title="在springSecurity 的config中配置cors的例子"></a>在springSecurity 的config中配置cors的例子</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java">   http.cors().configurationSource(request -&gt; &#123;<br>         <span class="hljs-type">CorsConfiguration</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CorsConfiguration</span>();<br><span class="hljs-comment">//设置允许的头部，与请求头中的origin进行比对</span><br>         c.setAllowedOrigins(Arrays.asList(<span class="hljs-string">&quot;http://192.168.31.114&quot;</span>, <span class="hljs-string">&quot;*&quot;</span>));<br><span class="hljs-comment">//设置允许的method，和请求method或预检请求Access-Control-Request-Method指定的method进行比对</span><br>         c.setAllowedMethods(Arrays.asList(<span class="hljs-string">&quot;POST&quot;</span>, <span class="hljs-string">&quot;GET&quot;</span>, <span class="hljs-string">&quot;OPTIONS&quot;</span>, <span class="hljs-string">&quot;PUT&quot;</span>));<br><span class="hljs-comment">//设置请求头，与请求head比对或预检请求的Access-Control-Request-Headers比对</span><br>         c.addAllowedHeader(<span class="hljs-string">&quot;content-type&quot;</span>);<br><span class="hljs-comment">//允许携带cookie</span><br>         c.setAllowCredentials(<span class="hljs-literal">true</span>);<br>         c.setMaxAge(<span class="hljs-number">1800L</span>);<br>         <span class="hljs-keyword">return</span> c;<br>     &#125;);<br><br><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/springSecurity/" class="print-no-link">#springSecurity</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>跨域与预检请求 PreFlightRequest，springSecurity解决跨域问题</div>
+      <div>https://www.huangchaoyu.com/397637334.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年11月15日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2728346615.html" title="springmvc put请求参数绑定">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">springmvc put请求参数绑定</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1825389021.html" title="netty应该怎样处理异常">
+                        <span class="hidden-mobile">netty应该怎样处理异常</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

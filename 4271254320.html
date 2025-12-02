@@ -1,0 +1,803 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="free-mybatis-plugin的使用方法 TOC{:toc}  ​	作为java界开发必备神器idea，其功能强大，提供强大的插件系统，如果使用当前主流的ssm三大框架，一定要安装free-mybatis-plugin。其大大方便了我们使用mybatis。 该插件不仅仅在mapper接口和mapper.xml文件上提供跳转按钮，还内置了generator gui界面，下面看看如何使用。 插">
+<meta property="og:type" content="article">
+<meta property="og:title" content="free-mybatis-plugin的使用方法">
+<meta property="og:url" content="https://www.huangchaoyu.com/4271254320.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="free-mybatis-plugin的使用方法 TOC{:toc}  ​	作为java界开发必备神器idea，其功能强大，提供强大的插件系统，如果使用当前主流的ssm三大框架，一定要安装free-mybatis-plugin。其大大方便了我们使用mybatis。 该插件不仅仅在mapper接口和mapper.xml文件上提供跳转按钮，还内置了generator gui界面，下面看看如何使用。 插">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211114318462.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211114749395.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211115058016.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211115724055.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211120105680.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211120307488.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121018781.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121202896.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121332700.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121609488.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121701330.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121833495.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122359965.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122450602.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122608857.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122902877.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122914657.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211123320861.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211123744202.png">
+<meta property="article:published_time" content="2019-12-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.201Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="mybatis">
+<meta property="article:tag" content="idea">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.huangchaoyu.com/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211114318462.png">
+  
+  
+  
+  <title>free-mybatis-plugin的使用方法 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="idea,mybatis generator gui,代码生成，mybatis分页"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-12-11 00:00" pubdate>
+          2019年12月11日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">idea,mybatis generator gui,代码生成，mybatis分页</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="free-mybatis-plugin的使用方法"><a href="#free-mybatis-plugin的使用方法" class="headerlink" title="free-mybatis-plugin的使用方法"></a>free-mybatis-plugin的使用方法</h2><ul>
+<li>TOC<br>{:toc}</li>
+</ul>
+<p>​	作为java界开发必备神器idea，其功能强大，提供强大的插件系统，如果使用当前主流的ssm三大框架，一定要安装free-mybatis-plugin。其大大方便了我们使用mybatis。</p>
+<p>该插件不仅仅在mapper接口和mapper.xml文件上提供跳转按钮，还内置了generator gui界面，下面看看如何使用。</p>
+<h3 id="插件功能"><a href="#插件功能" class="headerlink" title="插件功能"></a>插件功能</h3><p>插件一共提供了四个功能:</p>
+<ul>
+<li>生成mapper xml文件</li>
+<li>快速从代码跳转到mapper及从mapper返回代码</li>
+<li>mybatis自动补全及语法错误提示</li>
+<li>集成mybatis generator gui界面</li>
+</ul>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211114318462.png" srcset="/img/loading.gif" lazyload alt="image-20191211114318462"></p>
+<h4 id="功能1：快速从代码跳转到mapper及从mapper返回代码"><a href="#功能1：快速从代码跳转到mapper及从mapper返回代码" class="headerlink" title="功能1：快速从代码跳转到mapper及从mapper返回代码"></a>功能1：快速从代码跳转到mapper及从mapper返回代码</h4><p>​	这是我们最熟悉的功能，他会在我们的mapper.xml文件的select，delete，update等语句左边提供一个箭头</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211114749395.png" srcset="/img/loading.gif" lazyload alt="image-20191211114749395"></p>
+<p>点击它就能跳转到与<code>namespace</code>对应的mapper接口的相应方法上，方便我们快速定位。</p>
+<h4 id="功能2：mybatis自动补全及语法错误提示"><a href="#功能2：mybatis自动补全及语法错误提示" class="headerlink" title="功能2：mybatis自动补全及语法错误提示"></a>功能2：mybatis自动补全及语法错误提示</h4><p>​	我们写sql时，弹出的代码提示就是它做的，也是十分的好用。</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211115058016.png" srcset="/img/loading.gif" lazyload alt="image-20191211115058016"></p>
+<h4 id="功能3，4：集成了mybatis-generator-gui，自动生成代码但比原生的generator更好用"><a href="#功能3，4：集成了mybatis-generator-gui，自动生成代码但比原生的generator更好用" class="headerlink" title="功能3，4：集成了mybatis generator gui，自动生成代码但比原生的generator更好用"></a>功能3，4：集成了<code>mybatis generator gui</code>，自动生成代码但比原生的<code>generator</code>更好用</h4><p>​	idea内置了管理数据库的工具，此插件配合数据库管理工具，可以获取到数据库的连接，表，字段等信息，通过这些信息，此插件就能generator 出对应的mapper，dao，entity等。</p>
+<ul>
+<li>首先打开idea的 <code>database</code>窗口，此窗口一班在最右边，和maven同列。</li>
+</ul>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211115724055.png" srcset="/img/loading.gif" lazyload alt="image-20191211115724055"></p>
+<p>点击maven上面的<code>database</code>按钮会弹出此窗口，点击左边箭头指示的<code>加号</code>选择好数据库类型，数据库驱动，输入完账号密码，连接上数据库，下面的schemas就会显示选中的库。我这里事先连上了，可见名称为<code>test</code>的库内有一张名称为<code>troows</code>的表，表内字段也都显示在上面。</p>
+<ul>
+<li>在表上右键弹出菜单</li>
+</ul>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211120105680.png" srcset="/img/loading.gif" lazyload alt="image-20191211120105680"></p>
+<p>这里第一项<code>mybatis-generator</code>则为gui的生成器，下面的选项还有查看建标语句等等功能，这里不多做介绍了，我们选择第一项<code>mybatis-generator</code>。弹出：</p>
+<img src="/img/in/2019-12-11-free-mybatis-plugin的使用方法/image-20191211120307488.png" srcset="/img/loading.gif" lazyload alt="image-20191211120307488"  />
+
+
+
+<p>第一行选项 <code>table setting</code> 自动填充了表名，主键字段，项目文件夹</p>
+<p>第二行<code>model setting</code>自动填充了生成的实体类文件名，包名，和路径</p>
+<p>第三行 <code>dao setting</code>自动填充了生成的mapper接口文件名，包名，文件路径</p>
+<p>第四行<code>xml mapper setting</code>用来设置生成的xml文件路径</p>
+<p>第五行<code>options</code>是生成的选项，一会一个一个来看</p>
+<ul>
+<li><p>我们将路径包名改成自己需要的样子，建议不要选择和项目相同的路径或包名，不然后面生成把前面覆盖了不好把控，可以生成在其他地方，然后复制过来。我将文件生成在java1文件夹下，这样不会干扰本身的程序</p>
+<p>  <img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121018781.png" srcset="/img/loading.gif" lazyload alt="image-20191211121018781"></p>
+</li>
+</ul>
+<p>点击确定，项目文件夹下生成了如下文件</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121202896.png" srcset="/img/loading.gif" lazyload alt="image-20191211121202896"></p>
+<h3 id="option中配置选项"><a href="#option中配置选项" class="headerlink" title="option中配置选项"></a>option中配置选项</h3><p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121332700.png" srcset="/img/loading.gif" lazyload alt="image-20191211121332700"></p>
+<h4 id="1-分页"><a href="#1-分页" class="headerlink" title="1. 分页"></a>1. 分页</h4><p>单独勾选此选项是没效果的，还需要勾选第五列第二个，生成 example来配合使用才行</p>
+<p>查看生成的example中，多了如下代码，可以设置limit和offset</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121609488.png" srcset="/img/loading.gif" lazyload alt="image-20191211121609488"></p>
+<p>生成的mapper中，selectByExample方法中多了分页查询的逻辑</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121701330.png" srcset="/img/loading.gif" lazyload alt="image-20191211121701330"></p>
+<hr>
+<h4 id="2-实体注释"><a href="#2-实体注释" class="headerlink" title="2.实体注释"></a>2.实体注释</h4><p>​	勾选这个选项，会在生成的实体类上添加数据库建表时添加的注释，但经过测试，不勾选也能生成注释</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211121833495.png" srcset="/img/loading.gif" lazyload alt="image-20191211121833495"></p>
+<hr>
+<h4 id="3-Overwrite-Xml-Overwrite-Java"><a href="#3-Overwrite-Xml-Overwrite-Java" class="headerlink" title="3.Overwrite-Xml , Overwrite-Java"></a>3.Overwrite-Xml , Overwrite-Java</h4><p>​	这两个选项，是生成的代码会覆盖掉原来的代码</p>
+<hr>
+<h4 id="4-toString-hashcode-equals"><a href="#4-toString-hashcode-equals" class="headerlink" title="4.toString&#x2F;hashcode&#x2F;equals"></a>4.toString&#x2F;hashcode&#x2F;equals</h4><p>​	会在实体类中自动生成上面三个方法</p>
+<hr>
+<h4 id="5-User-Schema"><a href="#5-User-Schema" class="headerlink" title="5.User-Schema"></a>5.User-Schema</h4><p>​	按字面意思是使用数据库名的前缀，我没发现使用这个哪里改变了。</p>
+<hr>
+<h4 id="6-Add-ForUpdate"><a href="#6-Add-ForUpdate" class="headerlink" title="6.Add-ForUpdate"></a>6.Add-ForUpdate</h4><p>这个选项会在example中增加字段</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122359965.png" srcset="/img/loading.gif" lazyload alt="image-20191211122359965"></p>
+<p>sql语句中的 selectByExample，会判断该字段，是否加锁查询</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122450602.png" srcset="/img/loading.gif" lazyload alt="image-20191211122450602"></p>
+<hr>
+<h4 id="7-Repository-annotation"><a href="#7-Repository-annotation" class="headerlink" title="7.Repository-annotation"></a>7.Repository-annotation</h4><p>在生成的mapper接口上，添加@repository注解</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122608857.png" srcset="/img/loading.gif" lazyload alt="image-20191211122608857"></p>
+<hr>
+<h4 id="8-parent-interface"><a href="#8-parent-interface" class="headerlink" title="8.parent-interface"></a>8.parent-interface</h4><p>这个会给mapper接口上生成公共的泛型父类，这样TroowMapper内那些增删改查的接口就转移到父类里面去了。看起来清爽些。</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122902877.png" srcset="/img/loading.gif" lazyload alt="image-20191211122902877"></p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211122914657.png" srcset="/img/loading.gif" lazyload alt="image-20191211122914657"></p>
+<hr>
+<h4 id="9-jsr310-data-and-time-api"><a href="#9-jsr310-data-and-time-api" class="headerlink" title="9.jsr310:data and time api"></a>9.jsr310:data and time api</h4><p>勾选这个，生成实体类中的Data类型会被LocalDateTime代替。</p>
+<hr>
+<h4 id="10-jpa-Annotation"><a href="#10-jpa-Annotation" class="headerlink" title="10.jpa-Annotation"></a>10.jpa-Annotation</h4><p>如图，添加jpa的注解</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211123320861.png" srcset="/img/loading.gif" lazyload alt="image-20191211123320861"></p>
+<hr>
+<h4 id="11-Actual-Column"><a href="#11-Actual-Column" class="headerlink" title="11.Actual-Column"></a>11.Actual-Column</h4><p>一般数据库字段都是用下划线命名，java实体类都是用驼峰法命名，生成代码时会从下划线转成驼峰法，勾选这个，生成的实体类会和数据库字段保持一致，保持下划线命名的方式。</p>
+<hr>
+<h4 id="12-Use-Alias"><a href="#12-Use-Alias" class="headerlink" title="12.Use-Alias"></a>12.Use-Alias</h4><p> 这个很有用，勾选这个，查询sql时，会将查询结果起别名，别名为 <code>表名_字段名</code>，这有很大好处，关联查询时，就不会出现字段同名问题了。</p>
+<p><img src="/img/in/2019-12-11-free-mybatis-plugin%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/image-20191211123744202.png" srcset="/img/loading.gif" lazyload alt="image-20191211123744202"></p>
+<hr>
+<h4 id="13-Use-Example"><a href="#13-Use-Example" class="headerlink" title="13.Use-Example"></a>13.Use-Example</h4><p>​	上面讲过了，勾选这个才会生成example，且需要example才能完成的功能，也要勾选这个</p>
+<hr>
+<h4 id="14-Use-Lombox"><a href="#14-Use-Lombox" class="headerlink" title="14.Use-Lombox"></a>14.Use-Lombox</h4><p>​	生成的实体类上自动加上Lombox的注解，这样就不会自动生成 get set方法了</p>
+<hr>
+<h3 id="默认配置"><a href="#默认配置" class="headerlink" title="默认配置"></a>默认配置</h3><p>​	上面勾选选项，每张表都要重选一次很麻烦，在<code>file-&gt;settings-&gt;tools-&gt;mybatis generator setting</code>选项里面，配置的设置，下次使用时会默认选上的，可以设置自己习惯的选项在这上面即可。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>​	以上就是free-mybatis-plugin插件的用法了。这个插件真的挺强大的，启用别名查询，添加分页，添加注释，添加jpa，都是挺有用的，节省我们手动处理的时间。</p>
+<p>​	</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/mybatis/" class="print-no-link">#mybatis</a>
+      
+        <a href="/tags/idea/" class="print-no-link">#idea</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>free-mybatis-plugin的使用方法</div>
+      <div>https://www.huangchaoyu.com/4271254320.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年12月11日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/3012547788.html" title="Feign用法教程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Feign用法教程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1366727677.html" title="两种创建单例模式的方式">
+                        <span class="hidden-mobile">两种创建单例模式的方式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

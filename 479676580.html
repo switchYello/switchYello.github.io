@@ -1,0 +1,770 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="project reactor中的onErrorXxx操作符​	reactor项目中存在很多操作符其中一些与处理异常有关的操作符，它们都以onError开头，一共五个下面我们逐个分析他们。  onErrorMap onErrorResume onErrorReturn onErrorContinue onErrorStop  三个是用来处理上游传递的错误信号这三个是一组的，他们原理类似，分别是：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="project reactor中的onErrorXxx操作符">
+<meta property="og:url" content="https://www.huangchaoyu.com/479676580.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="project reactor中的onErrorXxx操作符​	reactor项目中存在很多操作符其中一些与处理异常有关的操作符，它们都以onError开头，一共五个下面我们逐个分析他们。  onErrorMap onErrorResume onErrorReturn onErrorContinue onErrorStop  三个是用来处理上游传递的错误信号这三个是一组的，他们原理类似，分别是：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.890Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="reactor">
+<meta property="article:tag" content="onErrorMap">
+<meta property="article:tag" content="onErrorResume">
+<meta property="article:tag" content="onErrorReturn">
+<meta property="article:tag" content="onErrorContinue">
+<meta property="article:tag" content="onErrorStop">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>project reactor中的onErrorXxx操作符 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="project reactor中的onErrorXxx操作符"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-03-17 00:00" pubdate>
+          2022年3月17日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">project reactor中的onErrorXxx操作符</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="project-reactor中的onErrorXxx操作符"><a href="#project-reactor中的onErrorXxx操作符" class="headerlink" title="project reactor中的onErrorXxx操作符"></a>project reactor中的onErrorXxx操作符</h1><p>​	reactor项目中存在很多操作符其中一些与处理异常有关的操作符，它们都以onError开头，一共五个下面我们逐个分析他们。</p>
+<ul>
+<li>onErrorMap</li>
+<li>onErrorResume</li>
+<li>onErrorReturn</li>
+<li>onErrorContinue</li>
+<li>onErrorStop</li>
+</ul>
+<h2 id="三个是用来处理上游传递的错误信号"><a href="#三个是用来处理上游传递的错误信号" class="headerlink" title="三个是用来处理上游传递的错误信号"></a>三个是用来处理上游传递的错误信号</h2><p>这三个是一组的，他们原理类似，分别是：</p>
+<ul>
+<li>onErrorMap</li>
+<li>onErrorReturn</li>
+<li>onErrorResume</li>
+</ul>
+<p>onErrorMap 需要传递一个 <code>Function&lt;? super Throwable, ? extends Throwable&gt; mapper</code>，他表示将upStream传递的错误转换成另一种错误返回，即替换upStream中产生的错误。要求Function函数返回值必须非空，否则报空指针。</p>
+<p>onErrorReturn需要传递一个值，即fallback。它会将upStream传递的error信号吞掉，用给定的值替换向下传递，并且upStream已经发出error信号，也就是已经终止了。对于下游订阅者来说，感知不到错误信号，且此时fallback值就是是最后一个元素了。</p>
+<p>onErrorResume 使用一个fallback 流代替upStream，即对于下游订阅者来说，原始流发出error信号后会被吞掉，然后接着从fallback流中订阅。即fallback流连接在upStream发生错误的位置继续产生元素。</p>
+<p>​	这三个都是下游对错误信号的处理操作符，当接收到错误信号时如何向下游传递。默认情况下没有这三个操作符时，错误信号是透传给下游的，这三个操作符提供在中间拦截的能力。其中onErrorResume可以实现onErrorMap和onErrorReturn的功能。</p>
+<p>​	这三个的实现原理如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//当上游传递错误信号时		</span><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onError</span><span class="hljs-params">(Throwable t)</span> &#123;<br>    <span class="hljs-keyword">if</span> (!second) &#123;<br>        second = <span class="hljs-literal">true</span>;<br><br>        Publisher&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">T</span>&gt; p;<br><br>        <span class="hljs-comment">//使用给定的Function创建一个新的生产者</span><br>        <span class="hljs-keyword">try</span> &#123;<br>            p = Objects.requireNonNull(nextFactory.apply(t),<br>                                       <span class="hljs-string">&quot;The nextFactory returned a null Publisher&quot;</span>);<br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Throwable e) &#123;<br>            <span class="hljs-type">Throwable</span> <span class="hljs-variable">_e</span> <span class="hljs-operator">=</span> Operators.onOperatorError(e, actual.currentContext());<br>            _e = Exceptions.addSuppressed(_e, t);<br>            actual.onError(_e);<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-comment">//继续订阅新的生产者。对下游来说没有感知到发生了错误信号</span><br>        p.subscribe(<span class="hljs-built_in">this</span>);<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>        actual.onError(t);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="两个用来指示上游如何处理发生的错误"><a href="#两个用来指示上游如何处理发生的错误" class="headerlink" title="两个用来指示上游如何处理发生的错误"></a>两个用来指示上游如何处理发生的错误</h2><p>​		这两个是一组，他们与上面三个原理不同。</p>
+<ul>
+<li>onErrorContinue</li>
+<li>onErrorStop</li>
+</ul>
+<p>​        他们会给Context设置上错误处理策略，当upStream产生错误准备调用下游的onError时，可以从context中获取该策略对错误进行处理。如设置的策略是onErrorContinue，则可以跳过此错误当作此元素没发生过一样继续处理下一个元素。如设置的策略是OnErrorStop则会将错误向下游传递，并取消上游的订阅。</p>
+<p>​		虽然我们设置了错误处理策略，但只是对upStream的建议，upStream会不会使用它，downStream无法决定，只有一部分操作符会使用Context内设置的错误处理策略。</p>
+<p>这两个操作符的原理如下:</p>
+<p>​	调用<code>onErrorContinue</code>时，将OnNextFailureStrategy 设置到Context中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//方法调用时，将OnNextFailureStrategy 设置到Context中</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> Mono&lt;T&gt; <span class="hljs-title function_">onErrorContinue</span><span class="hljs-params">(BiConsumer&lt;Throwable, Object&gt; errorConsumer)</span> &#123;<br>    BiConsumer&lt;Throwable, Object&gt; genericConsumer = errorConsumer;<br>    <span class="hljs-keyword">return</span> subscriberContext(Context.of(<br>        OnNextFailureStrategy.KEY_ON_NEXT_ERROR_STRATEGY,<br>        OnNextFailureStrategy.resume(genericConsumer)<br>    ));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​	在某个操作符内部发生错误，如map操作符内调用onNext发生错误。</p>
+<p>此时会使用<code>Operators.onNextError</code>处理该错误，如果处理过后返回值为null，则忽略错误向upStream请求下一个元素，如果返回值非null，则将错误传递下去。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onNext</span><span class="hljs-params">(T t)</span> &#123;<br>	<span class="hljs-keyword">if</span> (done) &#123;<br>		Operators.onNextDropped(t, actual.currentContext());<br>		<span class="hljs-keyword">return</span>;<br>	&#125;<br>	R v;<br>	<span class="hljs-keyword">try</span> &#123;<br>		v = Objects.requireNonNull(mapper.apply(t),<br>				<span class="hljs-string">&quot;The mapper returned a null value.&quot;</span>);<br>	&#125;<br>	<span class="hljs-keyword">catch</span> (Throwable e) &#123;<br>        <span class="hljs-comment">//发生错误，使用此方法处理</span><br>		<span class="hljs-type">Throwable</span> <span class="hljs-variable">e_</span> <span class="hljs-operator">=</span> Operators.onNextError(t, e, actual.currentContext(), s);<br>		<span class="hljs-comment">//如果返回值有值，将错误向下传递。如果返回null，则忽略错误继续从上游生产者中订阅</span><br>        <span class="hljs-keyword">if</span> (e_ != <span class="hljs-literal">null</span>) &#123;<br>			onError(e_);<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			s.request(<span class="hljs-number">1</span>);<br>		&#125;<br>		<span class="hljs-keyword">return</span>;<br>	&#125;<br>	actual.onNext(v);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​	Operators.onNextError 这里会先获取错误处理策略，根据策略做处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Nullable</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;T&gt; Throwable <span class="hljs-title function_">onNextError</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> T value, Throwable error, Context context,</span><br><span class="hljs-params">		Subscription subscriptionForCancel)</span> &#123;<br>	error = unwrapOnNextError(error);<br>	<span class="hljs-type">OnNextFailureStrategy</span> <span class="hljs-variable">strategy</span> <span class="hljs-operator">=</span> onNextErrorStrategy(context);<br>	<span class="hljs-keyword">if</span> (strategy.test(error, value)) &#123;<br>		<span class="hljs-comment">//some strategies could still return an exception, eg. if the consumer throws</span><br>		<span class="hljs-type">Throwable</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> strategy.process(error, value, context);<br>		<span class="hljs-keyword">if</span> (t != <span class="hljs-literal">null</span>) &#123;<br>			subscriptionForCancel.cancel();<br>		&#125;<br>		<span class="hljs-keyword">return</span> t;<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-comment">//falls back to operator errors</span><br>		<span class="hljs-keyword">return</span> onOperatorError(subscriptionForCancel, error, value, context);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>​	默认我们不配置任何策略时，处理策略是 <code>OnNextFailureStrategy.STOP</code>，即取消订阅upStream，并将错误向下传递。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> OnNextFailureStrategy <span class="hljs-title function_">onNextErrorStrategy</span><span class="hljs-params">(Context context)</span> &#123;<br>	<span class="hljs-type">OnNextFailureStrategy</span> <span class="hljs-variable">strategy</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>	BiFunction&lt;? <span class="hljs-built_in">super</span> Throwable, Object, ? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Throwable</span>&gt; fn = context.getOrDefault(<br>			OnNextFailureStrategy.KEY_ON_NEXT_ERROR_STRATEGY, <span class="hljs-literal">null</span>);<br>	<span class="hljs-keyword">if</span> (fn <span class="hljs-keyword">instanceof</span> OnNextFailureStrategy) &#123;<br>		strategy = (OnNextFailureStrategy) fn;<br>	&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (fn != <span class="hljs-literal">null</span>) &#123;<br>		strategy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OnNextFailureStrategy</span>.LambdaOnNextErrorStrategy(fn);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (strategy == <span class="hljs-literal">null</span>) strategy = Hooks.onNextErrorHook;<br>	<span class="hljs-keyword">if</span> (strategy == <span class="hljs-literal">null</span>) strategy = OnNextFailureStrategy.STOP;<br>	<span class="hljs-keyword">return</span> strategy;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>onErrorMap</p>
+<p>onErrorResume</p>
+<p>onErrorReturn</p>
+<p>onErrorContinue</p>
+<p>onErrorStop</p>
+<p>​		这五个操作符虽然都是以onError开头，但根据原理可以分为两类。一类是如何处理上游传递的error信号，但无论怎么处理，error信号产生后upStream就算完结了。另一类将错误处理策略设置在Context内，上游产生错误后可以根据策略决定是否终止生产。</p>
+<p>​		并且onErrorMap，onErrorResume，onErrorReturn只对上游产生的错误负责，该操作符下游产生的错误无法被处理。</p>
+<p>​		而onErrorContinue，onErrorStop操作符是在被订阅时将处理策略放置在Context内，而Context是同一个对象，也就说订阅过程中操作符下游发生错误，此时还没将策略放置到Context内，此操作符不生效。而订阅过程中上游发生错误，会以后处理数据时发生错误，因为该操作符被订阅时已经将处理策略放置到Context内了，所以策略总是生效的。</p>
+<p>​		所以这两个操作符建议放在比较靠后的位置。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/reactor/" class="print-no-link">#reactor</a>
+      
+        <a href="/tags/onErrorMap/" class="print-no-link">#onErrorMap</a>
+      
+        <a href="/tags/onErrorResume/" class="print-no-link">#onErrorResume</a>
+      
+        <a href="/tags/onErrorReturn/" class="print-no-link">#onErrorReturn</a>
+      
+        <a href="/tags/onErrorContinue/" class="print-no-link">#onErrorContinue</a>
+      
+        <a href="/tags/onErrorStop/" class="print-no-link">#onErrorStop</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>project reactor中的onErrorXxx操作符</div>
+      <div>https://www.huangchaoyu.com/479676580.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年3月17日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2725444583.html" title="spring中ObjectFactory , ObjectProvider 和 FactoryBean">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">spring中ObjectFactory , ObjectProvider 和 FactoryBean</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/3230586475.html" title="mybatis dynamic查询指定字段">
+                        <span class="hidden-mobile">mybatis dynamic查询指定字段</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

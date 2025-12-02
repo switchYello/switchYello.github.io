@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="logback输出彩色日志，每个请求一种颜色，提高工作效率 TOC{:toc}​	 Java项目，日志使用的时slf4j + logback，在服务器上查看日志时，都是黑白的，想要在服务器上输出的日志是彩色的，可以大大提高查看效率。  ​	配合slf4j的MDC功能可以实现，可以实现一个请求链输出同一种颜色。 输出颜色的基本原理​	linux是自带ANSI功能是支持彩色日志的，可以这样测试下,下面">
+<meta property="og:type" content="article">
+<meta property="og:title" content="logback输出彩色日志，每个请求一种颜色">
+<meta property="og:url" content="https://www.huangchaoyu.com/2412438885.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="logback输出彩色日志，每个请求一种颜色，提高工作效率 TOC{:toc}​	 Java项目，日志使用的时slf4j + logback，在服务器上查看日志时，都是黑白的，想要在服务器上输出的日志是彩色的，可以大大提高查看效率。  ​	配合slf4j的MDC功能可以实现，可以实现一个请求链输出同一种颜色。 输出颜色的基本原理​	linux是自带ANSI功能是支持彩色日志的，可以这样测试下,下面">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2020-06-28-logback%E8%BE%93%E5%87%BA%E5%BD%A9%E8%89%B2%E6%97%A5%E5%BF%97/image-20200629105812064.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2020-06-28-logback%E8%BE%93%E5%87%BA%E5%BD%A9%E8%89%B2%E6%97%A5%E5%BF%97/image-20200629112323480.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2020-06-28-logback%E8%BE%93%E5%87%BA%E5%BD%A9%E8%89%B2%E6%97%A5%E5%BF%97/image-20200629113356747.png">
+<meta property="article:published_time" content="2020-06-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.502Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="slf4j">
+<meta property="article:tag" content="logback">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.huangchaoyu.com/img/in/2020-06-28-logback%E8%BE%93%E5%87%BA%E5%BD%A9%E8%89%B2%E6%97%A5%E5%BF%97/image-20200629105812064.png">
+  
+  
+  
+  <title>logback输出彩色日志，每个请求一种颜色 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="logback输出彩色日志，每个请求一种颜色"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-06-28 00:00" pubdate>
+          2020年6月28日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">logback输出彩色日志，每个请求一种颜色</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="logback输出彩色日志，每个请求一种颜色，提高工作效率"><a href="#logback输出彩色日志，每个请求一种颜色，提高工作效率" class="headerlink" title="logback输出彩色日志，每个请求一种颜色，提高工作效率"></a>logback输出彩色日志，每个请求一种颜色，提高工作效率</h1><ul>
+<li>TOC<br>{:toc}<br>​	 <code>Java</code>项目，日志使用的时<code>slf4j + logback</code>，在服务器上查看日志时，都是黑白的，想要在服务器上输出的日志是彩色的，可以大大提高查看效率。</li>
+</ul>
+<p>​	配合<code>slf4j</code>的<code>MDC</code>功能可以实现，可以实现一个请求链输出同一种颜色。</p>
+<h2 id="输出颜色的基本原理"><a href="#输出颜色的基本原理" class="headerlink" title="输出颜色的基本原理"></a>输出颜色的基本原理</h2><p>​	<code>linux</code>是自带<code>ANSI</code>功能是支持彩色日志的，可以这样测试下,下面的代码会输出绿色的 <code>日志</code>两个字。</p>
+<p>想知道的更多，可以自行搜索下<code>ANSI</code>关键词</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">echo -e &quot;\033[32m 日志 \033[0m&quot;<br></code></pre></td></tr></table></figure>
+
+<p>​	所以只要我们将要输出的日志字符串用<code>\033[32m   \033[0m]</code>包起来,则查看就是绿色的，</p>
+<p>​	同理除了绿色外还有其他颜色,只要切换数字即可，具体颜色如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">BLACK_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;30&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">RED_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;31&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">GREEN_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;32&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">YELLOW_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;33&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">BLUE_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;34&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">MAGENTA_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;35&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">CYAN_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;36&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">WHITE_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;37&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">DEFAULT_FG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;39&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="简单颜色输出测试"><a href="#简单颜色输出测试" class="headerlink" title="简单颜色输出测试"></a>简单颜色输出测试</h2><p>创建<code>Test.java</code>,在<code>linux</code>下编译运行下面函数，输出确实变成了绿色。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br><br>    <span class="hljs-type">String</span> <span class="hljs-variable">start</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;\033[32m&quot;</span>;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">end</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;\033[0m&quot;</span>;<br><br>    System.out.println(start + <span class="hljs-string">&quot;日志1&quot;</span> + end);<br>    System.out.println(start + <span class="hljs-string">&quot;日志2&quot;</span> + end);<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="logback对彩色日志的支持"><a href="#logback对彩色日志的支持" class="headerlink" title="logback对彩色日志的支持"></a>logback对彩色日志的支持</h2><p>​	一般<code>logback</code>的配置大概像下面这样，其中的<code>encoder</code>默认是<code>PatternLayoutEncoder</code>类，它包装了<code>PatternLayout</code>类对日志进行处理格式化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">&lt;appender name=<span class="hljs-string">&quot;CONSOLE&quot;</span> class=<span class="hljs-string">&quot;ch.qos.logback.core.ConsoleAppender&quot;</span>&gt;<br>    &lt;encoder&gt;<br>        &lt;pattern&gt;%d&#123;yyyy-MM-dd HH:mm:ss&#125; %-5p %C:%L-%m%n&lt;/pattern&gt;<br>    &lt;/encoder&gt;<br>&lt;/appender&gt;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><code>PatternLayout</code>内有多个<code>converter</code>，每个<code>converter</code>处理模式的一部分，如常用的<code>%d</code>，<code>%p</code>，<code>%C</code>都是已经注册好的，还有一些如<code>%red</code> <code>%blue</code>就是处理颜色的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PatternLayout</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">PatternLayoutBase</span>&lt;ILoggingEvent&gt; &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Map&lt;String, String&gt; defaultConverterMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;String, String&gt;();<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">HEADER_PREFIX</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;#logback.classic pattern: &quot;</span>;<br><br>    <span class="hljs-keyword">static</span> &#123;<br>        defaultConverterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;d&quot;</span>, DateConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;date&quot;</span>, DateConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;r&quot;</span>, RelativeTimeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;relative&quot;</span>, RelativeTimeConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;level&quot;</span>, LevelConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;le&quot;</span>, LevelConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;p&quot;</span>, LevelConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;t&quot;</span>, ThreadConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;thread&quot;</span>, ThreadConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;lo&quot;</span>, LoggerConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;logger&quot;</span>, LoggerConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;c&quot;</span>, LoggerConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;m&quot;</span>, MessageConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;msg&quot;</span>, MessageConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;message&quot;</span>, MessageConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;C&quot;</span>, ClassOfCallerConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;class&quot;</span>, ClassOfCallerConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;M&quot;</span>, MethodOfCallerConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;method&quot;</span>, MethodOfCallerConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;L&quot;</span>, LineOfCallerConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;line&quot;</span>, LineOfCallerConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;F&quot;</span>, FileOfCallerConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;file&quot;</span>, FileOfCallerConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;X&quot;</span>, MDCConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;mdc&quot;</span>, MDCConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;ex&quot;</span>, ThrowableProxyConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;exception&quot;</span>, ThrowableProxyConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;rEx&quot;</span>, RootCauseFirstThrowableProxyConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;rootException&quot;</span>, RootCauseFirstThrowableProxyConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;throwable&quot;</span>, ThrowableProxyConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;xEx&quot;</span>, ExtendedThrowableProxyConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;xException&quot;</span>, ExtendedThrowableProxyConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;xThrowable&quot;</span>, ExtendedThrowableProxyConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;nopex&quot;</span>, NopThrowableInformationConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;nopexception&quot;</span>, NopThrowableInformationConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;cn&quot;</span>, ContextNameConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;contextName&quot;</span>, ContextNameConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;caller&quot;</span>, CallerDataConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;marker&quot;</span>, MarkerConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;property&quot;</span>, PropertyConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;n&quot;</span>, LineSeparatorConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;black&quot;</span>, BlackCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;red&quot;</span>, RedCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;green&quot;</span>, GreenCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;yellow&quot;</span>, YellowCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;blue&quot;</span>, BlueCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;magenta&quot;</span>, MagentaCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;cyan&quot;</span>, CyanCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;white&quot;</span>, WhiteCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;gray&quot;</span>, GrayCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;boldRed&quot;</span>, BoldRedCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;boldGreen&quot;</span>, BoldGreenCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;boldYellow&quot;</span>, BoldYellowCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;boldBlue&quot;</span>, BoldBlueCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;boldMagenta&quot;</span>, BoldMagentaCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;boldCyan&quot;</span>, BoldCyanCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;boldWhite&quot;</span>, BoldWhiteCompositeConverter.class.getName());<br>        defaultConverterMap.put(<span class="hljs-string">&quot;highlight&quot;</span>, HighlightingCompositeConverter.class.getName());<br><br>        defaultConverterMap.put(<span class="hljs-string">&quot;lsn&quot;</span>, LocalSequenceNumberConverter.class.getName());<br><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">PatternLayout</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-built_in">this</span>.postCompileProcessor = <span class="hljs-keyword">new</span> <span class="hljs-title class_">EnsureExceptionHandling</span>();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> Map&lt;String, String&gt; <span class="hljs-title function_">getDefaultConverterMap</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> defaultConverterMap;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">doLayout</span><span class="hljs-params">(ILoggingEvent event)</span> &#123;<br>        <span class="hljs-keyword">if</span> (!isStarted()) &#123;<br>            <span class="hljs-keyword">return</span> CoreConstants.EMPTY_STRING;<br>        &#125;<br>        <span class="hljs-keyword">return</span> writeLoopOnConverters(event);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getPresentationHeaderPrefix</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> HEADER_PREFIX;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="测试logback自带的颜色处理"><a href="#测试logback自带的颜色处理" class="headerlink" title="测试logback自带的颜色处理"></a>测试logback自带的颜色处理</h3><p>​	上面的<code>PatternLayout</code>自带了一些颜色，我们测试下能否正常使用。	</p>
+<p>​	创建项目，添加<code>logback</code>依赖，配置文件和代码如下，可以看到输出的颜色被改变了。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>	<span class="hljs-comment">&lt;!--使用%red()将要变色的模式包起来--&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">appender</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;STDOUT&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.ConsoleAppender&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">encoder</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">Pattern</span>&gt;</span>%red(%d&#123;yyyy-MM-dd HH:mm:ss&#125;) %-5p %C:%L-%m%n<span class="hljs-tag">&lt;/<span class="hljs-name">Pattern</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">encoder</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">appender</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">root</span> <span class="hljs-attr">level</span>=<span class="hljs-string">&quot;debug&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">appender-ref</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;STDOUT&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">root</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br><br>    <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(Test.class);<br><br>    log.info(<span class="hljs-string">&quot;日志&quot;</span>);<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="/img/in/2020-06-28-logback%E8%BE%93%E5%87%BA%E5%BD%A9%E8%89%B2%E6%97%A5%E5%BF%97/image-20200629105812064.png" srcset="/img/loading.gif" lazyload alt="image-20200629105812064"></p>
+<p>可以看到，使用<code>%red()</code>将想变色的部分包起来，就会变色。这个颜色在<code>idea</code>的控制台，或者<code>linux</code>下能看到。</p>
+<h2 id="logback变色的实现原理"><a href="#logback变色的实现原理" class="headerlink" title="logback变色的实现原理"></a>logback变色的实现原理</h2><p>​		下面是<code>ForegroundCompositeConverterBase</code>的源码，可以看到它会在消息两端拼接上<code>\033[xm</code>这样的字符，和我们上面实例里手动拼接是一样的,所以才能展示不同的日志颜色。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-type">String</span> <span class="hljs-variable">ESC_START</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;\033[&quot;</span>;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-type">String</span> <span class="hljs-variable">ESC_END</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;m&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">SET_DEFAULT_COLOR</span> <span class="hljs-operator">=</span> ESC_START + <span class="hljs-string">&quot;0;&quot;</span> + DEFAULT_FG + ESC_END;<br><br><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> String <span class="hljs-title function_">transform</span><span class="hljs-params">(E event, String in)</span> &#123;<br>    <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">sb</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>();<br>    sb.append(ESC_START);<br>    sb.append(getForegroundColorCode(event));<br>    sb.append(ESC_END);<br>    sb.append(in);<br>    sb.append(SET_DEFAULT_COLOR);<br>    <span class="hljs-keyword">return</span> sb.toString();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="根据日志Level展示不同的颜色"><a href="#根据日志Level展示不同的颜色" class="headerlink" title="根据日志Level展示不同的颜色"></a>根据日志Level展示不同的颜色</h2><p>​	<code>SpringBoot</code>是可以根据不同的日志级别展示不同颜色的，如<code>error</code>级别显示红色，<code>info</code>级别显示绿色。查看它的源码，发现它注册了自己写的<code>Converter</code>到<code>logback</code>里，名字叫<code>clr</code>。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">conversionRule</span> <span class="hljs-attr">conversionWord</span>=<span class="hljs-string">&quot;clr&quot;</span> <span class="hljs-attr">converterClass</span>=<span class="hljs-string">&quot;org.springframework.boot.logging.logback.ColorConverter&quot;</span> /&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>​	配置<code>Pattern</code>是这样的,后面的<code>&#123;faint&#125;</code>是这个转换器的参数，通过<code>getFirstOption()</code>能获取到。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">%</span><span class="language-bash">clr(%d&#123;<span class="hljs-variable">$&#123;yyyy-MM-dd HH:mm:ss.SSS&#125;</span>&#125;)&#123;faint&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>​	这里逻辑很简单，她先调用<code>getFirstOption()</code>拿到配置的颜色，如果没有配置，则获取日志等级，从<code>LEVELS</code>里获取该等级对应的颜色，然后用该等级对应的颜色拼接在日志两端。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> String <span class="hljs-title function_">transform</span><span class="hljs-params">(ILoggingEvent event, String in)</span> &#123;<br>       <span class="hljs-comment">//ELEMENTS是一个map</span><br>	<span class="hljs-type">AnsiElement</span> <span class="hljs-variable">element</span> <span class="hljs-operator">=</span> ELEMENTS.get(getFirstOption());<br>	<span class="hljs-keyword">if</span> (element == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-comment">// LEVELS是一个map</span><br>		element = LEVELS.get(event.getLevel().toInteger());<br>		element = (element != <span class="hljs-literal">null</span>) ? element : AnsiColor.GREEN;<br>	&#125;<br>	<span class="hljs-keyword">return</span> toAnsiString(in, element);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="MDC功能"><a href="#MDC功能" class="headerlink" title="MDC功能"></a>MDC功能</h2><p>​		<code>servlet</code>的线程模型是每个请求创建一个线程处理，如果我们在请求开始向<code>ThreadLocal</code>里存入一个值，则整个请求链都能拿到相同的值，利用这一点可以实现一个请求链显示同一种颜色的日志。</p>
+<p>​		<code>MDC</code>就是<code>slf4j</code>提供的<code>ThreadLocal</code>，存入里面的值可以在配置中配置输出到日志里。我们可以在请求开始时存入颜色到<code>MDC</code>里，输出日志时根据我们配置的颜色输出。</p>
+<h3 id="实验MDC功能"><a href="#实验MDC功能" class="headerlink" title="实验MDC功能"></a>实验MDC功能</h3><p>​	在输出日志前将当前时间戳存入mdc，请求结束后移除mdc中对应的key。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java">  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br><span class="hljs-comment">//存入当前时间戳到MDC里，键为 mdc_key</span><br>      MDC.put(<span class="hljs-string">&quot;mdc_key&quot;</span>, String.valueOf(System.currentTimeMillis()));<br><br>      <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(Test.class);<br>      log.info(<span class="hljs-string">&quot;日志&quot;</span>);<br><br>      MDC.remove(<span class="hljs-string">&quot;mdc_key&quot;</span>);<br>  &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><code>logback</code>里使用<code>%X&#123;&#125;</code>取出存入的值 。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">appender</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;STDOUT&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.ConsoleAppender&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">encoder</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">Pattern</span>&gt;</span>%X&#123;mdc_key&#125; %d&#123;yyyy-MM-dd HH:mm:ss&#125; %-5p %C:%L-%m%n<span class="hljs-tag">&lt;/<span class="hljs-name">Pattern</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">encoder</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">appender</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="/img/in/2020-06-28-logback%E8%BE%93%E5%87%BA%E5%BD%A9%E8%89%B2%E6%97%A5%E5%BF%97/image-20200629112323480.png" srcset="/img/loading.gif" lazyload alt="image-20200629112323480"></p>
+<p>日志中成功的输出了输出日之前存入<code>MDC</code>里的内容。</p>
+<h2 id="使用MDC实现每个请求输出一种颜色"><a href="#使用MDC实现每个请求输出一种颜色" class="headerlink" title="使用MDC实现每个请求输出一种颜色"></a>使用MDC实现每个请求输出一种颜色</h2><p>创建一个<code>Converter</code> 继承<code>ForegroundCompositeConverterBase</code>，并将此<code>Converter</code>配置到<code>logback</code>的配置文件里。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MdcColorConverter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ForegroundCompositeConverterBase</span>&lt;ILoggingEvent&gt; &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">key</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;MDCCOLORCONVERTER_KEY&quot;</span>;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> String <span class="hljs-title function_">getForegroundColorCode</span><span class="hljs-params">(ILoggingEvent event)</span> &#123;<br>        <span class="hljs-comment">//从event中获取MDCMap，再获取里面的key对应的值</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">color</span> <span class="hljs-operator">=</span> event.getMDCPropertyMap().get(key);<br>        <span class="hljs-comment">//如果没有返回默认颜色数值</span><br>        <span class="hljs-keyword">if</span> (color == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">return</span> ANSIConstants.DEFAULT_FG;<br>        &#125;<br>        <span class="hljs-comment">//否则返回对应颜色的数值</span><br>        <span class="hljs-keyword">return</span> color;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>创建一个<code>filter</code>，在请求进入<code>servelt</code>前，将随机颜色存入<code>MDC</code>内,并配置到<code>spring</code>里。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MdcColorFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Filter</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;String&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">AtomicInteger</span> <span class="hljs-variable">atm</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AtomicInteger</span>();<br><br>    &#123;<br>        list.add(ANSIConstants.MAGENTA_FG); <span class="hljs-comment">//洋红/紫色</span><br>        list.add(ANSIConstants.BLUE_FG); <span class="hljs-comment">//蓝色</span><br>        list.add(ANSIConstants.CYAN_FG); <span class="hljs-comment">//青色</span><br>        list.add(ANSIConstants.GREEN_FG); <span class="hljs-comment">//绿色</span><br>        list.add(ANSIConstants.YELLOW_FG); <span class="hljs-comment">//黄色</span><br>        list.add(ANSIConstants.RED_FG); <span class="hljs-comment">//红色</span><br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest request, ServletResponse response, FilterChain chain)</span> <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">//循环调用list内的颜色</span><br>            <span class="hljs-type">int</span> <span class="hljs-variable">index</span> <span class="hljs-operator">=</span> atm.getAndIncrement() % list.size();<br>			<span class="hljs-comment">//将颜色对用的数值存入MDC</span><br>            MDC.put(MdcColorConverter.key, list.get(Math.abs(index)));<br>            chain.doFilter(request, response);<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-comment">//从MDC中删除键值</span><br>            MDC.remove(MdcColorConverter.key);<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>创建一个<code>servlet</code>进行测试。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-meta">@RestController</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestController</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(TestController.class);<br><br>    <span class="hljs-meta">@RequestMapping(&quot;test&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">test</span><span class="hljs-params">()</span> &#123;<br>        logger.info(<span class="hljs-string">&quot;日志1&quot;</span>);<br>        logger.warn(<span class="hljs-string">&quot;日志1&quot;</span>);<br>        logger.error(<span class="hljs-string">&quot;日志1&quot;</span>);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>将<code>Converter</code>注册到<code>logback</code>上，配置如下,模式上使用我们注册的<code>Converter</code>将模式包起来。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 注册converter --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">conversionRule</span> <span class="hljs-attr">conversionWord</span>=<span class="hljs-string">&quot;mdcColor&quot;</span> <span class="hljs-attr">converterClass</span>=<span class="hljs-string">&quot;com.test.util.MdcColorConverter&quot;</span>/&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;console_pattern&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;%mdcColor(%d&#123;yyyy-MM-dd HH:mm:ss&#125; %-5p %C:%L-%m%n)&quot;</span>/&gt;</span><br>   <br><span class="hljs-tag">&lt;<span class="hljs-name">appender</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;CONSOLE&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ch.qos.logback.core.ConsoleAppender&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">encoder</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">pattern</span>&gt;</span>$&#123;console_pattern&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">pattern</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">encoder</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">appender</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>输出日志如下，每个请求一种颜色，非常便于人类查看。</p>
+<p><img src="/img/in/2020-06-28-logback%E8%BE%93%E5%87%BA%E5%BD%A9%E8%89%B2%E6%97%A5%E5%BF%97/image-20200629113356747.png" srcset="/img/loading.gif" lazyload alt="image-20200629113356747"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​		以上就是输出彩色日志的方法，除了输出到控制台，也可以输出到文件里，在<code>linux</code>下使用<code>tail -f</code> 查看文件，或者使用 <code>less -r</code> 查看就是彩色的，注意这里的<code>less -r</code>需要加<code>-r</code>参数才可以。</p>
+<p>​		在本机调试时，因为只有自己访问，按照日志Level切换颜色看起来比较清晰，生产环境下，访问量大，多个请求日志之间的会交叉，使用<code>MDC</code>实现每个请求一种颜色比较便于人类观察。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/slf4j/" class="print-no-link">#slf4j</a>
+      
+        <a href="/tags/logback/" class="print-no-link">#logback</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>logback输出彩色日志，每个请求一种颜色</div>
+      <div>https://www.huangchaoyu.com/2412438885.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年6月28日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/3799814089.html" title="maven utf8控制台下乱码">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">maven utf8控制台下乱码</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/806832644.html" title="git rebase使用场景">
+                        <span class="hidden-mobile">git rebase使用场景</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

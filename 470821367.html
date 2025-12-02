@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="花一天时间折腾下gitpage，将博客迁移到gitpage上今天花点时间将博客迁移到gitpage上，下面总结下过程  TOC{:toc}  1.创建仓库这个没什么难度，创建一个[你的名字.github.io]的空白仓库即可 2.开启gitpage在该仓库的设置里，开启gitpage，访问网址[你的名字.github.io]即可访问到空白的页面 3.搜索下载喜欢的jekyll主题一顿百度，最后在知">
+<meta property="og:type" content="article">
+<meta property="og:title" content="花一天时间折腾下gitpage，将博客迁移到gitpage上">
+<meta property="og:url" content="https://www.huangchaoyu.com/470821367.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="花一天时间折腾下gitpage，将博客迁移到gitpage上今天花点时间将博客迁移到gitpage上，下面总结下过程  TOC{:toc}  1.创建仓库这个没什么难度，创建一个[你的名字.github.io]的空白仓库即可 2.开启gitpage在该仓库的设置里，开启gitpage，访问网址[你的名字.github.io]即可访问到空白的页面 3.搜索下载喜欢的jekyll主题一顿百度，最后在知">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/1.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/2.png">
+<meta property="article:published_time" content="2019-11-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.177Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="gitpage">
+<meta property="article:tag" content="jekyll">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.huangchaoyu.com/img/in/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/1.png">
+  
+  
+  
+  <title>花一天时间折腾下gitpage，将博客迁移到gitpage上 - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="花一天时间折腾下gitpage，将博客迁移到gitpage上"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-11-28 00:00" pubdate>
+          2019年11月28日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          703 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">花一天时间折腾下gitpage，将博客迁移到gitpage上</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="花一天时间折腾下gitpage，将博客迁移到gitpage上"><a href="#花一天时间折腾下gitpage，将博客迁移到gitpage上" class="headerlink" title="花一天时间折腾下gitpage，将博客迁移到gitpage上"></a>花一天时间折腾下gitpage，将博客迁移到gitpage上</h3><p>今天花点时间将博客迁移到gitpage上，下面总结下过程</p>
+<ul>
+<li>TOC<br>{:toc}</li>
+</ul>
+<h4 id="1-创建仓库"><a href="#1-创建仓库" class="headerlink" title="1.创建仓库"></a>1.创建仓库</h4><p>这个没什么难度，创建一个[你的名字.github.io]的空白仓库即可</p>
+<h4 id="2-开启gitpage"><a href="#2-开启gitpage" class="headerlink" title="2.开启gitpage"></a>2.开启gitpage</h4><p>在该仓库的设置里，开启gitpage，访问网址[你的名字.github.io]即可访问到空白的页面</p>
+<h4 id="3-搜索下载喜欢的jekyll主题"><a href="#3-搜索下载喜欢的jekyll主题" class="headerlink" title="3.搜索下载喜欢的jekyll主题"></a>3.搜索下载喜欢的jekyll主题</h4><p>一顿百度，最后在知乎上找到一个好看的主题 <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20223939">帖子链接</a>,于是下载之</p>
+<h4 id="4-修改主题"><a href="#4-修改主题" class="headerlink" title="4.修改主题"></a>4.修改主题</h4><p>解压出来的文件目录如下:</p>
+<p><img src="/img/in/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/1.png" srcset="/img/loading.gif" lazyload alt="文件目录"></p>
+<pre><code class="hljs">includes 模板html
+layouts  文章样式模板html
+poists	markdown 源文章
+site	jkeyll自动生成的，可删除
+css 	样式
+fonts 	字体
+img  	各种图片
+js		js
+less	样式文件
+pwa		
+config.yml 主配置
+</code></pre>
+<p>等等 <a target="_blank" rel="noopener" href="https://github.com/Huxpro/huxpro.github.io">仓库地址</a> readme里面有详细解释</p>
+<h4 id="5-将自己的文章转成主题能使用的形式"><a href="#5-将自己的文章转成主题能使用的形式" class="headerlink" title="5.将自己的文章转成主题能使用的形式"></a>5.将自己的文章转成主题能使用的形式</h4><blockquote>
+<p>也就仿照着这个头部将信息填写进去，，上下各用三个横线包住。</p>
+</blockquote>
+<p><img src="/img/in/2019-11-28-%E8%8A%B1%E4%B8%80%E5%A4%A9%E6%97%B6%E9%97%B4%E6%8A%98%E8%85%BE%E4%B8%8Bgitpage%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0gitpage%E4%B8%8A/2.png" srcset="/img/loading.gif" lazyload alt="文章格式"></p>
+<p>可以看出文章文件名命名规则为<br>	年-月-日-标题<br>文章内部最前面个，需要加入下面这种格式的来识别标题等</p>
+<pre><code class="hljs">---
+layout:     post    #选择那个主题 layouts文件夹里的
+title:      &quot;你好，世界&quot;  #标题
+subtitle:   &quot;&quot;			#副标题
+date:       2019-05-26  #日期
+author:     &quot;hcy&quot;		#作者
+header-img: &quot;img/gene-head-img.jpg&quot; #文章头图
+tags:
+    - diary			#打标签
+---
+</code></pre>
+<p>​	<br>	今天是 2019-05-26	#正文</p>
+<h4 id="6-本地运行预览"><a href="#6-本地运行预览" class="headerlink" title="6.本地运行预览"></a>6.本地运行预览</h4><p>需要在本地搭建jekyll环境，而jekyll是用ruby开发的</p>
+<h5 id="下载ruby及安装"><a href="#下载ruby及安装" class="headerlink" title="下载ruby及安装"></a>下载ruby及安装</h5><p>这个软件对window兼容不太好，教程参考这个<a target="_blank" rel="noopener" href="http://jekyll-windows.juthilo.com/5-running-jekyll/">window上运行jekyll</a>进行安装</p>
+<p>文件所在的目录下，调用<code>jekyll serve</code>命令测试运行，如果没报错的话，控制台上会显示打开127.0.0.1:4000 就可以访问啦<br>如果报错的话，可以看看下面的内容，或者根据错误信息查询，记得主配置文件config.yml里面的东西要好好看一下，一条一条的看</p>
+<h4 id="7-遇到的问题"><a href="#7-遇到的问题" class="headerlink" title="7.遇到的问题"></a>7.遇到的问题</h4><h5 id="jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404"><a href="#jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404" class="headerlink" title="jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404"></a>jekyll中文文件名本地预览问题，中文的文件名本地无法打开，会报404</h5><p>解决办法<a target="_blank" rel="noopener" href="http://kael-aiur.com/%E5%85%A5%E9%97%A8%E6%8C%87%E5%BC%95/jekyll%E4%B8%AD%E6%96%87%E6%96%87%E4%BB%B6%E5%90%8D%E6%9C%AC%E5%9C%B0%E9%A2%84%E8%A7%88%E9%97%AE%E9%A2%98.html">jekyll中文文件名本地预览问题</a>如下，</p>
+<p>修改安装目录\Ruby22-x64\lib\ruby\2.2.0\webrick\httpservlet下的filehandler.rb文件，建议先备份。</p>
+<p>找到下列两处，添加一句（ + 的一行为添加部分）
+	</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-built_in">path</span> = req.path_info.dup.force_encoding(Encoding.<span class="hljs-built_in">find</span>(<span class="hljs-string">&quot;filesystem&quot;</span>))<br>+ <span class="hljs-built_in">path</span>.force_encoding(<span class="hljs-string">&quot;UTF-8&quot;</span>) # 加入编码<br><span class="hljs-keyword">if</span> trailing_pathsep?(req.path_info)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">break</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">base</span> == <span class="hljs-string">&quot;/&quot;</span><br>+ <span class="hljs-keyword">base</span>.force_encoding(<span class="hljs-string">&quot;UTF-8&quot;</span>) <span class="hljs-meta"># 加入編碼</span><br><span class="hljs-keyword">break</span> unless File.directory?(File.expand_path(res.filename + <span class="hljs-keyword">base</span>))<br></code></pre></td></tr></table></figure>
+
+<p>然后重启服务器即可jekyll clean &amp;&amp; jekyll s</p>
+<h5 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h5><pre><code class="hljs">Dependency Error: Yikes! It looks like you don’t have jekyll-paginate or one of its dependencies installed. 
+In order to use Jekyll as currently configured, you’ll need to install this gem. The full error message from Ruby is: ‘cannot load such file – jekyll-paginate’ If you run into trouble,
+	you can find helpful resources at Getting Help
+</code></pre>
+<p>运行<code>gem install jekyll-paginate</code>安装jekyll-paginate即可</p>
+<h4 id="8-上传到github"><a href="#8-上传到github" class="headerlink" title="8.上传到github"></a>8.上传到github</h4><pre><code class="hljs">直接git绑定远程仓库，上传等30s左右就能打开了
+
+git remote add origin Urlxxxxxx
+git push origin master
+</code></pre>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/gitpage/" class="print-no-link">#gitpage</a>
+      
+        <a href="/tags/jekyll/" class="print-no-link">#jekyll</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>花一天时间折腾下gitpage，将博客迁移到gitpage上</div>
+      <div>https://www.huangchaoyu.com/470821367.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年11月28日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2958915134.html" title="java hkdf算法生成密钥">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">java hkdf算法生成密钥</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1844705713.html" title="MessageToByteEncoder使用注意">
+                        <span class="hidden-mobile">MessageToByteEncoder使用注意</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

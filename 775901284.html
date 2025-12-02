@@ -1,0 +1,750 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="mybatis实现mysql流式查询的原理背景如果使用mybatis查询mysql，查询结果集非常大时，可能发生oom，我们可以使用mysql的流式查询，按需逐行查询每条数据，实现低内存占用。下面分析其原理。 jdbc驱动如何支持流式查询的jdbc驱动的基本原理  jdbc驱动与mysql之间建立tcp连接，将sql语句发送到mysql服务端后，并从mysql服务端读取数据，并封装成resultS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mybatis实现真流式查询mysql">
+<meta property="og:url" content="https://www.huangchaoyu.com/775901284.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="mybatis实现mysql流式查询的原理背景如果使用mybatis查询mysql，查询结果集非常大时，可能发生oom，我们可以使用mysql的流式查询，按需逐行查询每条数据，实现低内存占用。下面分析其原理。 jdbc驱动如何支持流式查询的jdbc驱动的基本原理  jdbc驱动与mysql之间建立tcp连接，将sql语句发送到mysql服务端后，并从mysql服务端读取数据，并封装成resultS">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.844Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="mysql">
+<meta property="article:tag" content="mybatis">
+<meta property="article:tag" content="技巧">
+<meta property="article:tag" content="mysql流式查询技巧">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>mybatis实现真流式查询mysql - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="mybatis实现真流式查询mysql"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-01-11 00:00" pubdate>
+          2022年1月11日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">mybatis实现真流式查询mysql</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="mybatis实现mysql流式查询的原理"><a href="#mybatis实现mysql流式查询的原理" class="headerlink" title="mybatis实现mysql流式查询的原理"></a>mybatis实现mysql流式查询的原理</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>如果使用mybatis查询mysql，查询结果集非常大时，可能发生oom，我们可以使用mysql的流式查询，按需逐行查询每条数据，实现低内存占用。<br>下面分析其原理。</p>
+<h2 id="jdbc驱动如何支持流式查询的"><a href="#jdbc驱动如何支持流式查询的" class="headerlink" title="jdbc驱动如何支持流式查询的"></a>jdbc驱动如何支持流式查询的</h2><h3 id="jdbc驱动的基本原理"><a href="#jdbc驱动的基本原理" class="headerlink" title="jdbc驱动的基本原理"></a>jdbc驱动的基本原理</h3><p>  jdbc驱动与mysql之间建立tcp连接，将sql语句发送到mysql服务端后，并从mysql服务端读取数据，并封装成resultSet的形式返回。</p>
+<h3 id="resultSet"><a href="#resultSet" class="headerlink" title="resultSet"></a>resultSet</h3><p>我们使用resultSet时，调用resultSet的next方法是否存在下一行数据，resultSet内部包装了ResultsetRows对象，他将请求委托给ResultsetRows对象来处理。resultSet本身只是一个包装类，本质还是被委托到ResultsetRows对象。</p>
+<h3 id="resultRows"><a href="#resultRows" class="headerlink" title="resultRows"></a>resultRows</h3><p>ResultsetRows 有两个实现类，ResultsetRowsStreaming和ResultsetRowsStatic。<br>ResultsetRowsStreaming发送完请求后，不会读取响应数据，他会等到调用next方法时才会从mysql读取。<br>ResultsetRowsStatic会使用while循环读取所有的数据存储到list中。</p>
+<p>  下面是创建resultSet对象的过程过程如下，其中有一个核心逻辑是判断参数中的streamResults字段，决定是生成哪一种类型的ResultsetRows。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//  com.mysql.cj.protocol.a.TextResultsetReader</span><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Resultset <span class="hljs-title function_">read</span><span class="hljs-params">(<span class="hljs-type">int</span> maxRows, <span class="hljs-type">boolean</span> streamResults, NativePacketPayload resultPacket, ColumnDefinition metadata,</span><br><span class="hljs-params">            ProtocolEntityFactory&lt;Resultset, NativePacketPayload&gt; resultSetFactory)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br><br>        <span class="hljs-type">Resultset</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        <span class="hljs-comment">//try &#123;</span><br>        <span class="hljs-type">long</span> <span class="hljs-variable">columnCount</span> <span class="hljs-operator">=</span> resultPacket.readInteger(IntegerDataType.INT_LENENC);<br><br>        <span class="hljs-keyword">if</span> (columnCount &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-comment">// Build a result set with rows.</span><br><br>            <span class="hljs-comment">// Read in the column information</span><br>            <span class="hljs-type">ColumnDefinition</span> <span class="hljs-variable">cdef</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.protocol.read(ColumnDefinition.class, <span class="hljs-keyword">new</span> <span class="hljs-title class_">ColumnDefinitionFactory</span>(columnCount, metadata));<br><br>            <span class="hljs-comment">// There is no EOF packet after fields when CLIENT_DEPRECATE_EOF is set</span><br>            <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.protocol.getServerSession().isEOFDeprecated()) &#123;<br>                <span class="hljs-built_in">this</span>.protocol.skipPacket();<br>                <span class="hljs-comment">//this.protocol.readServerStatusForResultSets(this.protocol.readPacket(this.protocol.getReusablePacket()), true);</span><br>            &#125;<br><br>            <span class="hljs-type">ResultsetRows</span> <span class="hljs-variable">rows</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br><br>            <span class="hljs-keyword">if</span> (!streamResults) &#123;<br>                <span class="hljs-type">TextRowFactory</span> <span class="hljs-variable">trf</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TextRowFactory</span>(<span class="hljs-built_in">this</span>.protocol, cdef, resultSetFactory.getResultSetConcurrency(), <span class="hljs-literal">false</span>);<br>                ArrayList&lt;ResultsetRow&gt; rowList = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br><br>                <span class="hljs-type">ResultsetRow</span> <span class="hljs-variable">row</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.protocol.read(ResultsetRow.class, trf);<br>                <span class="hljs-keyword">while</span> (row != <span class="hljs-literal">null</span>) &#123;<br>                    <span class="hljs-keyword">if</span> ((maxRows == -<span class="hljs-number">1</span>) || (rowList.size() &lt; maxRows)) &#123;<br>                        rowList.add(row);<br>                    &#125;<br>                    row = <span class="hljs-built_in">this</span>.protocol.read(ResultsetRow.class, trf);<br>                &#125;<br><br>                rows = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ResultsetRowsStatic</span>(rowList, cdef);<br><br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                rows = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ResultsetRowsStreaming</span>&lt;&gt;(<span class="hljs-built_in">this</span>.protocol, cdef, <span class="hljs-literal">false</span>, resultSetFactory);<br>                <span class="hljs-built_in">this</span>.protocol.setStreamingData(rows);<br>            &#125;<br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">             * Build ResultSet from ResultsetRows</span><br><span class="hljs-comment">             */</span><br>            rs = resultSetFactory.createFromProtocolEntity(rows);<br><br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// check for file request</span><br>            <span class="hljs-keyword">if</span> (columnCount == NativePacketPayload.NULL_LENGTH) &#123;<br>                <span class="hljs-type">String</span> <span class="hljs-variable">charEncoding</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.protocol.getPropertySet().getStringProperty(PropertyKey.characterEncoding).getValue();<br>                <span class="hljs-type">String</span> <span class="hljs-variable">fileName</span> <span class="hljs-operator">=</span> resultPacket.readString(StringSelfDataType.STRING_TERM, <span class="hljs-built_in">this</span>.protocol.doesPlatformDbCharsetMatches() ? charEncoding : <span class="hljs-literal">null</span>);<br>                resultPacket = <span class="hljs-built_in">this</span>.protocol.sendFileToServer(fileName);<br>            &#125;<br><br>            <span class="hljs-comment">/*</span><br><span class="hljs-comment">             * Build ResultSet with no ResultsetRows</span><br><span class="hljs-comment">             */</span><br><br>            <span class="hljs-comment">// read and parse OK packet</span><br>            <span class="hljs-type">OkPacket</span> <span class="hljs-variable">ok</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.protocol.readServerStatusForResultSets(resultPacket, <span class="hljs-literal">false</span>); <span class="hljs-comment">// oldStatus set in sendCommand()</span><br><br>            rs = resultSetFactory.createFromProtocolEntity(ok);<br>        &#125;<br>        <span class="hljs-keyword">return</span> rs;<br><br>        <span class="hljs-comment">//&#125; catch (IOException ioEx) &#123;</span><br>        <span class="hljs-comment">//    throw SQLError.createCommunicationsException(this.protocol.getConnection(), this.protocol.getPacketSentTimeHolder().getLastPacketSentTime(),</span><br>        <span class="hljs-comment">//            this.protocol.getPacketReceivedTimeHolder().getLastPacketReceivedTime(), ioEx, this.protocol.getExceptionInterceptor());</span><br>        <span class="hljs-comment">//&#125;</span><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>决定是否启用流式的开关是使用下面的方法判断的。</p>
+<p>其中有一个重要的判断参数是fetchSize &#x3D;&#x3D; Integer.MIN_VALUE。<br>也就是说我们要设置statement的fetchSize为Integer.MIN_VALUE才能启用流式查询。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">createStreamingResultSet</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> ((<span class="hljs-built_in">this</span>.query.getResultType() == Type.FORWARD_ONLY) &amp;&amp; (<span class="hljs-built_in">this</span>.resultSetConcurrency == java.sql.ResultSet.CONCUR_READ_ONLY)<br>            &amp;&amp; (<span class="hljs-built_in">this</span>.query.getResultFetchSize() == Integer.MIN_VALUE));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="mybatis如何处理流式查询的"><a href="#mybatis如何处理流式查询的" class="headerlink" title="mybatis如何处理流式查询的"></a>mybatis如何处理流式查询的</h2><p>mybatis查询mysql后会获取到resultSet对象，其会对resultSet中的数据进行逐行next()处理。<br>如果resultHandler为null，则创建一个默认的resultHandler，否则使用我们提供的resultHandler。<br>默认的resultHandler源码如下，他会将结果存储到list中作为结果返回，如果使用我们提供的resultHandler，则返回的是空集合。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// org.apache.ibatis.executor.resultset.DefaultResultSetHandler#handleResultSet</span><br><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handleResultSet</span><span class="hljs-params">(ResultSetWrapper rsw, ResultMap resultMap, List&lt;Object&gt; multipleResults, ResultMapping parentMapping)</span> <span class="hljs-keyword">throws</span> SQLException &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      <span class="hljs-keyword">if</span> (parentMapping != <span class="hljs-literal">null</span>) &#123;<br>        handleRowValues(rsw, resultMap, <span class="hljs-literal">null</span>, RowBounds.DEFAULT, parentMapping);<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">if</span> (resultHandler == <span class="hljs-literal">null</span>) &#123;<br>          <span class="hljs-type">DefaultResultHandler</span> <span class="hljs-variable">defaultResultHandler</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultResultHandler</span>(objectFactory);<br>          handleRowValues(rsw, resultMap, defaultResultHandler, rowBounds, <span class="hljs-literal">null</span>);<br>          multipleResults.add(defaultResultHandler.getResultList());<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          handleRowValues(rsw, resultMap, resultHandler, rowBounds, <span class="hljs-literal">null</span>);<br>        &#125;<br>      &#125;<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>      <span class="hljs-comment">// issue #228 (close resultsets)</span><br>      closeResultSet(rsw.getResultSet());<br>    &#125;<br>  &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>可以看到默认的resultHandler是将结果聚集到list中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DefaultResultHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ResultHandler</span>&lt;Object&gt; &#123;<br><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> List&lt;Object&gt; list;<br><br>  <span class="hljs-keyword">public</span> <span class="hljs-title function_">DefaultResultHandler</span><span class="hljs-params">()</span> &#123;<br>    list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>  &#125;<br><br>  <span class="hljs-meta">@SuppressWarnings(&quot;unchecked&quot;)</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-title function_">DefaultResultHandler</span><span class="hljs-params">(ObjectFactory objectFactory)</span> &#123;<br>    list = objectFactory.create(List.class);<br>  &#125;<br><br>  <span class="hljs-meta">@Override</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handleResult</span><span class="hljs-params">(ResultContext&lt;?&gt; context)</span> &#123;<br>    list.add(context.getResultObject());<br>  &#125;<br><br>  <span class="hljs-keyword">public</span> List&lt;Object&gt; <span class="hljs-title function_">getResultList</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> list;<br>  &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>处理resultSet的逻辑就是调用resultSet的next方法获取下一条，将每一条都解析成对象后回调resultHandler。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handleRowValuesForSimpleResultMap</span><span class="hljs-params">(ResultSetWrapper rsw, ResultMap resultMap, ResultHandler&lt;?&gt; resultHandler, RowBounds rowBounds, ResultMapping parentMapping)</span><br>    <span class="hljs-keyword">throws</span> SQLException &#123;<br>  DefaultResultContext&lt;Object&gt; resultContext = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultResultContext</span>&lt;&gt;();<br>  <span class="hljs-type">ResultSet</span> <span class="hljs-variable">resultSet</span> <span class="hljs-operator">=</span> rsw.getResultSet();<br>  skipRows(resultSet, rowBounds);<br>  <span class="hljs-keyword">while</span> (shouldProcessMoreRows(resultContext, rowBounds) &amp;&amp; !resultSet.isClosed() &amp;&amp; resultSet.next()) &#123;<br>    <span class="hljs-type">ResultMap</span> <span class="hljs-variable">discriminatedResultMap</span> <span class="hljs-operator">=</span> resolveDiscriminatedResultMap(resultSet, resultMap, <span class="hljs-literal">null</span>);<br>    <span class="hljs-type">Object</span> <span class="hljs-variable">rowValue</span> <span class="hljs-operator">=</span> getRowValue(rsw, discriminatedResultMap, <span class="hljs-literal">null</span>);<br>    storeObject(resultHandler, resultContext, rowValue, parentMapping, resultSet);<br>  &#125;<br>&#125;	<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="mybatis实现流式读取的正确的写法"><a href="#mybatis实现流式读取的正确的写法" class="headerlink" title="mybatis实现流式读取的正确的写法"></a>mybatis实现流式读取的正确的写法</h2><ol>
+<li>mapper接口这样写，提供第二个参数，即resultHandler,因为提供resultHandler后，mybatis就不会有返回值了，这里直接返回void</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">CustomSettleInChannelRecordMapper</span> &#123;<br><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">query</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;request&quot;)</span> SettleRequest request, ResultHandler&lt;SettleRecord&gt; handler)</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<ol start="2">
+<li>xml文件应该这样写，一定要写 fetchSize&#x3D;”-2147483648”，不然到达jdbc那里返回的并不是流式的结果集。</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;query&quot;</span> </span><br><span class="hljs-tag">        <span class="hljs-attr">fetchSize</span>=<span class="hljs-string">&quot;-2147483648&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">resultMap</span>=<span class="hljs-string">&quot;bastResultMap&quot;</span>&gt;</span><br>    select<br>    id,currency,pay_amount,status,payment_status<br>    from settle_record<br>    <span class="hljs-tag">&lt;<span class="hljs-name">where</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;request.reconCompleteTimeEnd != null&quot;</span>&gt;</span><br>            and txn_complete_time <span class="hljs-symbol">&amp;lt;</span>= #&#123;request.reconCompleteTimeEnd&#125;<br>        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;request.bizType != null&quot;</span>&gt;</span><br>            and biz_type = #&#123;request.bizType&#125;<br>        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">where</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>mybatis本身支持在mapper里面提供resultHandler用来流式处理每个结果。其实它内部本身就是创建一个默认的resultHandler将结果汇集后返回给我们的。</p>
+<p>mybatis本身属于框架上层服务，他只负责从jdbc出取得resultSet，将resultSet每一行读取出来包装成流式的形式。<br>而resultSet本身是不是流式的，mybatis无法决定。<br>resultSet是真流式还是伪流式，需要判断一个重要的参数fetchSize，<br>要想实现真流式一定要将fetchSize设置为Integer.MIN_VALUE 底层才是真流式，否则只是mybatis包装的伪流式而已。</p>
+<p>验证的话可以debug查看resultSet内部的resultRows是什么类型的，如果是ResultsetRowsStreaming则是真流式，如果是ResultsetRowsStatic则是假流式。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/mysql/" class="print-no-link">#mysql</a>
+      
+        <a href="/tags/mybatis/" class="print-no-link">#mybatis</a>
+      
+        <a href="/tags/%E6%8A%80%E5%B7%A7/" class="print-no-link">#技巧</a>
+      
+        <a href="/tags/mysql%E6%B5%81%E5%BC%8F%E6%9F%A5%E8%AF%A2%E6%8A%80%E5%B7%A7/" class="print-no-link">#mysql流式查询技巧</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>mybatis实现真流式查询mysql</div>
+      <div>https://www.huangchaoyu.com/775901284.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年1月11日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/933416019.html" title="reactor中的线程池">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">reactor中的线程池</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1058900669.html" title="批处理当前脚本目录和当前命令行目录">
+                        <span class="hidden-mobile">批处理当前脚本目录和当前命令行目录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

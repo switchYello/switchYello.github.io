@@ -1,0 +1,809 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hcy">
+  <meta name="keywords" content="黄朝雨,huangchaoyu">
+  
+    <meta name="description" content="Feign多种类型的POST TOC{:toc}  三种携带请求体的方式前文Feign高级功能说了，Feign有三种方式实现请求体，分别是  使用@Body注解 使用一个不加注解的参数 使用若干个添加@Param但未在@ReqeustLine、@Heads...等地方使用的参数  POST的三种常见ContentType而http的post有三种类型，分别是：  application&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Feign多种类型的POST">
+<meta property="og:url" content="https://www.huangchaoyu.com/3460669771.html">
+<meta property="og:site_name" content="黄朝雨的个人BLOG">
+<meta property="og:description" content="Feign多种类型的POST TOC{:toc}  三种携带请求体的方式前文Feign高级功能说了，Feign有三种方式实现请求体，分别是  使用@Body注解 使用一个不加注解的参数 使用若干个添加@Param但未在@ReqeustLine、@Heads...等地方使用的参数  POST的三种常见ContentType而http的post有三种类型，分别是：  application&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218180418698.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218180217041.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218181740787.png">
+<meta property="og:image" content="https://www.huangchaoyu.com/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218183647159.png">
+<meta property="article:published_time" content="2019-12-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T15:33:47.221Z">
+<meta property="article:author" content="黄朝雨">
+<meta property="article:tag" content="openfeign">
+<meta property="article:tag" content="Http客户端">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.huangchaoyu.com/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218180418698.png">
+  
+  
+  
+  <title>Feign多种类型的POST - 黄朝雨的个人BLOG</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?bc2eb9e74cd29c345afc8b53d2cb49fe";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>绅士</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" false
+     style="background: url('/img/gene-head-img.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Feign NB"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-12-18 00:00" pubdate>
+          2019年12月18日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Feign NB</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Feign多种类型的POST"><a href="#Feign多种类型的POST" class="headerlink" title="Feign多种类型的POST"></a>Feign多种类型的POST</h1><ul>
+<li>TOC<br>{:toc}</li>
+</ul>
+<h2 id="三种携带请求体的方式"><a href="#三种携带请求体的方式" class="headerlink" title="三种携带请求体的方式"></a>三种携带请求体的方式</h2><p>前文<a href="/2019/12/17/openFeign-%E9%AB%98%E7%BA%A7%E5%8A%9F%E8%83%BD/">Feign高级功能</a>说了，Feign有三种方式实现请求体，分别是</p>
+<ul>
+<li>使用<code>@Body</code>注解</li>
+<li>使用一个不加注解的参数</li>
+<li>使用若干个添加<code>@Param</code>但未在<code>@ReqeustLine、@Heads...</code>等地方使用的参数</li>
+</ul>
+<h2 id="POST的三种常见ContentType"><a href="#POST的三种常见ContentType" class="headerlink" title="POST的三种常见ContentType"></a>POST的三种常见ContentType</h2><p>而http的post有三种类型，分别是：</p>
+<ul>
+<li>application&#x2F;json</li>
+<li>x-<a target="_blank" rel="noopener" href="http://www.form-urlencoded/">www.form-urlencoded</a></li>
+<li>form-data</li>
+</ul>
+<p>下面按照这三种<code>ContentType</code>分别讨论一下。</p>
+<h2 id="1-发送application-json格式的请求体"><a href="#1-发送application-json格式的请求体" class="headerlink" title="1.发送application/json格式的请求体"></a>1.发送<code>application/json</code>格式的请求体</h2><p>发送此类post请求，需要添加头部<code>@Heads(&quot;Content-Type:application/json&quot;)</code></p>
+<h3 id="使用-Body发送"><a href="#使用-Body发送" class="headerlink" title="使用@Body发送"></a>使用<code>@Body</code>发送</h3><blockquote>
+<p> 注意使用<code>@Body</code>的方式构建请求体，别忘了注解中的值左右两遍的大括号需要转义。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestJson</span> &#123;<br><br>     <span class="hljs-meta">@RequestLine(value = &quot;POST /test&quot;)</span><br>     <span class="hljs-meta">@Body(&quot;%7B\&quot;user_name\&quot;:\&quot;&#123;userName&#125;\&quot;%7D&quot;)</span><br>     <span class="hljs-meta">@Headers(&quot;Content-Type:application/json&quot;)</span><br>     Response <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;userName&quot;)</span> String userName)</span>;<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="使用不加注解的参数"><a href="#使用不加注解的参数" class="headerlink" title="使用不加注解的参数"></a>使用不加注解的参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestJson2</span> &#123;<br>    <span class="hljs-meta">@RequestLine(value = &quot;POST /test&quot;)</span><br>    <span class="hljs-meta">@Headers(&quot;Content-Type:application/json&quot;)</span><br>    Response <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(TestParam body)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">TestJson2</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>        .encoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">JacksonEncoder</span>())<br>        .target(TestJson2.class, <span class="hljs-string">&quot;http://localhost:8081&quot;</span>);<br><br>target.getItemCoupon(<span class="hljs-keyword">new</span> <span class="hljs-title class_">TestParam</span>(<span class="hljs-string">&quot;username&quot;</span>, <span class="hljs-string">&quot;password&quot;</span>));<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>接口中有一个没有注解的参数<code>TestParam</code>，build时需要配置<code>JacksonEncoder</code>来处理它，将<code>TestParam</code>序列化成JSON字符串作为请求体。</p>
+</blockquote>
+<h3 id="使用没有使用的-Param-参数"><a href="#使用没有使用的-Param-参数" class="headerlink" title="使用没有使用的@Param 参数"></a>使用没有使用的<code>@Param</code> 参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestJson3</span> &#123;<br>    <span class="hljs-meta">@RequestLine(value = &quot;POST /test&quot;)</span><br>    <span class="hljs-meta">@Headers(&quot;Content-Type:application/json&quot;)</span><br>    Response <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;userName&quot;)</span> String userName, <span class="hljs-meta">@Param(&quot;password&quot;)</span> String passWord)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">TestJson2</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>               .encoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">JacksonEncoder</span>())<br>               .target(TestJson2.class, <span class="hljs-string">&quot;http://localhost:8081&quot;</span>);<br><br>       target.getItemCoupon(<span class="hljs-string">&quot;username&quot;</span>,<span class="hljs-string">&quot;password&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>请看接口中有两个参数，但没有被使用，那么这两个参数就会组成一个<code>Map</code>,然后被配置的<code>JacksonEncoder</code>转成json字符串作为请求体。</p>
+</blockquote>
+<h3 id="结果报文"><a href="#结果报文" class="headerlink" title="结果报文"></a>结果报文</h3><p><img src="/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218180418698.png" srcset="/img/loading.gif" lazyload alt="image-20191218180418698"></p>
+<h2 id="2-发送x-www-form-urlencoded格式的post请求"><a href="#2-发送x-www-form-urlencoded格式的post请求" class="headerlink" title="2.发送x-www-form-urlencoded格式的post请求"></a>2.发送<code>x-www-form-urlencoded</code>格式的post请求</h2><h3 id="使用-Body发送-1"><a href="#使用-Body发送-1" class="headerlink" title="使用@Body发送"></a>使用<code>@Body</code>发送</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestWwwFormUrlencoded</span> &#123;<br>    <span class="hljs-meta">@RequestLine(value = &quot;POST /test&quot;)</span><br>    <span class="hljs-meta">@Headers(&quot;Content-Type:application/x-www-form-urlencoded&quot;)</span><br>    <span class="hljs-meta">@Body(&quot;name=&#123;name&#125;&amp;age=&#123;age&#125;&quot;)</span><br>    Response <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;name&quot;)</span> String name, <span class="hljs-meta">@Param(&quot;age&quot;)</span> Integer age)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">TestWwwFormUrlencoded</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>        .target(TestWwwFormUrlencoded.class, <span class="hljs-string">&quot;http://localhost:8081&quot;</span>);<br><span class="hljs-type">Response</span> <span class="hljs-variable">xiao</span> <span class="hljs-operator">=</span> target.getItemCoupon(UriUtils.encode(<span class="hljs-string">&quot;小明&quot;</span>), <span class="hljs-number">18</span>);<br>	<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这样的用法要注意两点，1.需要自己手工处理url编码,2.需要自己拼接参数，且数量有限。</p>
+<p>虽然能写任意字符串拼接到body中，但是很麻烦不推荐这种用法。</p>
+</blockquote>
+<h3 id="使用不加注解的参数-1"><a href="#使用不加注解的参数-1" class="headerlink" title="使用不加注解的参数"></a>使用不加注解的参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestWwwFormUrlencoded2</span> &#123;<br>    <span class="hljs-meta">@RequestLine(value = &quot;POST /test&quot;)</span><br>    <span class="hljs-meta">@Headers(&quot;Content-Type:application/x-www-form-urlencoded&quot;)</span><br>    Response <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(String param)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果这样的话，传参需要自己拼接参数，还要自己url转码，很麻烦不推荐。</p>
+</blockquote>
+<p>使用map来接收参数，并配合自定义encoder处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestWwwFormUrlencoded3</span> &#123;<br>    <span class="hljs-meta">@RequestLine(value = &quot;POST /test&quot;)</span><br>    <span class="hljs-meta">@Headers(&quot;Content-Type:application/x-www-form-urlencoded&quot;)</span><br>    Response <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(Map&lt;String, Object&gt; params)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WwwEncode</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Encoder</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">encode</span><span class="hljs-params">(Object object, Type bodyType, RequestTemplate template)</span> <span class="hljs-keyword">throws</span> EncodeException &#123;<br>        Map&lt;String, Object&gt; map = (Map&lt;String, Object&gt;) object;<br>        List&lt;String&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>        map.forEach((k, v) -&gt; &#123;<br>            list.add(UriUtils.encode(k) + <span class="hljs-string">&quot;=&quot;</span> + UriUtils.encode(String.valueOf(v)));<br>        &#125;);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">body</span> <span class="hljs-operator">=</span> String.join(<span class="hljs-string">&quot;&amp;&quot;</span>, list);<br>        template.body(Request.Body.encoded(body.getBytes(), StandardCharsets.UTF_8));<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这样比第一种方法方便点，但掉用时传递的参数是map，在不确定参数数目是很好用，但不利于识别，也不推荐。</p>
+</blockquote>
+<h3 id="使用没有使用的-Param-参数-1"><a href="#使用没有使用的-Param-参数-1" class="headerlink" title="使用没有使用的@Param 参数"></a>使用没有使用的<code>@Param</code> 参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestWwwFormUrlencoded4</span> &#123;<br>    <span class="hljs-meta">@RequestLine(value = &quot;POST /test&quot;)</span><br>    <span class="hljs-meta">@Headers(&quot;Content-Type:application/x-www-form-urlencoded&quot;)</span><br>    Response <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;name&quot;)</span> String userName, <span class="hljs-meta">@Param(&quot;age&quot;)</span> String passWord)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WwwEncode</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Encoder</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">encode</span><span class="hljs-params">(Object object, Type bodyType, RequestTemplate template)</span> <span class="hljs-keyword">throws</span> EncodeException &#123;<br>        Map&lt;String, Object&gt; map = (Map&lt;String, Object&gt;) object;<br>        List&lt;String&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>        map.forEach((k, v) -&gt; &#123;<br>            list.add(UriUtils.encode(k) + <span class="hljs-string">&quot;=&quot;</span> + UriUtils.encode(String.valueOf(v)));<br>        &#125;);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">body</span> <span class="hljs-operator">=</span> String.join(<span class="hljs-string">&quot;&amp;&quot;</span>, list);<br>        template.body(Request.Body.encoded(body.getBytes(), StandardCharsets.UTF_8));<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Feign会把参数放到一个map里，传入<code>encoder</code>中。</p>
+<p>同样需要encoder，，这种方法在确定参数数量的情况下比较好用，并且有参数名的提示，比上面那种方法用着舒服点，但要求固定的参数数量，多数情况下都是这样的。</p>
+<p>并且可以同时使用<code>@QueryMap</code>注解，将多余的注解拼在url上，虽然不太好，但也是可以的。</p>
+</blockquote>
+<h3 id="结果报文-1"><a href="#结果报文-1" class="headerlink" title="结果报文"></a>结果报文</h3><p><img src="/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218180217041.png" srcset="/img/loading.gif" lazyload alt="image-20191218180217041"></p>
+<h2 id="3-发送form-data格式的请求"><a href="#3-发送form-data格式的请求" class="headerlink" title="3. 发送form-data格式的请求"></a>3. 发送<code>form-data</code>格式的请求</h2><blockquote>
+<p>这种格式主要用于上传文件，但Feign上传文件还是挺麻烦的，这里不讲上传文件的方法。如果服务端必须要求是<code>form-data</code>格式的请求，Feign也能实现，下面讲讲feign使用<code>form-data</code>发送post请求。</p>
+</blockquote>
+<h3 id="form-data介绍"><a href="#form-data介绍" class="headerlink" title="form-data介绍"></a>form-data介绍</h3><blockquote>
+<p>因为上面讲到的<code>x-www-form-urlencoded</code>形式的请求需要把字符进行url编码，这样体积一下就大了很多，而且不能用法发文件，所以<code>form-data</code>格式就被发明出来了。它使用一个约定好的符号进行分隔参数。报文如下</p>
+</blockquote>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/test</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>localhost:8081<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW<br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>localhost:8081<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>266<br><br><span class="language-haskell"><span class="hljs-comment">------WebKitFormBoundary7MA4YWxkTrZu0gW</span></span><br><span class="language-haskell"><span class="hljs-type">Content</span>-<span class="hljs-type">Disposition</span>: form-<span class="hljs-class"><span class="hljs-keyword">data</span>; name=&quot;name&quot;</span></span><br><span class="language-haskell"></span><br><span class="language-haskell"><span class="hljs-title">abc</span></span><br><span class="language-haskell"><span class="hljs-comment">------WebKitFormBoundary7MA4YWxkTrZu0gW</span></span><br><span class="language-haskell"><span class="hljs-type">Content</span>-<span class="hljs-type">Disposition</span>: form-<span class="hljs-class"><span class="hljs-keyword">data</span>; name=&quot;age&quot;</span></span><br><span class="language-haskell"></span><br><span class="language-haskell"><span class="hljs-number">18</span></span><br><span class="language-haskell"><span class="hljs-comment">------WebKitFormBoundary7MA4YWxkTrZu0gW--</span></span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面的报文可以看出请求体部分是由boundary开始，由参数值结束。</p>
+<p><img src="/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218181740787.png" srcset="/img/loading.gif" lazyload alt="image-20191218181740787"></p>
+<p>boundary在请求头中约定好，且用于参数分隔的boundary要比请求头中定义的多了两个<code>--</code>。</p>
+<p>最后收尾的boundary的尾部再多了两个<code>–-</code></p>
+<p>所以真正的请求体格式是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java">设 bound = <span class="hljs-number">111</span><br><br>--<span class="hljs-number">111</span><br>Content-Disposition: form-data; name=<span class="hljs-string">&quot;name&quot;</span><br><br>abc<br>--<span class="hljs-number">111</span><br>Content-Disposition: form-data; name=<span class="hljs-string">&quot;age&quot;</span><br><br><span class="hljs-number">18</span><br>--<span class="hljs-number">111</span>--		<span class="hljs-comment">//boundary比head中定义的多两个`--`，收尾的又在尾部多两个`--`</span><br></code></pre></td></tr></table></figure></blockquote>
+<h3 id="使用-Body发送-2"><a href="#使用-Body发送-2" class="headerlink" title="使用@Body发送"></a>使用<code>@Body</code>发送</h3><ul>
+<li>处理不了，在Body注解中拼接请求体太麻烦了，所以不采用这种方式。</li>
+</ul>
+<h3 id="使用不加注解的参数-2"><a href="#使用不加注解的参数-2" class="headerlink" title="使用不加注解的参数"></a>使用不加注解的参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TestFormData</span> &#123;<br>    <span class="hljs-meta">@RequestLine(value = &quot;POST /test&quot;)</span><br>    Response <span class="hljs-title function_">getItemCoupon</span><span class="hljs-params">(Map&lt;String, Object&gt; map)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>定义自定义encoder</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FormDataencodedPost</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Encoder</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">encode</span><span class="hljs-params">(Object object, Type bodyType, RequestTemplate template)</span> <span class="hljs-keyword">throws</span> EncodeException &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">boundary</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;--------------&quot;</span> + System.currentTimeMillis();<br>        Map&lt;String, Object&gt; map = (Map&lt;String, Object&gt;) object;<br>        <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">sb</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>();<br>        map.forEach((k, v) -&gt; &#123;<br>            sb.append(<span class="hljs-string">&quot;--&quot;</span>).append(boundary).append(<span class="hljs-string">&quot;\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;Content-Disposition: form-data; name=\&quot;&quot;</span>).append(k).append(<span class="hljs-string">&quot;\&quot;&quot;</span>).append(<span class="hljs-string">&quot;\r\n&quot;</span>);<br>            sb.append(<span class="hljs-string">&quot;\r\n&quot;</span>);<br>            sb.append(v).append(<span class="hljs-string">&quot;\r\n&quot;</span>);<br>        &#125;);<br>        sb.append(<span class="hljs-string">&quot;--&quot;</span>).append(boundary).append(<span class="hljs-string">&quot;--\r\n&quot;</span>);<br>        template.body(Request.Body.encoded(sb.toString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));<br><br>        template.removeHeader(<span class="hljs-string">&quot;Content-Type&quot;</span>);<br>        template.header(<span class="hljs-string">&quot;Content-Type&quot;</span>, <span class="hljs-string">&quot;multipart/form-data; boundary=&quot;</span> + boundary);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">TestFormData</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> Feign.builder()<br>        .encoder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FormDataencodedPost</span>())<br>        .target(TestFormData.class, <span class="hljs-string">&quot;http://localhost:8081&quot;</span>);<br><br>HashMap&lt;String, Object&gt; params = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>params.put(<span class="hljs-string">&quot;name&quot;</span>, <span class="hljs-string">&quot;老王&quot;</span>);<br>params.put(<span class="hljs-string">&quot;age&quot;</span>, <span class="hljs-number">12</span>);<br><br>target.getItemCoupon(params);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li>参数是map，所以此处<code>encoder</code>中拿到的参数就是map，然后遍历map，将参数和值拼接成上面讲的<code>form-data</code>所需的形式。</li>
+<li>boundary使用的是<code>-----</code>+<code>时间戳</code>的形式，也可以用其他随机生成的方式，for循环里面拼接boundary时，在每个boundary前面添加两个<code>-</code>，然后注意<code>\r\n</code>别遗漏了。</li>
+<li>参数循环拼接完成后在最后面在添加一个收尾的boundary，此boundary的前后各添加两个<code>-</code>。</li>
+<li>还要注意的一点时，先清空<code>Content-Type</code>再添加<code>Content-Type</code>，讲boundary设进去。</li>
+</ul>
+</blockquote>
+<h3 id="使用没有使用的-Param-参数-2"><a href="#使用没有使用的-Param-参数-2" class="headerlink" title="使用没有使用的@Param 参数"></a>使用没有使用的<code>@Param</code> 参数</h3><p>​	使用这个其实也是讲参数封装成map进行<code>encoder</code>和上面是一样的这里就不写了。</p>
+<h3 id="结果报文-2"><a href="#结果报文-2" class="headerlink" title="结果报文"></a>结果报文</h3><blockquote>
+<p><img src="/img/in/2019-12-18-openFeign-%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E7%9A%84POST/image-20191218183647159.png" srcset="/img/loading.gif" lazyload alt="image-20191218183647159"></p>
+</blockquote>
+<p><code>form-data</code>的拼接方式比较复杂，如果发送完后台接收不到数据，请仔细核对报文格式是否正确。可以打开<code>WireShark</code>抓包，再用其他工具进行正常的post，仔细比对两者报文的差异。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是使用Feign发送三种类型的POST请求的方法，业务上需要的场景一般就都能满足了，案例中用到的<code>encoder</code>写的比较简单，真实使用时请注意参数校验，处理好异常情况，或写更通用的<code>encoder</code>。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/openfeign/" class="print-no-link">#openfeign</a>
+      
+        <a href="/tags/Http%E5%AE%A2%E6%88%B7%E7%AB%AF/" class="print-no-link">#Http客户端</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Feign多种类型的POST</div>
+      <div>https://www.huangchaoyu.com/3460669771.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hcy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年12月18日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2839707912.html" title="jekyll制作sitemap">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">jekyll制作sitemap</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1305379791.html" title="Feign高级功能">
+                        <span class="hidden-mobile">Feign高级功能</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'switchYello/switchYello.github.io');
+      s.setAttribute('issue-term', 'url');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo强力驱动</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
