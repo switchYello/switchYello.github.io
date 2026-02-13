@@ -27,7 +27,7 @@
 <meta property="og:description" content="使用nginx后，后端无法获取真实ip因为nginx 是反代，后端获取的请求是nginx发出的，所以获取到的总是127.0.0.1 或者0:0:0:0:0:1解决方法就是在nginx配置文件中配置添加请求头为原始请求头即可123proxy_set_header Host $host;proxy_set_header X-Real-IP $remote_addr;proxy_set_header X">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-07-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-02-13T13:34:59.391Z">
+<meta property="article:modified_time" content="2026-02-13T13:37:57.042Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary_large_image">

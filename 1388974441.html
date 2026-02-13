@@ -27,7 +27,7 @@
 <meta property="og:description" content="prometheus函数的理解最近在研究prometheus，花了一天时间理解了几个主要函数的原理，现在记录以下，给以后的自己看rate()函数这个函数接受一个范围counter序列，他能返回每秒钟的qps，因为counter是单调递增的，我才他是将最后一个记录的值减去第一个记录的值，再除以时间段的总秒数得到一个浮点型数字，表示每秒增长的数量。这个函数只能返回每秒的数量，如果需要每分钟的可以自己乘">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-02-13T13:34:59.397Z">
+<meta property="article:modified_time" content="2026-02-13T13:37:57.048Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="prometheus">
 <meta property="article:tag" content="grafana">
