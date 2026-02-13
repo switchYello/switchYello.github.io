@@ -19,15 +19,15 @@
   <meta name="author" content="hcy">
   <meta name="keywords" content="黄朝雨,huangchaoyu">
   
-    <meta name="description" content="project reactor切换线程导致内存溢出的坑​	reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。 事例代码123456789101112131415161718public static void main(String[] args) &#123;    Flux.range(0, 10000)">
+    <meta name="description" content="reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。事例代码123456789101112131415161718public static void main(String[] args) &#123;    Flux.range(0, 10000)            .buffer(1)            &#x2F;&#x2F;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="project reactor切换线程导致内存溢出的坑">
-<meta property="og:url" content="https://www.huangchaoyu.com/2533120135.html">
+<meta property="og:url" content="https://www.zshell.top/2533120135.html">
 <meta property="og:site_name" content="黄朝雨的个人BLOG">
-<meta property="og:description" content="project reactor切换线程导致内存溢出的坑​	reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。 事例代码123456789101112131415161718public static void main(String[] args) &#123;    Flux.range(0, 10000)">
+<meta property="og:description" content="reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。事例代码123456789101112131415161718public static void main(String[] args) &#123;    Flux.range(0, 10000)            .buffer(1)            &#x2F;&#x2F;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-12-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-12-02T16:07:20.695Z">
+<meta property="article:modified_time" content="2026-02-13T13:30:06.396Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="reactor">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"www.zshell.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -248,7 +248,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          780 字
+          767 字
         
       </span>
     
@@ -301,8 +301,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="project-reactor切换线程导致内存溢出的坑"><a href="#project-reactor切换线程导致内存溢出的坑" class="headerlink" title="project reactor切换线程导致内存溢出的坑"></a>project reactor切换线程导致内存溢出的坑</h1><p>​	reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。</p>
-<h2 id="事例代码"><a href="#事例代码" class="headerlink" title="事例代码"></a>事例代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    Flux.range(<span class="hljs-number">0</span>, <span class="hljs-number">10000</span>)<br>            .buffer(<span class="hljs-number">1</span>)<br>            <span class="hljs-comment">// 问题在这里</span><br>	    .parallel(<span class="hljs-number">5</span>, <span class="hljs-number">1</span>)<br>            .runOn(Schedulers.boundedElastic())<br>            .doOnNext(list -&gt; &#123;<br>                System.out.println(<span class="hljs-string">&quot;处理数据:&quot;</span> + list.size());<br>                <span class="hljs-comment">//模拟耗时</span><br>                <span class="hljs-keyword">try</span> &#123;<br>                    Thread.sleep(<span class="hljs-number">5000</span>);<br>                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                &#125;<br>            &#125;)<br>            .checkpoint()<br>            .then()<br>            .block();<br>&#125;<br></code></pre></td></tr></table></figure>
+                <h1 id="reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。"><a href="#reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。" class="headerlink" title="reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。"></a>reactor会在很多地方使用到缓存，或者称为预取功能。但当上游生产的对象比较大想要减少预取的数量时可能会踩到坑，需要格外注意。</h1><h2 id="事例代码"><a href="#事例代码" class="headerlink" title="事例代码"></a>事例代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    Flux.range(<span class="hljs-number">0</span>, <span class="hljs-number">10000</span>)<br>            .buffer(<span class="hljs-number">1</span>)<br>            <span class="hljs-comment">// 问题在这里</span><br>	    .parallel(<span class="hljs-number">5</span>, <span class="hljs-number">1</span>)<br>            .runOn(Schedulers.boundedElastic())<br>            .doOnNext(list -&gt; &#123;<br>                System.out.println(<span class="hljs-string">&quot;处理数据:&quot;</span> + list.size());<br>                <span class="hljs-comment">//模拟耗时</span><br>                <span class="hljs-keyword">try</span> &#123;<br>                    Thread.sleep(<span class="hljs-number">5000</span>);<br>                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                &#125;<br>            &#125;)<br>            .checkpoint()<br>            .then()<br>            .block();<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>这段代码中我们使用Flux.range模拟生产者，假设生产的对象大，比如说从db中查询数据，我们不希望一次性全部生产到内存中。</p>
 <p>本意上我们使用parallel将处理分片为5分，通过runOn分配到5个线程中同时消费。而且 <code>parallel(5, 1)</code> 中的第二个参数控制了分片预取的数量为1，所以每次从上游最多取5个元素。</p>
@@ -345,7 +344,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>project reactor切换线程导致内存溢出的坑</div>
-      <div>https://www.huangchaoyu.com/2533120135.html</div>
+      <div>https://www.zshell.top/2533120135.html</div>
     </div>
     <div class="license-meta">
       
@@ -363,7 +362,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年12月3日</div>
+          <div>2026年2月13日</div>
         </div>
       
       

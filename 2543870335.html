@@ -22,12 +22,12 @@
     <meta name="description" content="​	昨天用netty写了一个内网穿透工具，服务器用的时阿里云，本地测试没问题后打算放服务器上测试一下，结果就是不能访问。 ​	首先阿里云防火墙端口也打开了，首先怀疑阿里云防火墙配置不能立刻生效，结果等了十几分钟还是不行，然后又换了一台端口本来已经打开了的服务器，结果还是不行。 ​	真是奇怪？能确定第二台服务器的端口是打开了的，也能确定程序在本地跑是正常的？？？？？？？？？ ​	最后竟然是因为net">
 <meta property="og:type" content="article">
 <meta property="og:title" content="netty监听本地端口引发的问题">
-<meta property="og:url" content="https://www.huangchaoyu.com/2543870335.html">
+<meta property="og:url" content="https://www.zshell.top/2543870335.html">
 <meta property="og:site_name" content="黄朝雨的个人BLOG">
 <meta property="og:description" content="​	昨天用netty写了一个内网穿透工具，服务器用的时阿里云，本地测试没问题后打算放服务器上测试一下，结果就是不能访问。 ​	首先阿里云防火墙端口也打开了，首先怀疑阿里云防火墙配置不能立刻生效，结果等了十几分钟还是不行，然后又换了一台端口本来已经打开了的服务器，结果还是不行。 ​	真是奇怪？能确定第二台服务器的端口是打开了的，也能确定程序在本地跑是正常的？？？？？？？？？ ​	最后竟然是因为net">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-02-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-12-02T15:33:47.283Z">
+<meta property="article:modified_time" content="2026-02-13T13:30:06.391Z">
 <meta property="article:author" content="黄朝雨">
 <meta property="article:tag" content="netty">
 <meta property="article:tag" content="遇到的问题">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.huangchaoyu.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"www.zshell.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"always","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":8},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":"bc2eb9e74cd29c345afc8b53d2cb49fe","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -333,7 +333,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>netty监听本地端口引发的问题</div>
-      <div>https://www.huangchaoyu.com/2543870335.html</div>
+      <div>https://www.zshell.top/2543870335.html</div>
     </div>
     <div class="license-meta">
       
@@ -351,7 +351,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年12月2日</div>
+          <div>2026年2月13日</div>
         </div>
       
       
